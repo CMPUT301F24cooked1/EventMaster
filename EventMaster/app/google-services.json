@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "744586711248",
+    "project_id": "eventmaster-27b75",
+    "storage_bucket": "eventmaster-27b75.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:744586711248:android:68e12c9884344737ab4ed5",
+        "android_client_info": {
+          "package_name": "com.example.EventMaster"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5eI-rE_6_d5cyv53FTaArFQtzjoovAUc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
