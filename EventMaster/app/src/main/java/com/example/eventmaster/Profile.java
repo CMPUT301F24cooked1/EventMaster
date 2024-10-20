@@ -1,7 +1,11 @@
 package com.example.eventmaster;
 
+import android.widget.CompoundButton;
+import android.widget.Switch;
+
 public class Profile {
     private String deviceId;
+    private boolean notificationSwitch;
 
     public Profile(String deviceId) {
         this.deviceId = deviceId;
@@ -24,4 +28,16 @@ public class Profile {
     public String getDeviceId() {
         return deviceId;
     }
+
+    /**
+     * Sets the notifications to being enabled or disabled
+     *
+     * @param toggleNotifs changing the notifications to on or off
+     */
+    public void setNotifications(boolean toggleNotifs){
+        this.notificationSwitch = toggleNotifs;
+    }
+
+
+
 }
