@@ -68,13 +68,10 @@ public class MainActivity extends AppCompatActivity {
         settingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                // send deviceID to settingsScreen class
+                // send user to settingsScreen class
                 Intent intent = new Intent(MainActivity.this, SettingsScreen.class);
-                intent.putExtra("DeviceID", deviceId);
-
+                intent.putExtra("User",  user);
                 activityResultLauncher.launch(intent);
-
             }
         });
     }
