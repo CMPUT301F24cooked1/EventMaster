@@ -14,13 +14,11 @@ public class SettingsScreen extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        String deviceID = getIntent().getStringExtra("DeviceID");  // deviceID from MainActivity
-
         setContentView(R.layout.setting_screen);
-        notificationSwitch = findViewById(R.id.notification_button);
 
-        Profile user = new Profile(deviceID);
+        Profile user = (Profile) getIntent().getSerializableExtra("User"); // user from MainActivity
+
+        notificationSwitch = findViewById(R.id.notification_button);
 
         // Toggle on and off the notification button
         notificationSwitch.setChecked(true); // enabled notifications
