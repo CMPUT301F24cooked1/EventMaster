@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">EventMaster</string>
     <string name="app_name_home_screen">Eventmaster</string>
+    <string name="profile_screen">My Profile</string>
 </resources>
