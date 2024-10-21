@@ -22,6 +22,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageButton
+        android:layout_width="50dp"
+        android:layout_height="49dp"
+        android:layout_marginEnd="48dp"
+        android:background="@drawable/upload_image_icon"
+        android:scaleType="centerInside"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:layout_editor_absoluteY="105dp" />
+
     <ImageView
         android:id="@+id/profile_picture"
         android:layout_width="250dp"
@@ -35,11 +44,11 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.172" />
 
-    <TextView
+    <EditText
         android:id="@+id/profile_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="508dp"
+        android:layout_marginBottom="492dp"
         android:text="My Name"
         android:textColor="@color/grey"
         android:textSize="25dp"
@@ -47,7 +56,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
+    <EditText
         android:id="@+id/profile_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -60,16 +69,17 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
+    <EditText
         android:id="@+id/profile_phone_number"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="324dp"
+        android:layout_height="54dp"
+        android:layout_marginBottom="348dp"
         android:text="Phone Number"
         android:textColor="@color/grey"
         android:textSize="25dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.appcompat.widget.AppCompatButton
@@ -78,12 +88,12 @@
         android:layout_height="70dp"
         android:layout_marginStart="70dp"
         android:layout_marginEnd="70dp"
-        android:layout_marginBottom="160dp"
+        android:layout_marginBottom="208dp"
         android:background="@drawable/rounded_button"
-        android:drawableLeft="@drawable/pencil"
-        android:padding="22dp"
-        android:text="Edit Profile"
+        android:text="Save Changes"
         android:textSize="20dp"
+        android:drawableLeft="@drawable/check_circle_outline"
+        android:padding="22dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
