@@ -1,6 +1,9 @@
 package com.example.eventmaster;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -8,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Switch;
 
 import androidx.activity.EdgeToEdge;
@@ -21,7 +25,10 @@ import androidx.core.view.WindowInsetsCompat;
 
 
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.firestore.auth.User;
+import com.example.eventmaster.Profile;
+
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +37,8 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private String deviceId;
-    private ActivityResultLauncher<Intent> activityResultLauncher;
+    private ActivityResultLauncher<Intent> settingResultLauncher;
+    private ActivityResultLauncher<Intent> profileResultLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +54,10 @@ public class MainActivity extends AppCompatActivity {
         // Checks if deviceId was grabbed
         Log.d("DeviceID", "Android ID: " + deviceId);
 
-        Profile user = new Profile(deviceId);
+        Profile user = new Profile(deviceId, "Ellen");
         storeDeviceID(deviceId);
+        updateUserInfo(deviceId, user.getName());
+
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -56,24 +66,51 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Connecting the home screen to the SettingsScreen
-        activityResultLauncher = registerForActivityResult(
+        settingResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),result ->{
                     if (result.getResultCode() == RESULT_OK){
 
                     }
                 }
         );
+
+        // Connecting the home screen to the profile
+        profileResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),result ->{
+                    if (result.getResultCode() == RESULT_OK){
+
+                    }
+                }
+        );
+
+        // Reference to the settings button
         ImageButton settingButton = findViewById(R.id.settings);
 
         settingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // send user to settingsScreen class
+                // Send user to SettingsScreen class
                 Intent intent = new Intent(MainActivity.this, SettingsScreen.class);
-                intent.putExtra("User",  user);
-                activityResultLauncher.launch(intent);
+                intent.putExtra("User", user);
+                settingResultLauncher.launch(intent);
             }
         });
+
+
+        ImageButton profileButton = findViewById(R.id.profile);
+
+        profileButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Send user to ProfileActivity class
+                Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+                intent.putExtra("User", user);
+                profileResultLauncher.launch(intent);
+            }
+        });
+
+
+
     }
 
     /**
@@ -108,6 +145,24 @@ public class MainActivity extends AppCompatActivity {
                 });
 
     }
+
+    private void updateUserInfo(String deviceId, String name) {
+        // Create a map with the additional user data
+        Map<String, Object> userData = new HashMap<>();
+        userData.put("name", name);
+
+        // Update the document with the new user data, merging with existing data
+        db.collection("profiles")
+                .document(deviceId)
+                .set(userData, SetOptions.merge()) // Merge with existing data
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("Firestore", "User info updated successfully.");
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Firestore", "Error updating user info", e);
+                });
+    }
+
 
 
 }
