@@ -8,9 +8,11 @@ import java.io.Serializable;
 public class Profile implements Serializable {
     private String deviceId;
     private boolean notificationSwitch;
+    private String name;
 
-    public Profile(String deviceId) {
+    public Profile(String deviceId, String name) {
         this.deviceId = deviceId;
+        this.name = name;
     }
 
     /**
@@ -23,12 +25,30 @@ public class Profile implements Serializable {
     }
 
     /**
+     * Sets the name of the user.
+     *
+     * @param name the name of the user
+     */
+    public void setName(String name){
+        this.name = name;
+    }
+
+    /**
      * Gets the deviceId of the user.
      *
      * @return the deviceId of the user
      */
     public String getDeviceId() {
         return deviceId;
+    }
+
+    /**
+     * Gets the name of the user.
+     *
+     * @return the name of the user
+     */
+    public String getName(){
+        return name;
     }
 
     /**
