@@ -14,12 +14,19 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class ProfileActivity extends AppCompatActivity {
+    private String displayName;
+    private String displayEmail;
+    private String displayPhoneNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.profile_screen);
+
+        displayName = findViewById(R.id.profile_name).toString();
+        displayEmail = findViewById(R.id.profile_email).toString();
+        displayPhoneNumber = findViewById(R.id.profile_phone_number).toString();
 
         Profile user = (Profile) getIntent().getSerializableExtra("User"); // user from MainActivity
 
@@ -30,7 +37,11 @@ public class ProfileActivity extends AppCompatActivity {
 
         ImageView profile_picture = findViewById(R.id.profile_picture );
         // Sets the profile picture as the auto generated photo
-        profile_picture .setImageBitmap(pfpBitmap);
+        profile_picture.setImageBitmap(pfpBitmap);
+
+        displayName = user.getName();
+        displayEmail = user.getEmail();
+        displayPhoneNumber = user.getPhone_number();
 
     }
 }
