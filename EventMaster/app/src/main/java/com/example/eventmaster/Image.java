@@ -7,7 +7,6 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 
 public class Image {
-
     /**
      * Creates a bitmap of the profile picture that is based on the name of the User
      *
