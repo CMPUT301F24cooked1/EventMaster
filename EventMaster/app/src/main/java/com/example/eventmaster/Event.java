@@ -6,6 +6,7 @@ import java.util.Date;
 public class Event {
     private String eventName;
     private String eventDescription;
+    private String eventID;
     private int eventCapacity;
     private int waitlistCapacity;
     private Date eventFinalDate;
@@ -13,9 +14,10 @@ public class Event {
     private ArrayList<Entrant> waitlist;
     //private QRCode eventQR;
 
-    public Event(String eventName, String eventDescription, int eventCapacity, int waitlistCapacity, Date eventFinalDate, boolean geolocation) {
+    public Event(String eventName, String eventDescription, String eventID, int eventCapacity, int waitlistCapacity, Date eventFinalDate, boolean geolocation) {
         this.eventName = eventName;
         this.eventDescription = eventDescription;
+        this.eventID = eventID;
         this.eventCapacity = eventCapacity;
         this.waitlistCapacity = waitlistCapacity;
         this.eventFinalDate = eventFinalDate;
@@ -57,6 +59,22 @@ public class Event {
      */
     public void setEventDescription(String eventDescription) {
         this.eventDescription = eventDescription;
+    }
+
+    /**
+     * Gets the ID of the event
+     * @return the event's string identifier
+     */
+    public String getEventID(){
+        return eventID;
+    }
+
+    /**
+     * Sets the ID of the event
+     * @param eventID the event identifier
+     */
+    public void setEventID(String eventID){
+        this.eventID = eventID;
     }
 
     /**
