@@ -8,15 +8,16 @@ import android.util.Log;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class ProfileActivity extends AppCompatActivity {
-    private String displayName;
-    private String displayEmail;
-    private String displayPhoneNumber;
+    private TextView displayName;
+    private TextView displayEmail;
+    private TextView displayPhoneNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,9 +25,9 @@ public class ProfileActivity extends AppCompatActivity {
 
         setContentView(R.layout.profile_screen);
 
-        displayName = findViewById(R.id.profile_name).toString();
-        displayEmail = findViewById(R.id.profile_email).toString();
-        displayPhoneNumber = findViewById(R.id.profile_phone_number).toString();
+        displayName = findViewById(R.id.profile_name);
+        displayEmail = findViewById(R.id.profile_email);
+        displayPhoneNumber = findViewById(R.id.profile_phone_number);
 
         Profile user = (Profile) getIntent().getSerializableExtra("User"); // user from MainActivity
 
@@ -39,9 +40,9 @@ public class ProfileActivity extends AppCompatActivity {
         // Sets the profile picture as the auto generated photo
         profile_picture.setImageBitmap(pfpBitmap);
 
-        displayName = user.getName();
-        displayEmail = user.getEmail();
-        displayPhoneNumber = user.getPhone_number();
+        displayName.setText(user.getName());
+        displayEmail.setText(user.getEmail());
+        displayPhoneNumber.setText(user.getPhone_number());
 
     }
 }
