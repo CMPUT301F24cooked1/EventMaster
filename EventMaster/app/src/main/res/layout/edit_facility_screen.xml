@@ -10,14 +10,16 @@
 
     <ImageButton
         android:id="@+id/settings2"
-        android:layout_width="66dp"
-        android:layout_height="65dp"
-        android:layout_marginStart="216dp"
-        android:layout_marginBottom="24dp"
-        android:background="@drawable/home-icon"
+        android:layout_width="130dp"
+        android:layout_height="129dp"
+        android:layout_marginStart="27dp"
+        android:layout_marginEnd="23dp"
+        android:layout_marginBottom="-8dp"
+        android:background="@drawable/home_icon"
         android:scaleType="centerInside"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toStartOf="@+id/notification_icon"
+        app:layout_constraintStart_toEndOf="@+id/settings" />
 
     <EditText
         android:id="@+id/editTextInput3"
