@@ -17,7 +17,7 @@
         app:srcCompat="@drawable/calendar_image" />
 
     <LinearLayout
-        android:layout_width="272dp"
+        android:layout_width="260dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical">
@@ -31,16 +31,16 @@
 
         <TextView
             android:id="@+id/eventDescriptionTextView"
-            android:layout_width="248dp"
-            android:layout_height="wrap_content"
+            android:layout_width="240dp"
+            android:layout_height="20dp"
             android:textSize="14sp" />
     </LinearLayout>
 
     <ImageView
         android:id="@+id/event_details_arrow"
-        android:layout_marginTop="12dp"
         android:layout_width="20dp"
         android:layout_height="20dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="16dp"
         app:srcCompat="@drawable/arrow" />
 </LinearLayout>
