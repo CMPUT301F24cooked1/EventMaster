@@ -1,21 +1,21 @@
 package com.example.eventmaster;
 
-import android.widget.CompoundButton;
-import android.widget.Switch;
-
 import java.io.Serializable;
+import java.util.Optional;
 
 public class Profile implements Serializable {
     private String deviceId;
     private boolean notificationSwitch;
     private String name;
     private String email;
-    private String phone_number;
+    private Optional<String> phone_number;
     private String password;
 
-    public Profile(String deviceId, String name) {
+    public Profile(String deviceId, String name, String email, Optional<String> phone_number) {
         this.deviceId = deviceId;
         this.name = name;
+        this.email = email;
+        this.phone_number = phone_number;
     }
 
     /**
@@ -77,7 +77,7 @@ public class Profile implements Serializable {
      *
      * @return user's phone number
      */
-    public String getPhone_number() {
+    public Optional<String> getPhone_number() {
         return phone_number;
     }
 
@@ -87,7 +87,7 @@ public class Profile implements Serializable {
      * @param phone_number the user's phone number
      */
     public void setPhone_number(String phone_number) {
-        this.phone_number = phone_number;
+        this.phone_number = Optional.ofNullable(phone_number);
     }
 
     /**

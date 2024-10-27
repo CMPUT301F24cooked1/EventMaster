@@ -27,6 +27,7 @@
 
         <activity android:name=".SettingsScreen"/>
         <activity android:name=".ProfileActivity" />
+        <activity android:name=".InputUserInformation" />
 
 
     </application>

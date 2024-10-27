@@ -30,9 +30,11 @@ import com.google.firebase.firestore.auth.User;
 import com.example.eventmaster.Profile;
 
 
+import java.security.cert.PKIXRevocationChecker;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -55,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         // Checks if deviceId was grabbed
         Log.d("DeviceID", "Android ID: " + deviceId);
 
-        Profile user = new Profile(deviceId, "Ellen");
+        Profile user = new Profile(deviceId, "", "", Optional.of(""));
         storeDeviceID(deviceId);
         updateUserInfo(deviceId, user.getName());
 

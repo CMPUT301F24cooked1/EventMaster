@@ -1,10 +1,13 @@
 package com.example.eventmaster;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
@@ -12,13 +15,26 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 
 public class ProfileActivity extends AppCompatActivity {
     private TextView displayName;
     private TextView displayEmail;
     private TextView displayPhoneNumber;
+    private AppCompatButton editProfileButton;
+    private ActivityResultLauncher<Intent> editProfileResultLauncher;
 
+
+    /**
+     * Initializes the profile screen
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     * Sets the user's inputted information
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,6 +44,7 @@ public class ProfileActivity extends AppCompatActivity {
         displayName = findViewById(R.id.profile_name);
         displayEmail = findViewById(R.id.profile_email);
         displayPhoneNumber = findViewById(R.id.profile_phone_number);
+        editProfileButton = findViewById(R.id.edit_profile_button);
 
         Profile user = (Profile) getIntent().getSerializableExtra("User"); // user from MainActivity
 
@@ -42,7 +59,24 @@ public class ProfileActivity extends AppCompatActivity {
 
         displayName.setText(user.getName());
         displayEmail.setText(user.getEmail());
-        displayPhoneNumber.setText(user.getPhone_number());
+        displayPhoneNumber.setText(user.getPhone_number().orElse(" "));
+
+        editProfileResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(), result ->{
+                    if (result.getResultCode() == RESULT_OK){
+
+                    }
+                }
+        );
+
+        editProfileButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ProfileActivity.this, InputUserInformation.class);
+                intent.putExtra("User", user);
+                editProfileResultLauncher.launch(intent);
+            }
+        });
 
     }
 }
