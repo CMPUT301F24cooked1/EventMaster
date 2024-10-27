@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/app_background"
+    tools:context=".ViewCreatedEventsActivity">
+
+
+
+
+    <TextView
+        android:id="@+id/eventNameTextView"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="92dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="93dp"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.488"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+
+    <TextView
+        android:id="@+id/eventDescriptionTextView"
+        android:layout_width="300dp"
+        android:layout_height="150dp"
+        android:layout_marginStart="33dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="33dp"
+        android:layout_marginBottom="50dp"
+        android:textAlignment="center"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.387"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/profile"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/profile_picture"
+        android:scaleType="centerInside"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageButton
+        android:id="@+id/settings"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="220dp"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/settings"
+        android:scaleType="centerInside"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageButton
+        android:id="@+id/back_button"
+        android:layout_width="26dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="38dp"
+        android:background="@drawable/vector"
+        android:scaleType="centerInside"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageButton
+        android:id="@+id/add_icon"
+        android:layout_width="61dp"
+        android:layout_height="61dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/add_icon"
+        android:scaleType="centerInside"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageButton
+        android:id="@+id/home_icon"
+        android:layout_width="100dp"
+        android:layout_height="105dp"
+        android:layout_marginEnd="120dp"
+        android:layout_marginBottom="4dp"
+        android:background="@drawable/home_icon"
+        android:scaleType="centerInside"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageButton
+        android:id="@+id/notifications"
+        android:layout_width="45dp"
+        android:layout_height="44dp"
+        android:layout_marginEnd="76dp"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/notification_icon"
+        android:scaleType="centerInside"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!-- Image that will appear behind -->
+        <ImageView
+            android:id="@+id/imageView9"
+            android:layout_width="210dp"
+            android:layout_height="130dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="240dp"
+            app:srcCompat="@android:drawable/dialog_holo_dark_frame" />
+
+        <ImageView
+            android:id="@+id/imageView7"
+            android:layout_width="210dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="198dp"
+            app:srcCompat="@android:drawable/dialog_holo_dark_frame" />
+        <!-- Image that will appear behind -->
+        <ImageView
+            android:id="@+id/imageView8"
+            android:layout_width="210dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="160dp"
+            app:srcCompat="@android:drawable/dialog_holo_dark_frame" />
+
+        <ImageView
+            android:id="@+id/imageView10"
+            android:layout_width="210dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="115dp"
+            app:srcCompat="@android:drawable/dialog_holo_dark_frame" />
+
+        <ImageView
+            android:id="@+id/qrCodeImageView"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="178dp"
+            app:layout_constraintVertical_bias="0.239" />
+
+        <ImageView
+            android:id="@+id/eventPosterImageView"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:layout_gravity="center"
+            android:layout_marginBottom="220dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+             />
+
+
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -132,11 +132,11 @@ public class FacilityScreen extends AppCompatActivity {
         createEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: GET ORGANIZER DATA FROM FIRESTORE USING DEVICEID (IF IT EXISTS)
-                //TODO: INSERT DATA INTO LOCAL ORGANIZER OBJECT
-                //TODO: SEND ORGANIZER OBJECT WITH INTENT TO EVENTS PAGES
+                Intent intent = new Intent(FacilityScreen.this, CreateEventActivity.class);
+                startActivity(intent);
             }
         });
+
 
         //Return to home screen, send up to date Facility object
         backButton = findViewById(R.id.back_button);

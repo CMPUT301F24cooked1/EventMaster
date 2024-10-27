@@ -13,7 +13,9 @@ public class Event {
     private boolean geolocation;
     private ArrayList<Entrant> waitlist;
     //private QRCode eventQR;
-
+    public Event() {
+        // Default constructor required for calls to DataSnapshot.getValue(Event.class)
+    }
     public Event(String eventName, String eventDescription, String eventID, int eventCapacity, int waitlistCapacity, Date eventFinalDate, boolean geolocation) {
         this.eventName = eventName;
         this.eventDescription = eventDescription;
