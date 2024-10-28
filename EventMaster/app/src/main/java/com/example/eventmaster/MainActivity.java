@@ -57,9 +57,9 @@ public class MainActivity extends AppCompatActivity {
         // Checks if deviceId was grabbed
         Log.d("DeviceID", "Android ID: " + deviceId);
 
-        Profile user = new Profile(deviceId, " ", " ", Optional.ofNullable(" "));
+        Profile user = new Profile(deviceId, " ", " ", " ");
         storeDeviceID(deviceId);
-        updateUserInfo(deviceId, user.getName());
+        //updateUserInfo(deviceId, user.getName());
 
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -149,10 +149,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void updateUserInfo(String deviceId, String name) {
+    private void updateUserInfo(String deviceId, String name, String email, String phone_number) {
         // Create a map with the additional user data
         Map<String, Object> userData = new HashMap<>();
         userData.put("name", name);
+        userData.put("email", email);
+        userData.put("phone number", phone_number);
 
         // Update the document with the new user data, merging with existing data
         db.collection("profiles")

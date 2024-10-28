@@ -66,7 +66,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         displayName.setText(user.getName());
         displayEmail.setText(user.getEmail());
-        displayPhoneNumber.setText(user.getPhone_number().orElse(""));
+        displayPhoneNumber.setText(user.getPhone_number());
 
         editProfileResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(), result ->{
