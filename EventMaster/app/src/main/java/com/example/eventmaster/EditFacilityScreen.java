@@ -21,6 +21,10 @@ public class EditFacilityScreen extends AppCompatActivity {
     private EditText editFacilityDesc;
     private AppCompatButton finishEditFacilityButton;
     private ImageButton backButton;
+    private ImageButton profileButton;
+    private ImageButton settingsButton;
+    private ImageButton notificationButton;
+    private ImageButton listButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +35,9 @@ public class EditFacilityScreen extends AppCompatActivity {
         editFacilityName = findViewById(R.id.edit_facility_name);
         editFacilityAddress = findViewById(R.id.edit_facility_address);
         editFacilityDesc = findViewById(R.id.edit_facility_desc);
+
+        Intent intentMain = getIntent();
+        Profile user =  (Profile) intentMain.getSerializableExtra("FacilityEditUser");
 
         Facility userFacility = (Facility) getIntent().getSerializableExtra("FacilityEdit");
 
@@ -84,6 +91,35 @@ public class EditFacilityScreen extends AppCompatActivity {
             }
         });
 
+        notificationButton = findViewById(R.id.notification_icon);
+
+        notificationButton.setOnClickListener(v -> {
+            Intent intent = new Intent(EditFacilityScreen.this, Notifications.class);
+            startActivity(intent);
+        });
+
+        settingsButton = findViewById(R.id.settings);
+
+        settingsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(EditFacilityScreen.this, SettingsScreen.class);
+            startActivity(intent);
+        });
+
+        profileButton = findViewById(R.id.profile);
+
+        profileButton.setOnClickListener(v -> {
+            Intent intent = new Intent(EditFacilityScreen.this, ProfileActivity.class);
+            intent.putExtra("User", user);
+            startActivity(intent);
+        });
+
+        listButton = findViewById(R.id.list_icon);
+
+        listButton.setOnClickListener(v -> {
+            Intent intent = new Intent(EditFacilityScreen.this, ViewCreatedEventsActivity.class);
+            startActivity(intent);
+        });
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -99,15 +135,9 @@ public class EditFacilityScreen extends AppCompatActivity {
      */
     public boolean[] checkDataEntryFacility(String facilityName, String facilityAddress, String facilityDesc) {
         boolean[] entriesValid = {false, false, false};
-        if (facilityName.length() <= 30) {
-            entriesValid[0] = true;
-        }
-        if (facilityAddress.length() <= 50) {
-            entriesValid[1] = true;
-        }
-        if (facilityDesc.length() < 100) {
-            entriesValid[2] = true;
-        }
+        if (facilityName.length() <= 30 && !facilityName.isEmpty()) entriesValid[0] = true;
+        if (facilityAddress.length() <= 50 && !facilityAddress.isEmpty()) entriesValid[1] = true;
+        if (facilityDesc.length() <= 100 && !facilityDesc.isEmpty()) entriesValid[2] = true;
         return entriesValid;
     }
 }

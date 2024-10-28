@@ -37,7 +37,7 @@ public class FacilityScreen extends AppCompatActivity {
     private FirebaseFirestore db;
 
     private Profile user;
-    private Organizer userOrganizer;
+    //private Organizer userOrganizer;
     private Facility updatedUserFacility;
     private Facility userFacility;
 
@@ -45,8 +45,13 @@ public class FacilityScreen extends AppCompatActivity {
     private TextView facilityAddressText;
     private TextView facilityDescText;
     private AppCompatButton editFacilityButton;
+    private AppCompatButton viewEventsButton;
     private AppCompatButton createEventButton;
     private ImageButton backButton;
+    private ImageButton profileButton;
+    private ImageButton settingsButton;
+    private ImageButton notificationButton;
+    private ImageButton listButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,16 +90,40 @@ public class FacilityScreen extends AppCompatActivity {
             return insets;
         });
 
-        // Connecting the facility screen to the Edit Facility Screen
-        createEventResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-            @Override
-            public void onActivityResult(ActivityResult returnResult) {
-                if (returnResult != null && returnResult.getResultCode() == RESULT_OK) {
-                    if (returnResult.getData() != null && returnResult.getData().getSerializableExtra("userFacility") != null) {
-                        //TODO: ADD ACTIVITY RESULT FOR RETURNING FROM EVENTS PAGE
-                    }
-                }
-            }
+        notificationButton = findViewById(R.id.notification_icon);
+
+        notificationButton.setOnClickListener(v -> {
+            Intent intent = new Intent(FacilityScreen.this, Notifications.class);
+            startActivity(intent);
+        });
+
+        settingsButton = findViewById(R.id.settings);
+
+        settingsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(FacilityScreen.this, SettingsScreen.class);
+            startActivity(intent);
+        });
+
+        profileButton = findViewById(R.id.profile);
+
+        profileButton.setOnClickListener(v -> {
+            Intent intent = new Intent(FacilityScreen.this, ProfileActivity.class);
+            intent.putExtra("User", user);
+            startActivity(intent);
+        });
+
+        listButton = findViewById(R.id.list_icon);
+
+        listButton.setOnClickListener(v -> {
+            Intent intent = new Intent(FacilityScreen.this, ViewCreatedEventsActivity.class);
+            startActivity(intent);
+        });
+
+        viewEventsButton = findViewById(R.id.view_events_button);
+
+        viewEventsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(FacilityScreen.this, ViewCreatedEventsActivity.class);
+            startActivity(intent);
         });
 
         // Connecting the facility screen to the Edit Facility Screen
@@ -121,11 +150,12 @@ public class FacilityScreen extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(FacilityScreen.this, EditFacilityScreen.class);
                 intent.putExtra("FacilityEdit", userFacility);
+                intent.putExtra("FacilityEditUser", user);
                 editFacilityResultLauncher.launch(intent);
             }
         });
 
-        userOrganizer = new Organizer();
+        //userOrganizer = new Organizer();
 
         //Move to Events Page
         createEventButton = findViewById(R.id.create_event_button);
