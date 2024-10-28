@@ -9,12 +9,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultCallerLauncher;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,7 +27,11 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView displayEmail;
     private TextView displayPhoneNumber;
     private AppCompatButton editProfileButton;
+    private ImageButton backButton;
     private ActivityResultLauncher<Intent> editProfileResultLauncher;
+    private ActivityResultLauncher<Intent> MainActivityResultLauncher;
+
+
 
 
     /**
@@ -45,6 +51,7 @@ public class ProfileActivity extends AppCompatActivity {
         displayEmail = findViewById(R.id.profile_email);
         displayPhoneNumber = findViewById(R.id.profile_phone_number);
         editProfileButton = findViewById(R.id.edit_profile_button);
+        backButton = findViewById(R.id.back);
 
         Profile user = (Profile) getIntent().getSerializableExtra("User"); // user from MainActivity
 
@@ -59,9 +66,17 @@ public class ProfileActivity extends AppCompatActivity {
 
         displayName.setText(user.getName());
         displayEmail.setText(user.getEmail());
-        displayPhoneNumber.setText(user.getPhone_number().orElse(" "));
+        displayPhoneNumber.setText(user.getPhone_number().orElse(""));
 
         editProfileResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(), result ->{
+                    if (result.getResultCode() == RESULT_OK){
+
+                    }
+                }
+        );
+
+        MainActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(), result ->{
                     if (result.getResultCode() == RESULT_OK){
 
@@ -77,6 +92,16 @@ public class ProfileActivity extends AppCompatActivity {
                 editProfileResultLauncher.launch(intent);
             }
         });
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
+                intent.putExtra("User", user);
+                MainActivityResultLauncher.launch(intent);
+            }
+        });
+
 
     }
 }

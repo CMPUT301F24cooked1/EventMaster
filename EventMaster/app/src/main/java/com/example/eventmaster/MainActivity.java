@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         // Checks if deviceId was grabbed
         Log.d("DeviceID", "Android ID: " + deviceId);
 
-        Profile user = new Profile(deviceId, "", "", Optional.of(""));
+        Profile user = new Profile(deviceId, " ", " ", Optional.ofNullable(" "));
         storeDeviceID(deviceId);
         updateUserInfo(deviceId, user.getName());
 

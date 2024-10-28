@@ -8,15 +8,16 @@ public class Profile implements Serializable {
     private boolean notificationSwitch;
     private String name;
     private String email;
-    private Optional<String> phone_number;
+    private transient Optional<String> phone_number;
     private String password;
 
     public Profile(String deviceId, String name, String email, Optional<String> phone_number) {
         this.deviceId = deviceId;
         this.name = name;
         this.email = email;
-        this.phone_number = phone_number;
+        this.phone_number = phone_number != null ? phone_number : Optional.empty();
     }
+
 
     /**
      * Sets the deviceId of the user.
@@ -78,7 +79,7 @@ public class Profile implements Serializable {
      * @return user's phone number
      */
     public Optional<String> getPhone_number() {
-        return phone_number;
+        return phone_number != null ? phone_number : Optional.empty();
     }
 
     /**

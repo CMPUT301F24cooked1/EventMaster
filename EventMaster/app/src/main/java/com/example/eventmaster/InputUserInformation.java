@@ -11,6 +11,8 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.Optional;
+
 public class InputUserInformation extends AppCompatActivity {
     private EditText name_edit;
     private EditText email_edit;
@@ -41,15 +43,19 @@ public class InputUserInformation extends AppCompatActivity {
         profile_change_button = findViewById(R.id.save_changes_button);
         back_button = findViewById(R.id.back);
 
+        name_edit.setText(user.getName());
+        email_edit.setText(user.getEmail());
+        phone_number_edit.setText(user.getPhone_number().orElse(""));
+
         profile_change_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String name = name_edit.getText().toString();
                 String email = email_edit.getText().toString();
-                String phone_number = phone_number_edit.getText().toString();
+                Optional<String> phone_number = Optional.of(phone_number_edit.getText().toString());
                 user.setName(name);
                 user.setEmail(email);
-                user.setPhone_number(phone_number);
+                user.setPhone_number(String.valueOf(phone_number));
             }
         });
 
@@ -60,7 +66,6 @@ public class InputUserInformation extends AppCompatActivity {
                     }
                 }
         );
-        
         back_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
