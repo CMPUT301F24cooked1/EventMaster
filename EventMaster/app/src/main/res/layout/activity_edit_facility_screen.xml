@@ -19,7 +19,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.2" />
+        app:layout_constraintVertical_bias="0.12" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/finish_edit_facility_button"
@@ -33,7 +33,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintVertical_bias="0.86" />
+        app:layout_constraintVertical_bias="0.83" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -47,7 +47,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.3" />
+        app:layout_constraintVertical_bias="0.22" />
 
     <TextView
         android:id="@+id/facility_name_text"
@@ -61,7 +61,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintVertical_bias="0.38" />
+        app:layout_constraintVertical_bias="0.3" />
 
     <!-- https://stackoverflow.com/questions/59246328/android-add-a-padding-with-size-that-looks-equal-on-all-devices, 2024-10-21 -->
     <!--
@@ -98,7 +98,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintVertical_bias="0.45" />
+        app:layout_constraintVertical_bias="0.37" />
 
     <TextView
         android:id="@+id/facility_address_text"
@@ -112,7 +112,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintVertical_bias="0.52" />
+        app:layout_constraintVertical_bias="0.44" />
 
     <EditText
         android:id="@+id/edit_facility_address"
@@ -124,7 +124,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintVertical_bias="0.59" />
+        app:layout_constraintVertical_bias="0.51" />
 
     <TextView
         android:id="@+id/facility_desc_text"
@@ -138,7 +138,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintVertical_bias="0.66" />
+        app:layout_constraintVertical_bias="0.58" />
 
     <EditText
         android:id="@+id/edit_facility_desc"
@@ -150,7 +150,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintVertical_bias="0.74" />
+        app:layout_constraintVertical_bias="0.66" />
 
     <!-- Ensure your images exist in the drawable folder -->
     <ImageButton
@@ -164,12 +164,11 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <!--
     <ImageButton
         android:id="@+id/profile"
         android:layout_width="66dp"
         android:layout_height="65dp"
-        android:layout_marginStart="49dp"
+        android:layout_marginStart="64dp"
         android:layout_marginBottom="24dp"
         android:background="@drawable/profile_picture"
         android:scaleType="centerInside"
@@ -180,7 +179,7 @@
         android:id="@+id/settings"
         android:layout_width="66dp"
         android:layout_height="65dp"
-        android:layout_marginStart="128dp"
+        android:layout_marginStart="148dp"
         android:layout_marginBottom="24dp"
         android:background="@drawable/settings"
         android:scaleType="centerInside"
@@ -191,7 +190,7 @@
         android:id="@+id/list_icon"
         android:layout_width="66dp"
         android:layout_height="65dp"
-        android:layout_marginStart="212dp"
+        android:layout_marginStart="232dp"
         android:layout_marginBottom="24dp"
         android:background="@drawable/list_icon"
         android:scaleType="centerInside"
@@ -202,12 +201,12 @@
         android:id="@+id/notification_icon"
         android:layout_width="66dp"
         android:layout_height="65dp"
-        android:layout_marginStart="288dp"
+        android:layout_marginStart="308dp"
         android:layout_marginBottom="24dp"
         android:background="@drawable/notification_icon"
         android:scaleType="centerInside"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-    -->
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -19,7 +19,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.2" />
+        app:layout_constraintVertical_bias="0.12" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/edit_facility_button"
@@ -33,7 +33,21 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintVertical_bias="0.72" />
+        app:layout_constraintVertical_bias="0.58" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/view_events_button"
+        android:layout_width="271dp"
+        android:layout_height="70dp"
+        android:background="@drawable/white_rounded_button"
+        android:text="View Events"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintVertical_bias="0.70" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/create_event_button"
@@ -47,7 +61,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintVertical_bias="0.84" />
+        app:layout_constraintVertical_bias="0.82" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -75,7 +89,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintVertical_bias="0.38" />
+        app:layout_constraintVertical_bias="0.31" />
 
     <TextView
         android:id="@+id/facilityAddressText"
@@ -89,7 +103,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintVertical_bias="0.45" />
+        app:layout_constraintVertical_bias="0.38" />
 
     <TextView
         android:id="@+id/facilityDescText"
@@ -103,7 +117,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintVertical_bias="0.52" />
+        app:layout_constraintVertical_bias="0.45" />
 
     <!-- Ensure your images exist in the drawable folder -->
     <ImageButton
