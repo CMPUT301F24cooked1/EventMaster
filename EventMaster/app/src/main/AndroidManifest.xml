@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
 
     <application
@@ -32,6 +33,11 @@
             android:name=".ViewCreatedEventsActivity" />
         <activity
             android:name=".EventDetailsActivity" />
+        <activity
+            android:name=".JoinEventScreen" />
+
+
+
 
         <activity
             android:name=".MainActivity"
