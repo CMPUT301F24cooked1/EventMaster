@@ -2,10 +2,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
     android:id="@+id/main"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".FacilityScreen"
+    tools:context=".EditFacilityScreen"
     android:background="@drawable/app_background">
 
     <ImageView
@@ -22,46 +22,18 @@
         app:layout_constraintVertical_bias="0.12" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/edit_facility_button"
+        android:id="@+id/finish_edit_facility_button"
         android:layout_width="271dp"
         android:layout_height="70dp"
         android:background="@drawable/rounded_button"
-        android:text="Edit Facility"
+        android:text="Confirm"
         android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintVertical_bias="0.58" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/view_events_button"
-        android:layout_width="271dp"
-        android:layout_height="70dp"
-        android:background="@drawable/white_rounded_button"
-        android:text="View Events"
-        android:textSize="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintVertical_bias="0.70" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/create_event_button"
-        android:layout_width="271dp"
-        android:layout_height="70dp"
-        android:background="@drawable/white_rounded_button"
-        android:text="Create Event"
-        android:textSize="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintVertical_bias="0.82" />
+        app:layout_constraintVertical_bias="0.83" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -75,10 +47,10 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.3" />
+        app:layout_constraintVertical_bias="0.22" />
 
     <TextView
-        android:id="@+id/facilityNameText"
+        android:id="@+id/facility_name_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Facility Name"
@@ -89,10 +61,47 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintVertical_bias="0.31" />
+        app:layout_constraintVertical_bias="0.3" />
+
+    <!-- https://stackoverflow.com/questions/59246328/android-add-a-padding-with-size-that-looks-equal-on-all-devices, 2024-10-21 -->
+    <!--
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        app:boxBackgroundColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.45">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="TEXT"
+            android:textAlignment="center" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+    -->
+
+    <EditText
+        android:id="@+id/edit_facility_name"
+        android:layout_width="271dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edittext_border"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintVertical_bias="0.37" />
 
     <TextView
-        android:id="@+id/facilityAddressText"
+        android:id="@+id/facility_address_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Facility Address"
@@ -103,10 +112,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintVertical_bias="0.38" />
+        app:layout_constraintVertical_bias="0.44" />
+
+    <EditText
+        android:id="@+id/edit_facility_address"
+        android:layout_width="271dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edittext_border"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintVertical_bias="0.51" />
 
     <TextView
-        android:id="@+id/facilityDescText"
+        android:id="@+id/facility_desc_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Facility Description"
@@ -117,7 +138,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintVertical_bias="0.45" />
+        app:layout_constraintVertical_bias="0.58" />
+
+    <EditText
+        android:id="@+id/edit_facility_desc"
+        android:layout_width="271dp"
+        android:layout_height="60dp"
+        android:background="@drawable/edittext_border"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintVertical_bias="0.66" />
 
     <!-- Ensure your images exist in the drawable folder -->
     <ImageButton
@@ -174,5 +207,6 @@
         android:scaleType="centerInside"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

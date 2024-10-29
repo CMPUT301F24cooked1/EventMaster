@@ -33,9 +33,16 @@ android {
 }
 
 dependencies {
-
+    implementation ("com.google.zxing:core:3.4.1")
+    implementation ("com.journeyapps:zxing-android-embedded:4.1.0")
     implementation(platform("com.google.firebase:firebase-bom:32.7.1"))
     implementation("com.google.firebase:firebase-firestore")
+    implementation ("com.google.firebase:firebase-storage:20.0.0")
+    implementation ("com.google.firebase:firebase-firestore-ktx:24.2.0")
+    implementation ("androidx.recyclerview:recyclerview:1.2.1")
+    implementation ("com.google.zxing:core:3.4.1")
+    implementation("com.journeyapps:zxing-android-embedded:4.3.0")
+    implementation("com.github.bumptech.glide:glide:4.13.0")
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
@@ -43,4 +50,7 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.13.0")
+    implementation("com.journeyapps:zxing-android-embedded:4.3.0")
+    implementation("com.google.zxing:core:3.4.1")
 }
