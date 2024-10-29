@@ -34,7 +34,7 @@ public class ViewCreatedEventsActivity extends AppCompatActivity {
         // Initialize Firebase Firestore
         firestore = FirebaseFirestore.getInstance();
         deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-        Profile user = new Profile(deviceId,"Vansh");
+        Profile user = new Profile(deviceId,"Vansh", " ", " ");
 
         // Set up RecyclerView
         recyclerView = findViewById(R.id.recyclerView);
