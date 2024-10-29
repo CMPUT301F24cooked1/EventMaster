@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
         storeDeviceID(deviceId, "facilities");
         storeDeviceID(deviceId, "entrants");
         storeDeviceID(deviceId, "organizers");
-        updateUserInfo(deviceId, user.getName());
+        updateUserInfo(deviceId, user.getName(), user.getEmail(), user.getPhone_number());
 
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
