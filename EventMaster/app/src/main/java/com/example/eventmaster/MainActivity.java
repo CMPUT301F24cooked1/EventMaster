@@ -38,9 +38,11 @@ import com.google.firebase.firestore.auth.User;
 import com.example.eventmaster.Profile;
 
 
+import java.security.cert.PKIXRevocationChecker;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -67,12 +69,13 @@ public class MainActivity extends AppCompatActivity {
         // Checks if deviceId was grabbed
         Log.d("DeviceID", "Android ID: " + deviceId);
 
-        Profile user = new Profile(deviceId, "Daniel");
+
+        Profile user = new Profile(deviceId, "Daniel", " ", " ");
         storeDeviceID(deviceId, "profiles");
         storeDeviceID(deviceId, "facilities");
         storeDeviceID(deviceId, "entrants");
         storeDeviceID(deviceId, "organizers");
-        updateUserInfo(deviceId, user.getName());
+        updateUserInfo(deviceId, user.getName(), user.getEmail(), user.getPhone_number());
 
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -265,10 +268,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void updateUserInfo(String deviceId, String name) {
+    private void updateUserInfo(String deviceId, String name, String email, String phone_number) {
         // Create a map with the additional user data
         Map<String, Object> userData = new HashMap<>();
         userData.put("name", name);
+        userData.put("email", email);
+        userData.put("phone number", phone_number);
 
         // Update the document with the new user data, merging with existing data
         db.collection("profiles")

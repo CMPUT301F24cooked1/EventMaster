@@ -37,12 +37,16 @@
         <activity
             android:name=".JoinEventScreen" />
         <activity
+
             android:name=".QRScanFragment" />
         <activity
             android:name=".ViewEventsAdapter" />
 
         <activity
             android:name=".retrieveEventInfo" />
+
+
+            android:name=".InputUserInformation"/>
 
 
         <activity android:name=".QRcode"

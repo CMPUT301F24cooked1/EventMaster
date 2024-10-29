@@ -57,7 +57,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         ImageButton backButton = findViewById(R.id.back_button); // Initialize back button
         ImageButton addButton = findViewById(R.id.add_icon);
         deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-        Profile user = new Profile(deviceId,"Vansh");
+        Profile user = new Profile(deviceId,"Vansh", " ", " ");
 
         // Set click listeners for navigation
         notificationButton.setOnClickListener(v -> {
