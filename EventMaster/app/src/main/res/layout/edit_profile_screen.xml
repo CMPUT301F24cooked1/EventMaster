@@ -63,6 +63,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="392dp"
         android:background="@drawable/edittext_border"
+        android:gravity="center"
+        app:layout_constraintBottom_toTopOf="@+id/profile_email"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -86,6 +88,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="484dp"
         android:background="@drawable/edittext_border"
+        android:gravity="center"
+        app:layout_constraintBottom_toTopOf="@+id/profile_phone_number"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -98,6 +102,7 @@
         android:text="Phone Number"
         android:textColor="@color/grey"
         android:textSize="25dp"
+        app:layout_constraintTop_toBottomOf="@+id/edit_email"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -108,12 +113,14 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="580dp"
         android:background="@drawable/edittext_border"
+        android:gravity="center"
+        android:hint="OPTIONAL"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/edit_profile_button"
+        android:id="@+id/save_changes_button"
         android:layout_width="271dp"
         android:layout_height="70dp"
         android:layout_marginStart="70dp"
@@ -130,6 +137,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageButton
+        android:id="@+id/back"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_marginStart="8dp"

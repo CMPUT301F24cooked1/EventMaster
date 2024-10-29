@@ -6,7 +6,7 @@ import java.util.Date;
 public class Event {
     private String eventName;
     private String eventDescription;
-    private String eventID;
+    private String deviceID;
     private int eventCapacity;
     private int waitlistCapacity;
     private Date eventFinalDate;
@@ -16,10 +16,10 @@ public class Event {
     public Event() {
         // Default constructor required for calls to DataSnapshot.getValue(Event.class)
     }
-    public Event(String eventName, String eventDescription, String eventID, int eventCapacity, int waitlistCapacity, Date eventFinalDate, boolean geolocation) {
+    public Event(String eventName, String eventDescription, String deviceID, int eventCapacity, int waitlistCapacity, Date eventFinalDate, boolean geolocation) {
         this.eventName = eventName;
         this.eventDescription = eventDescription;
-        this.eventID = eventID;
+        this.deviceID = deviceID;
         this.eventCapacity = eventCapacity;
         this.waitlistCapacity = waitlistCapacity;
         this.eventFinalDate = eventFinalDate;
@@ -67,16 +67,16 @@ public class Event {
      * Gets the ID of the event
      * @return the event's string identifier
      */
-    public String getEventID(){
-        return eventID;
+    public String getDeviceID(){
+        return deviceID;
     }
 
     /**
      * Sets the ID of the event
-     * @param eventID the event identifier
+     * @param deviceID the event identifier
      */
-    public void setEventID(String eventID){
-        this.eventID = eventID;
+    public void setDeviceID(String deviceID){
+        this.deviceID = deviceID;
     }
 
     /**

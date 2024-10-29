@@ -49,7 +49,6 @@ public class CreateEventActivity extends AppCompatActivity {
     private Uri posterUri; // To hold the URI of the selected poster
     private String posterDownloadUrl = null; // To hold the download URL of the uploaded poster
 
-    private static final String DEVICE_ID = "1fa04f4ce1623bee"; // Replace with the actual device ID
     private static final int PICK_IMAGE_REQUEST = 1; // Request code for image selection
 
     @SuppressLint("WrongViewCast")
@@ -72,7 +71,7 @@ public class CreateEventActivity extends AppCompatActivity {
         waitlistCountdownInput = findViewById(R.id.waitlistCountdown);
         createEventButton = findViewById(R.id.createEventButton);
         uploadPosterButton = findViewById(R.id.Upload_poster_button);
-        Profile user = new Profile(deviceId,"Vansh");
+        Profile user = new Profile(deviceId,"Vansh", " ", " ");
         // Initialize navigation buttons
         ImageButton notificationButton = findViewById(R.id.notifications);
         ImageButton settingsButton = findViewById(R.id.settings);
@@ -194,7 +193,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
         // Query the "facilities" collection for the document with the matching deviceId
         db.collection("facilities")
-                .whereEqualTo("deviceId", DEVICE_ID)
+                .whereEqualTo("deviceId", deviceId)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!queryDocumentSnapshots.isEmpty()) {

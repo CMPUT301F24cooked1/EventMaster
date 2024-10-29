@@ -7,6 +7,47 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 
 public class Image {
+    private String deviceID;
+    private String imageName;
+    private String imageID;
+
+    public Image(String deviceID, String imageName){
+        this.deviceID = deviceID;
+        this.imageName = imageName;
+    }
+
+    /**
+     * Returns the image ID; if there is no image ID, it will create one and return it
+     * Concatenates the device ID with the image ID to create the full image ID
+     * @return imageID
+     */
+    public String getImageID() {
+        if (imageID == null){
+            imageID = deviceID + "_" + generateImageID();
+        }
+        return imageID;
+    }
+
+    /**
+     * Generates a unique string ID for an image
+     * The length of the ID is fixed at 10
+     * @return result the unique string ID
+     */
+    private String generateImageID(){
+        int length = 10;
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        StringBuilder result = new StringBuilder();
+
+        for (int i = 0; i < length; i++) {
+            int index = (int) (Math.random() * characters.length());
+            result.append(characters.charAt(index));
+        }
+
+        return result.toString();
+    }
+
+
+
     /**
      * Creates a bitmap of the profile picture that is based on the name of the User
      *
