@@ -1,19 +1,23 @@
 package com.example.eventmaster;
 
-import android.widget.CompoundButton;
-import android.widget.Switch;
-
 import java.io.Serializable;
+import java.util.Optional;
 
 public class Profile implements Serializable {
     private String deviceId;
     private boolean notificationSwitch;
     private String name;
+    private String email;
+    private String phone_number;
+    private String password;
 
-    public Profile(String deviceId, String name) {
+    public Profile(String deviceId, String name, String email, String phone_number) {
         this.deviceId = deviceId;
         this.name = name;
+        this.email = email;
+        this.phone_number = phone_number;
     }
+
 
     /**
      * Sets the deviceId of the user.
@@ -50,6 +54,62 @@ public class Profile implements Serializable {
     public String getName(){
         return name;
     }
+
+    /**
+     * Gets the user's email
+     *
+     * @return user's email
+     */
+    public String getEmail() {
+        return email;
+    }
+
+    /**
+     * Sets the email of the user
+     *
+     * @param email email of the user
+     */
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    /**
+     * Get user's phone number
+     *
+     * @return user's phone number
+     */
+    public String getPhone_number() {
+        return phone_number;
+    }
+
+    /**
+     * Set user's phone number
+     *
+     * @param phone_number the user's phone number
+     */
+    public void setPhone_number(String phone_number) {
+        this.phone_number = phone_number;
+    }
+
+    /**
+     * Gets the admin password
+     *
+     * @return admin password
+     */
+    public String getPassword() {
+        return password;
+    }
+
+    /**
+     * Set the admin password
+     *
+     * @param password admin's password
+     */
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+
 
     /**
      * Sets the notifications to being enabled or disabled
