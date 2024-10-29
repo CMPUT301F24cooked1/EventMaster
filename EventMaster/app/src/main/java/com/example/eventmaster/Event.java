@@ -1,9 +1,10 @@
 package com.example.eventmaster;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Event {
+public class Event implements Serializable {
     private String eventName;
     private String eventDescription;
     private String deviceID;
@@ -12,6 +13,7 @@ public class Event {
     private Date eventFinalDate;
     private boolean geolocation;
     private ArrayList<Entrant> waitlist;
+
     //private QRCode eventQR;
     public Event() {
         // Default constructor required for calls to DataSnapshot.getValue(Event.class)
@@ -24,6 +26,8 @@ public class Event {
         this.waitlistCapacity = waitlistCapacity;
         this.eventFinalDate = eventFinalDate;
         this.geolocation = geolocation;
+
+
         //this.eventQR = new QRCode(eventName);
     }
 
@@ -150,4 +154,5 @@ public class Event {
     public void setGeolocation(boolean geolocation) {
         this.geolocation = geolocation;
     }
+
 }

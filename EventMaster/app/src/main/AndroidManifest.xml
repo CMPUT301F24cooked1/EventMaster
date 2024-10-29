@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:allowBackup="true"
@@ -36,8 +37,21 @@
         <activity
             android:name=".JoinEventScreen" />
         <activity
+
+            android:name=".QRScanFragment" />
+        <activity
+            android:name=".ViewEventsAdapter" />
+
+        <activity
+            android:name=".retrieveEventInfo" />
+
+
             android:name=".InputUserInformation"/>
 
+
+        <activity android:name=".QRcode"
+            android:stateNotNeeded="true"
+            android:theme="@style/zxing_CaptureTheme" />
 
 
 
@@ -50,6 +64,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>
