@@ -65,12 +65,12 @@ public class MainActivity extends AppCompatActivity {
         // Checks if deviceId was grabbed
         Log.d("DeviceID", "Android ID: " + deviceId);
 
-        Profile user = new Profile(deviceId, "Daniel");
+        Profile user = new Profile(deviceId, "");
         storeDeviceID(deviceId, "profiles");
         storeDeviceID(deviceId, "facilities");
         storeDeviceID(deviceId, "entrants");
         storeDeviceID(deviceId, "organizers");
-        updateUserInfo(deviceId, user.getName());
+        //updateUserInfo(deviceId, user.getName());
 
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
