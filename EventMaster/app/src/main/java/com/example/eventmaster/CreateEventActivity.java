@@ -71,7 +71,7 @@ public class CreateEventActivity extends AppCompatActivity {
         waitlistCountdownInput = findViewById(R.id.waitlistCountdown);
         createEventButton = findViewById(R.id.createEventButton);
         uploadPosterButton = findViewById(R.id.Upload_poster_button);
-        Profile user = new Profile(deviceId,"Vansh");
+        Profile user = new Profile(deviceId,"Vansh", " ", " ");
         // Initialize navigation buttons
         ImageButton notificationButton = findViewById(R.id.notifications);
         ImageButton settingsButton = findViewById(R.id.settings);
