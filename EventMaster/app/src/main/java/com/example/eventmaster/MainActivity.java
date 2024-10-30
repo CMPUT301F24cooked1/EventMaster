@@ -56,7 +56,11 @@ public class MainActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> profileResultLauncher;
     private ActivityResultLauncher<Intent> createEventResultLauncher;
     private ActivityResultLauncher<Intent> joinEventScreenResultLauncher;
+
     Profile user;
+
+  //private ActivityResultLauncher<Intent> scanQRFragmentResultLauncher;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,8 +93,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Connecting the home screen to the SettingsScreen
         settingResultLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),result ->{
-                    if (result.getResultCode() == RESULT_OK){
+                new ActivityResultContracts.StartActivityForResult(), result -> {
+                    if (result.getResultCode() == RESULT_OK) {
 
                     }
                 }
@@ -114,6 +118,14 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
 
+//        // Connecting the home screen to the join event screen
+//        scanQRFragmentResultLauncher = registerForActivityResult(
+//                new ActivityResultContracts.StartActivityForResult(),result ->{
+//                    if (result.getResultCode() == RESULT_OK){
+//
+//                    }
+//                }
+//        );
 
         // Connecting the home screen to the FacilityScreen
         createEventResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
@@ -128,6 +140,14 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+
+
+        // Send deviceID to QRScanFragment class
+//        Intent intent = new Intent(MainActivity.this, retrieveEventInfo.class);
+//        intent.putExtra("deviceID", deviceId);
+
+
 
         // Reference to the settings button
         ImageButton settingButton = findViewById(R.id.settings);

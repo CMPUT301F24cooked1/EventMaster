@@ -4,11 +4,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,13 +25,17 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+// https://www.c-sharpcorner.com/article/android-qr-code-bar-code-scanner/
 public class JoinEventScreen extends AppCompatActivity {
     private RecyclerView recyclerView;
-    private EventAdapter eventAdapter;
+   // private EventAdapter eventAdapter;
+    private ViewEventsAdapter ViewEventsAdapter;
     private List<Event> eventList;
     private FirebaseFirestore firestore;
     private String deviceId; // Replace with actual device ID
     private FirebaseFirestore db; // Firestore instance
+
+  //  private ActivityResultLauncher<Intent> QRScanScreenResultLauncher;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,48 +53,24 @@ public class JoinEventScreen extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         eventList = new ArrayList<>();
-        eventAdapter = new EventAdapter(eventList, this);
-        recyclerView.setAdapter(eventAdapter);
+        ViewEventsAdapter = new ViewEventsAdapter(eventList, this);
+        recyclerView.setAdapter(ViewEventsAdapter);
         // Retrieve events from Firestore
         retrieveEvents();
 
-//        // Set click listeners for navigation
-//        notificationButton.setOnClickListener(v -> {
-//            Intent intent = new Intent(ViewCreatedEventsActivity.this, Notifications.class);
-//            startActivity(intent);
-//        });
-//
-//        settingsButton.setOnClickListener(v -> {
-//            Intent intent = new Intent(ViewCreatedEventsActivity.this, SettingsScreen.class);
-//            startActivity(intent);
-//        });
-//
-//        profileButton.setOnClickListener(v -> {
-//            Intent intent = new Intent(ViewCreatedEventsActivity.this, ProfileActivity.class);
-//            intent.putExtra("User", user);
-//            startActivity(intent);
-//        });
-//
-//        homeButton.setOnClickListener(v -> {
-//            Intent intent = new Intent(ViewCreatedEventsActivity.this, MainActivity.class);
-//            startActivity(intent);
-//        });
-//        // Set click listener for the back button
-//        backButton.setOnClickListener(v -> {
-//            finish(); // Close the current activity and return to the previous one
-//        });
-
-
     }
+
 
     private void retrieveEvents() {
         CollectionReference facilitiesRef = firestore.collection("facilities");
-
 
         facilitiesRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
 
                 for (QueryDocumentSnapshot facilityDoc : task.getResult()) {
+                    String facilityId = facilityDoc.getId();  // get facility for each event
+                    //Toast.makeText(JoinEventScreen.this, "Facility ID: " + facilityId, Toast.LENGTH_SHORT).show();
+
                     // retrieve events for each facility
                     CollectionReference eventsRef = facilityDoc.getReference().collection("My Events");
 
@@ -94,9 +78,12 @@ public class JoinEventScreen extends AppCompatActivity {
                         if (eventTask.isSuccessful()) {
                             for (QueryDocumentSnapshot eventDoc : eventTask.getResult()) {
                                 Event event = eventDoc.toObject(Event.class);
+                                event.setDeviceID(facilityId);  // set the facility name to be the device id
                                 eventList.add(event);
+
+
                             }
-                            eventAdapter.notifyDataSetChanged(); // Notify the adapter of data changes
+                            ViewEventsAdapter.notifyDataSetChanged(); // Notify the adapter of data changes
                             Log.d("JoinEventScreen", "Number of events: " + eventList.size());
                             Log.d("JoinEventScreen", "Device ID: " + deviceId);
 
@@ -112,6 +99,15 @@ public class JoinEventScreen extends AppCompatActivity {
     }
 
 
+
+    // Reference to the settings button
+
+
+//    public void onEventClick(Event event) {
+//        // Start QR scanner activity
+//        Intent intent = new Intent(this, QRScanFragment.class);
+//        startActivity(intent);
+//    }
 
 
 
