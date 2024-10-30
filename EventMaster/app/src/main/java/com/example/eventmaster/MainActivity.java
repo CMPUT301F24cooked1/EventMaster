@@ -21,6 +21,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.graphics.Insets;
@@ -32,7 +33,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.firestore.auth.User;
 import com.example.eventmaster.Profile;
@@ -53,7 +56,11 @@ public class MainActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> profileResultLauncher;
     private ActivityResultLauncher<Intent> createEventResultLauncher;
     private ActivityResultLauncher<Intent> joinEventScreenResultLauncher;
-  //  private ActivityResultLauncher<Intent> scanQRFragmentResultLauncher;
+
+    Profile user;
+
+  //private ActivityResultLauncher<Intent> scanQRFragmentResultLauncher;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,14 +76,14 @@ public class MainActivity extends AppCompatActivity {
         // Checks if deviceId was grabbed
         Log.d("DeviceID", "Android ID: " + deviceId);
 
+        user = new Profile(deviceId, "", "", ""); // create a new user
+        storeDeviceID(deviceId, "profiles"); // store device id, skip if already stored
+        initializeUser(deviceId); // grab all the user's info from firestore based on device id
 
-        Profile user = new Profile(deviceId, "Daniel", " ", " ");
         storeDeviceID(deviceId, "profiles");
         storeDeviceID(deviceId, "facilities");
         storeDeviceID(deviceId, "entrants");
         storeDeviceID(deviceId, "organizers");
-        updateUserInfo(deviceId, user.getName(), user.getEmail(), user.getPhone_number());
-
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -186,6 +193,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Move to Facility Screen, send up to date Facility object
         AppCompatButton createEventButton = findViewById(R.id.create_event_button);
+
         createEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -268,23 +276,36 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void updateUserInfo(String deviceId, String name, String email, String phone_number) {
-        // Create a map with the additional user data
-        Map<String, Object> userData = new HashMap<>();
-        userData.put("name", name);
-        userData.put("email", email);
-        userData.put("phone number", phone_number);
+    /**
+     * Initialize user profile with data from firestore
+     * @param deviceId the deviceID of the user's device
+     */
+    public void initializeUser(String deviceId) {
+        DocumentReference docRef = db.collection("profiles").document(deviceId);
 
-        // Update the document with the new user data, merging with existing data
-        db.collection("profiles")
-                .document(deviceId)
-                .set(userData, SetOptions.merge()) // Merge with existing data
-                .addOnSuccessListener(aVoid -> {
-                    Log.d("Firestore", "User info updated successfully.");
-                })
-                .addOnFailureListener(e -> {
-                    Log.e("Firestore", "Error updating user info", e);
-                });
+        // Grabs data from the profile collection
+        docRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot snapshot = task.getResult();
+                if (snapshot != null && snapshot.exists()) {
+                    String name = snapshot.getString("name");
+                    String email = snapshot.getString("email");
+                    String phone = snapshot.getString("phone number");
+
+                    // Update the user profile object unless it's null then update with empty string
+                    user.setDeviceId(deviceId);
+                    user.setName(name != null ? name : "");
+                    user.setEmail(email != null ? email : "");
+                    user.setPhone_number(phone != null ? phone : "");
+
+                    Log.d("Firestore", "User profile initialized: " + user.getName());
+                } else {
+                    Log.d("Firestore", "Document does not exist");
+                }
+            } else {
+                Log.e("Firestore", "Error fetching document", task.getException());
+            }
+        });
     }
 
 
