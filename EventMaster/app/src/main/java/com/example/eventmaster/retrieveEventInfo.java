@@ -3,6 +3,7 @@ package com.example.eventmaster;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +22,10 @@ public class retrieveEventInfo extends AppCompatActivity {
     TextView eventDescription;
     TextView eventFinalDate;
     ImageView eventPoster;
+    ImageButton notificationButton;
+    ImageButton settingsButton;
+    ImageButton profileButton;
+    ImageButton listButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,9 +40,10 @@ public class retrieveEventInfo extends AppCompatActivity {
 
         // retrieve information after scanning
         Intent intent = getIntent();
-        String hashedData = intent.getStringExtra("HASHED_DATA");
+        String hashedData = intent.getStringExtra("hashed_data");
         String deviceID = intent.getStringExtra("deviceID");  // facility id
         String event = intent.getStringExtra("event");
+        String posterUrl = intent.getStringExtra("posterUrl");
 
 
         // Ensure the received data is not null
@@ -47,6 +53,32 @@ public class retrieveEventInfo extends AppCompatActivity {
         } else {
             Toast.makeText(this, "Failed to retrieve event data.", Toast.LENGTH_SHORT).show();
         }
+
+
+        // Bottom Bar TODO: Complete for this class and the settings screen and the join events screen
+//        notificationButton = findViewById(R.id.notification_icon);
+//        notificationButton.setOnClickListener(v -> {
+//            Intent intent1 = new Intent(retrieveEventInfo.this, Notifications.class);
+//            startActivity(intent1);
+//        });
+//
+//        settingsButton = findViewById(R.id.settings);
+//        settingsButton.setOnClickListener(v -> {
+//            Intent intent2 = new Intent(retrieveEventInfo.this, SettingsScreen.class);
+//            startActivity(intent2);
+//        });
+//
+//        profileButton = findViewById(R.id.profile);
+//        profileButton.setOnClickListener(v -> {
+//            Intent intent3 = new Intent(retrieveEventInfo.this, ProfileActivity.class);
+//            startActivity(intent3);
+//        });
+//
+//        listButton = findViewById(R.id.list_icon);
+//        listButton.setOnClickListener(v -> {
+//            Intent intent4 = new Intent(retrieveEventInfo.this, ViewCreatedEventsActivity.class);
+//            startActivity(intent4);
+//        });
 
 
     }
@@ -69,7 +101,7 @@ public class retrieveEventInfo extends AppCompatActivity {
                                 String eventPosterUrl = document.getString("posterUrl");
 
                                 // Call the display method with the retrieved data
-                                displayEventInfo(eventName, eventDescription, eventPosterUrl);
+                                displayEventInfo(eventName, eventDescription, eventPosterUrl);//eventPosterUrl);
                             }
                     } else {
                         Toast.makeText(retrieveEventInfo.this, "Event does not exist", Toast.LENGTH_SHORT).show();
@@ -97,6 +129,8 @@ public class retrieveEventInfo extends AppCompatActivity {
             Log.e("RetrieveEventInfo", "Error loading image: " + e.getMessage());
         }
     }
+
+
 
 
 

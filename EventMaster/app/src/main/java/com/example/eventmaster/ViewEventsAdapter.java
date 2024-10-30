@@ -64,6 +64,7 @@ public class ViewEventsAdapter extends RecyclerView.Adapter<ViewEventsAdapter.Ev
                 Intent intent = new Intent(context, QRScanFragment.class);
                 intent.putExtra("event", event.getEventName());
                 intent.putExtra("deviceID", event.getDeviceID());
+
                 //Toast.makeText(context, "facility id: "+ deviceID, Toast.LENGTH_SHORT).show();
                 context.startActivity(intent);
             });
