@@ -1,10 +1,22 @@
 package com.example.eventmaster;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Rect;
+import android.graphics.RectF;
+import android.util.Log;
+import android.widget.ImageView;
+
+import com.bumptech.glide.Glide;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.net.URL;
 
 public class Image {
     private String deviceID;
@@ -93,5 +105,115 @@ public class Image {
 
         return bitmap; // Return the bitmap
     }
+
+    /**
+     * Creates a bitmap of the profile picture that is based on the uploaded photo
+     *
+     * @param source the bitmap of the image
+     * @param desiredRadius the radius of the profile picture that we'll crop
+     *
+     * @return the bitmap of the uploaded profile picture for the user
+     */
+    public static Bitmap cropProfilePicture(Bitmap source, float desiredRadius) {
+        // Calculate diameter
+        int diameter = (int) (desiredRadius * 2);
+
+        // Create a new Bitmap
+        Bitmap profilePicture = Bitmap.createBitmap(diameter, diameter, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(profilePicture);
+
+        Paint paint = new Paint();
+        paint.setAntiAlias(true);
+
+        // Draw the circular crop
+        Path path = new Path();
+        path.addCircle(desiredRadius, desiredRadius, desiredRadius, Path.Direction.CCW);
+        canvas.clipPath(path);
+
+        // Calculate the center of the image
+        int sourceWidth = source.getWidth();
+        int sourceHeight = source.getHeight();
+        int centerX = sourceWidth / 2;
+        int centerY = sourceHeight / 2;
+
+        int cropSize = Math.min(sourceWidth, sourceHeight);
+        int left = centerX - (cropSize / 2);
+        int top = centerY - (cropSize / 2);
+        int right = centerX + (cropSize / 2);
+        int bottom = centerY + (cropSize / 2);
+
+        Rect srcRect = new Rect(left, top, right, bottom);
+
+        RectF destRect = new RectF(0, 0, diameter, diameter);
+
+        // Draw the cropped photo into the circular area & scale it to fit the diameter
+        canvas.drawBitmap(source, srcRect, destRect, paint);
+
+        return profilePicture;
+    }
+
+    /**
+     * Sets the uploaded profile picture to the Imageview VIA Glide
+     *
+     * @param profilePictureUrl the URL of the image
+     * @param profilePicture the imageview ID of the profile picture
+     * @param context the context of which activity screen it's being ran on
+     *
+     */
+    public static void setProfilePicture(String profilePictureUrl, ImageView profilePicture, Context context) {
+        // Use Glide to load the profile picture into the ImageView
+        Glide.with(context)
+                .load(profilePictureUrl)
+                .circleCrop()  // Crop it
+                .into(profilePicture);
+    }
+
+    /**
+     * Sets the uploaded profile picture / default profile picture depending on whether the user has uploaded an image or has set a name
+     *
+     * @param deviceID the device ID of the user
+     * @param user the user object of the device ID
+     * @param profilePicture the imageview ID of the profile picture
+     * @param context the context of which activity screen it's being ran on
+     *
+     */
+    public static void getProfilePictureUrl(String deviceID, Profile user, ImageView profilePicture, Context context) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        DocumentReference userDocRef = db.collection("profiles").document(deviceID);
+
+        userDocRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    // Get the profile picture URL from Firestore
+                    String profilePictureUrl = document.getString("profilePictureUrl");
+
+                    // Check firestore to see if the user has uploaded a PFP
+                    if (profilePictureUrl == null || profilePictureUrl.isEmpty()) {
+                        ProfileActivity.generateProfilePicture(user, profilePicture, context);
+                        Log.d("Firestore", "User has not uploaded a profile picture.");
+                    } else { // if not call setProfilePicture to set default ones
+                        Log.d("Firestore", "User has uploaded a profile picture.");
+                        setProfilePicture(profilePictureUrl, profilePicture, context);
+                    }
+                } else { // if not call setProfilePicture to set default ones
+                    ProfileActivity.generateProfilePicture(user, profilePicture, context);
+                    Log.d("Firestore", "No such document.");
+                }
+            } else { // if not call setProfilePicture to set default ones
+                Log.e("Firestore", "Failed to retrieve profile picture URL", task.getException());
+                ProfileActivity.generateProfilePicture(user, profilePicture, context);
+            }
+        });
+    }
+
+
+
+
+
+
+
+
 
 }
