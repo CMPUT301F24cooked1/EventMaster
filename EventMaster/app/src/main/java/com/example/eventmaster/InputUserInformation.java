@@ -75,6 +75,9 @@ public class InputUserInformation extends AppCompatActivity {
                     Toast.makeText(InputUserInformation.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
                 updateUserInfo(user.getDeviceId(), user.getName(), user.getEmail(), user.getPhone_number());
+                Intent intent = new Intent(InputUserInformation.this, ProfileActivity.class);
+                intent.putExtra("User", user);
+                profileActivityResultLauncher.launch(intent);
             }
         });
 
@@ -85,18 +88,13 @@ public class InputUserInformation extends AppCompatActivity {
                     }
                 }
         );
-        back_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(InputUserInformation.this, ProfileActivity.class);
-                intent.putExtra("User", user);
-                profileActivityResultLauncher.launch(intent);
-            }
-        });
     }
 
     private void validatePhoneNumber(String phone_number) {
         String trimmedPhoneNumber = phone_number.trim(); // Remove leading/trailing whitespace
+        if (trimmedPhoneNumber.isEmpty()) {
+            return;
+        }
         if (!trimmedPhoneNumber.matches("^[0-9]+$")) { // Ensure only digits
             throw new IllegalArgumentException("Phone number should contain only digits.");
         }
