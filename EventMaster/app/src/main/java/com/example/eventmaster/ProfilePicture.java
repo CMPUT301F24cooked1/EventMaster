@@ -22,15 +22,16 @@ public class ProfilePicture {
     public static Uri saveProfilePicture(Context context, Bitmap bitmap, String name) {
         // Create a directory for saving the profile pictures
         File directory = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "ProfilePictures");
-        if (!directory.exists()) {
-            directory.mkdirs();
+        if (!directory.exists() && !directory.mkdirs()) {
+            return null;
         }
 
-        // Create a file with the username as the filename
-        File imageFile = new File(directory, name + "_profile.png");
+        // Create a file name
+        String fileName = name + "_profile.png";
+        File imageFile = new File(directory, fileName);
 
+        // Compress the profile picture into PNG and save it to the file
         try (FileOutputStream out = new FileOutputStream(imageFile)) {
-            // Compress the bitmap into PNG format and save it to the file
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
             out.flush();
         } catch (IOException e) {
