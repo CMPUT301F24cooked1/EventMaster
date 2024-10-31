@@ -41,7 +41,8 @@
             android:name=".QRScanFragment" />
         <activity
             android:name=".ViewEventsAdapter" />
-
+        <activity
+            android:name=".OrganizerEventListView" />
         <activity
             android:name=".retrieveEventInfo" />
 

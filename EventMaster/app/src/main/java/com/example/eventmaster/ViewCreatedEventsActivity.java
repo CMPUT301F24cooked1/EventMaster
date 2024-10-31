@@ -23,9 +23,12 @@ public class ViewCreatedEventsActivity extends AppCompatActivity {
     private List<Event> eventList;
     private FirebaseFirestore firestore;
     private String deviceId; // Replace with actual device ID
-    private FirebaseFirestore db; // Firestore instance
 
-    //db = FirebaseFirestore.getInstance();
+    @Override
+    protected void onResume() {
+        super.onResume();
+        retrieveEvents(); // Refresh events every time the activity is resumed
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,12 +99,13 @@ public class ViewCreatedEventsActivity extends AppCompatActivity {
                 QuerySnapshot querySnapshot = task.getResult();
                 Log.d("ViewCreatedEventsActivity", "QuerySnapshot count: " + querySnapshot.size());
                 if (querySnapshot != null) {
+                    eventList.clear();
                     for (QueryDocumentSnapshot document : querySnapshot) {
                         Event event = document.toObject(Event.class);
                         eventList.add(event);
                     }
                     eventAdapter.notifyDataSetChanged(); // Notify the adapter of data changes
-                    Log.d("ViewCreatedEventsActivity", "Number of events: " + eventList.size());
+                    Log.d("ViewCreatedEventsActivity", "Number of eveunts: " + eventList.size());
                     Log.d("ViewCreatedEventsActivity", "Device ID: " + deviceId);
 
                 } else {
