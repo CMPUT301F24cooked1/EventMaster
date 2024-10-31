@@ -54,7 +54,6 @@ public class InputUserInformation extends AppCompatActivity {
         email_edit = findViewById(R.id.edit_email);
         phone_number_edit = findViewById(R.id.edit_phone_number);
         profile_change_button = findViewById(R.id.save_changes_button);
-        back_button = findViewById(R.id.back);
 
         name_edit.setText(user.getName());
         email_edit.setText(user.getEmail());
