@@ -35,7 +35,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
         // Set click listener to open EventDetailsActivity
         holder.itemView.setOnClickListener(v -> {
-            Intent intent = new Intent(context, EventDetailsActivity.class);
+            Intent intent = new Intent(context, OrganizerEventListView.class);
             intent.putExtra("eventId", event.getEventName()); // Assuming event ID is the event name
             context.startActivity(intent);
         });
