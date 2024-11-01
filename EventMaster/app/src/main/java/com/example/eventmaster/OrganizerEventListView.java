@@ -26,22 +26,23 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+public class OrganizerEventListView extends AppCompatActivity{
 
-public class EventDetailsActivity extends AppCompatActivity {
+
     private TextView eventNameTextView, eventDescriptionTextView;
-    private ImageView qrCodeImageView, eventPosterImageView;
+    private ImageView  eventPosterImageView;
     private String eventId;
     private static Bitmap cachedPosterBitmap; // Static variable to cache the poster image
     private String deviceId; // Replace with actual device ID
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_event_details);
+        setContentView(R.layout.organizer_event_list_view_screen);
 
         eventNameTextView = findViewById(R.id.eventNameTextView);
         eventDescriptionTextView = findViewById(R.id.eventDescriptionTextView);
-        qrCodeImageView = findViewById(R.id.qrCodeImageView);
         eventPosterImageView = findViewById(R.id.eventPosterImageView); // Reference the poster ImageView
 
         // Retrieve the event ID from the intent
@@ -60,23 +61,23 @@ public class EventDetailsActivity extends AppCompatActivity {
 
         // Set click listeners for navigation
         notificationButton.setOnClickListener(v -> {
-            Intent intent = new Intent(EventDetailsActivity.this, Notifications.class);
+            Intent intent = new Intent(OrganizerEventListView.this, Notifications.class);
             startActivity(intent);
         });
 
         settingsButton.setOnClickListener(v -> {
-            Intent intent = new Intent(EventDetailsActivity.this, SettingsScreen.class);
+            Intent intent = new Intent(OrganizerEventListView.this, SettingsScreen.class);
             startActivity(intent);
         });
 
         profileButton.setOnClickListener(v -> {
-            Intent intent = new Intent(EventDetailsActivity.this, ProfileActivity.class);
+            Intent intent = new Intent(OrganizerEventListView.this, ProfileActivity.class);
             intent.putExtra("User", user);
             startActivity(intent);
         });
 
         homeButton.setOnClickListener(v -> {
-            Intent intent = new Intent(EventDetailsActivity.this, MainActivity.class);
+            Intent intent = new Intent(OrganizerEventListView.this, MainActivity.class);
             startActivity(intent);
         });
         // Set click listener for the back button
@@ -100,17 +101,9 @@ public class EventDetailsActivity extends AppCompatActivity {
             if (documentSnapshot.exists()) {
                 String eventName = documentSnapshot.getString("eventName");
                 String eventDescription = documentSnapshot.getString("eventDescription");
-                String qrCodeHash = documentSnapshot.getString("hash"); // Assuming you store this
 
                 eventNameTextView.setText(eventName);
                 eventDescriptionTextView.setText(eventDescription);
-
-                // Load QR code using the hash
-                if (qrCodeHash != null) {
-                    loadQRCode(qrCodeHash);
-                } else {
-                    Toast.makeText(this, "QR code hash is missing.", Toast.LENGTH_SHORT).show();
-                }
 
                 // Call the loadEventPoster method to load the poster image
                 if (eventName != null) {
@@ -120,16 +113,6 @@ public class EventDetailsActivity extends AppCompatActivity {
         });
     }
 
-    private void loadQRCode(String qrCodeHash) {
-        try {
-            BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
-            Bitmap bitmap = barcodeEncoder.encodeBitmap(qrCodeHash, BarcodeFormat.QR_CODE, 400, 400);
-            qrCodeImageView.setImageBitmap(bitmap);
-        } catch (WriterException e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Error generating QR code", Toast.LENGTH_SHORT).show();
-        }
-    }
 
     private void loadEventPoster(String eventName) {
         if (cachedPosterBitmap != null) {

@@ -9,7 +9,10 @@ import android.provider.Settings;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Switch;
 import android.widget.Toast;
+import java.text.SimpleDateFormat;
+import java.text.ParseException;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -41,10 +44,7 @@ public class CreateEventActivity extends AppCompatActivity {
     private EditText waitlistCountdownInput;
     private AppCompatButton createEventButton;
     private AppCompatButton uploadPosterButton;
-    private ImageButton notificationButton; // For notification icon
-    private ImageButton settingsButton; // For settings icon
-    private ImageButton profileButton; // For profile icon
-    private ImageButton viewEventsButton; // For view events icon
+    private Switch geolocationSwitch;
 
     private Uri posterUri; // To hold the URI of the selected poster
     private String posterDownloadUrl = null; // To hold the download URL of the uploaded poster
@@ -55,7 +55,7 @@ public class CreateEventActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_event); // Ensure this layout exists
+        setContentView(R.layout.activity_create_event);
 
         // Initialize Firebase instances
         db = FirebaseFirestore.getInstance();
@@ -71,7 +71,8 @@ public class CreateEventActivity extends AppCompatActivity {
         waitlistCountdownInput = findViewById(R.id.waitlistCountdown);
         createEventButton = findViewById(R.id.createEventButton);
         uploadPosterButton = findViewById(R.id.Upload_poster_button);
-        Profile user = new Profile(deviceId,"Vansh", " ", " ");
+        Profile user = new Profile(deviceId, "Vansh", " ", " ");
+
         // Initialize navigation buttons
         ImageButton notificationButton = findViewById(R.id.notifications);
         ImageButton settingsButton = findViewById(R.id.settings);
@@ -79,7 +80,7 @@ public class CreateEventActivity extends AppCompatActivity {
         ImageButton viewEventsButton = findViewById(R.id.view_events);
         ImageButton backButton = findViewById(R.id.back_button); // Initialize back button
 
-
+        geolocationSwitch = findViewById(R.id.geolocation_switch);
         // Set click listeners for navigation
         notificationButton.setOnClickListener(v -> {
             Intent intent = new Intent(CreateEventActivity.this, Notifications.class);
@@ -101,26 +102,17 @@ public class CreateEventActivity extends AppCompatActivity {
             Intent intent = new Intent(CreateEventActivity.this, ViewCreatedEventsActivity.class);
             startActivity(intent);
         });
+
         // Set click listener for the back button
         backButton.setOnClickListener(v -> {
             finish(); // Close the current activity and return to the previous one
         });
 
         // Set up the upload poster button
-        uploadPosterButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openFileChooser(); // Open the image chooser when the button is clicked
-            }
-        });
+        uploadPosterButton.setOnClickListener(v -> openFileChooser()); // Open the image chooser
 
         // Set up the create event button
-        createEventButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                createEvent(); // Handle event creation
-            }
-        });
+        createEventButton.setOnClickListener(v -> createEvent()); // Handle event creation
     }
 
     // Open the file chooser to select an image for the poster
@@ -152,28 +144,83 @@ public class CreateEventActivity extends AppCompatActivity {
         String waitlistCountdown = waitlistCountdownInput.getText().toString();
 
         // Input validation
-        if (eventName.isEmpty() || eventDescription.isEmpty() || eventCapacity.isEmpty()) {
+        if (eventName.isEmpty() || eventDescription.isEmpty() || eventCapacity.isEmpty() || waitlistCountdown.isEmpty()) {
             Toast.makeText(this, "Please fill in all required fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // First, upload the poster (if one is selected)
-        if (posterUri != null) {
-            StorageReference posterRef = storageRef.child("event_posters/" + eventName + "_poster.jpg");
+        // Check if the event name is unique
+        db.collection("facilities")
+                .document(deviceId)
+                .collection("My Events")
+                .whereEqualTo("eventName", eventName)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                        Toast.makeText(CreateEventActivity.this, "Event name must be unique", Toast.LENGTH_SHORT).show();
+                    } else {
+                        // Validate event capacity
+                        int capacity;
+                        try {
+                            capacity = Integer.parseInt(eventCapacity);
+                            if (capacity <= 0) {
+                                Toast.makeText(this, "Event capacity must be a positive integer", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                        } catch (NumberFormatException e) {
+                            Toast.makeText(this, "Event capacity must be a number", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
 
-            posterRef.putFile(posterUri)
-                    .addOnSuccessListener(taskSnapshot -> {
-                        posterRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                            posterDownloadUrl = uri.toString(); // Save the download URL
-                            // Once the poster is uploaded, create the event in Firestore
+                        // Validate waitlist capacity (if provided)
+                        if (!waitlistCapacity.isEmpty()) {
+                            int waitlistCap;
+                            try {
+                                waitlistCap = Integer.parseInt(waitlistCapacity);
+                                if (waitlistCap < 0) {
+                                    Toast.makeText(this, "Waitlist capacity cannot be negative", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                            } catch (NumberFormatException e) {
+                                Toast.makeText(this, "Waitlist capacity must be a number", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                        }
+
+                        // Date format validation for waitlistCountdown
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        dateFormat.setLenient(false);
+                        try {
+                            // Validate format and check if the date is in the past
+                            if (dateFormat.parse(waitlistCountdown).getTime() <= System.currentTimeMillis()) {
+                                Toast.makeText(this, "Waitlist countdown must be a future date", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                        } catch (ParseException e) {
+                            Toast.makeText(this, "Invalid date format for waitlistCountdown. Use yyyy-MM-dd HH:mm:ss.", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+
+                        // First, upload the poster (if one is selected)
+                        if (posterUri != null) {
+                            StorageReference posterRef = storageRef.child("event_posters/" + eventName + "_poster");
+
+                            posterRef.putFile(posterUri)
+                                    .addOnSuccessListener(taskSnapshot -> {
+                                        posterRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                                            posterDownloadUrl = uri.toString(); // Save the download URL
+                                            // Once the poster is uploaded, create the event in Firestore
+                                            saveEventToFirestore(eventName, eventDescription, eventCapacity, waitlistCapacity, waitlistCountdown);
+                                        });
+                                    })
+                                    .addOnFailureListener(e -> Toast.makeText(CreateEventActivity.this, "Poster upload failed", Toast.LENGTH_SHORT).show());
+                        } else {
+                            // No poster selected, just save the event
                             saveEventToFirestore(eventName, eventDescription, eventCapacity, waitlistCapacity, waitlistCountdown);
-                        });
-                    })
-                    .addOnFailureListener(e -> Toast.makeText(CreateEventActivity.this, "Poster upload failed", Toast.LENGTH_SHORT).show());
-        } else {
-            // No poster selected, just save the event
-            saveEventToFirestore(eventName, eventDescription, eventCapacity, waitlistCapacity, waitlistCountdown);
-        }
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> Toast.makeText(CreateEventActivity.this, "Error checking event name uniqueness", Toast.LENGTH_SHORT).show());
     }
 
     // Method to save event details to Firestore
@@ -184,7 +231,11 @@ public class CreateEventActivity extends AppCompatActivity {
         eventData.put("eventDescription", eventDescription);
         eventData.put("eventCapacity", Integer.parseInt(eventCapacity));
         eventData.put("waitlistCapacity", waitlistCapacity.isEmpty() ? 0 : Integer.parseInt(waitlistCapacity));
-        eventData.put("waitlistCountdown", waitlistCountdown.isEmpty() ? 0 : Integer.parseInt(waitlistCountdown));
+        eventData.put("waitlistCountdown", waitlistCountdown);
+
+        // Get the state of the geolocation switch
+        boolean isGeolocationEnabled = geolocationSwitch.isChecked();
+        eventData.put("geolocationEnabled", isGeolocationEnabled); // Add geolocation status to event data
 
         // Include the poster URL if it exists
         if (posterDownloadUrl != null) {
@@ -207,15 +258,19 @@ public class CreateEventActivity extends AppCompatActivity {
                                     Toast.makeText(CreateEventActivity.this, "Event created successfully", Toast.LENGTH_SHORT).show();
                                     // Generate and store QR code
                                     generateQRCode(eventName, facilityId);
-                                    finish(); // Close the activity
+
+                                    // Navigate directly to EventDetailsActivity
+                                    Intent intent = new Intent(CreateEventActivity.this, EventDetailsActivity.class);
+                                    intent.putExtra("eventId", eventName); // Pass the event ID or name as needed
+                                    startActivity(intent);
+                                    finish(); // Optional: finish CreateEventActivity if no back navigation needed
                                 })
                                 .addOnFailureListener(e -> Toast.makeText(CreateEventActivity.this, "Error creating event", Toast.LENGTH_SHORT).show());
                     } else {
                         Toast.makeText(CreateEventActivity.this, "Facility not found", Toast.LENGTH_SHORT).show();
                     }
                 })
-                .addOnFailureListener(e -> Toast.makeText(CreateEventActivity.this, "Error retrieving facility", Toast.LENGTH_SHORT).show());
-
+                .addOnFailureListener(e -> Toast.makeText(CreateEventActivity.this, "Error querying facilities", Toast.LENGTH_SHORT).show());
     }
 
     // Method to generate the QR code
@@ -226,10 +281,6 @@ public class CreateEventActivity extends AppCompatActivity {
         try {
             BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
             Bitmap bitmap = barcodeEncoder.encodeBitmap(eventLink, BarcodeFormat.QR_CODE, 400, 400);
-
-            // Display the QR code in the app (optional)
-            //ImageView qrCodeImageView = findViewById(R.id.qrCodeImageView);
-            //qrCodeImageView.setImageBitmap(bitmap);
 
             // Store the hash of the event URL
             String hash = generateHash(eventLink);
