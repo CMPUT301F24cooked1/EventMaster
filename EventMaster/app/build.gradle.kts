@@ -26,10 +26,12 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
 }
 
 dependencies {
@@ -55,5 +57,13 @@ dependencies {
     implementation("com.google.zxing:core:3.4.1")
     implementation ("com.github.bumptech.glide:glide:4.12.0")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
 
+}
+
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }

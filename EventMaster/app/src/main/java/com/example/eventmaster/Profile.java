@@ -1,7 +1,6 @@
 package com.example.eventmaster;
 
 import java.io.Serializable;
-import java.util.Optional;
 
 public class Profile implements Serializable {
     private String deviceId;
@@ -118,6 +117,15 @@ public class Profile implements Serializable {
      */
     public void setNotifications(boolean toggleNotifs){
         this.notificationSwitch = toggleNotifs;
+    }
+
+    /**
+     * Get the notifications to being enabled or disabled
+     *
+     * @return true or false if user wants notifs on or off
+     */
+    public boolean getNotifications(){
+        return notificationSwitch;
     }
 
 
