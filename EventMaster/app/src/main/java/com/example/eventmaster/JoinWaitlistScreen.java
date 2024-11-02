@@ -18,7 +18,7 @@ import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-public class retrieveEventInfo extends AppCompatActivity {
+public class JoinWaitlistScreen extends AppCompatActivity {
     private FirebaseFirestore db;
     TextView eventName;
     TextView eventDescription;
@@ -28,19 +28,16 @@ public class retrieveEventInfo extends AppCompatActivity {
     ImageButton settingsButton;
     ImageButton profileButton;
     ImageButton listButton;
-    AppCompatButton joinWaitlistButton;
-    ActivityResultLauncher<Intent> joinWaitlistResultLauncher;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.event_details_screen);
+        setContentView(R.layout.join_waitlist_screen);
         eventName = findViewById(R.id.event_name);
         eventDescription = findViewById(R.id.event_decription);
         eventFinalDate = findViewById(R.id.event_decription);
         eventPoster = findViewById(R.id.event_poster);
-        joinWaitlistButton = findViewById(R.id.join_waitlist_button);
 
         db = FirebaseFirestore.getInstance();
 
@@ -53,12 +50,6 @@ public class retrieveEventInfo extends AppCompatActivity {
         String event = intent.getStringExtra("event");
         String posterUrl = intent.getStringExtra("posterUrl");
 
-        Intent intent2 = new Intent(retrieveEventInfo.this, JoinWaitlistScreen.class);
-        intent2.putExtra("hashed_data", hashedData);
-        intent2.putExtra("deviceID", deviceID);
-        intent2.putExtra("event", event);
-        intent2.putExtra("posterUrl", posterUrl);
-
 
         // Ensure the received data is not null
         if (hashedData != null && deviceID != null) {
@@ -68,17 +59,6 @@ public class retrieveEventInfo extends AppCompatActivity {
             Toast.makeText(this, "Failed to retrieve event data.", Toast.LENGTH_SHORT).show();
         }
 
-
-
-
-        joinWaitlistButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(retrieveEventInfo.this, JoinWaitlistScreen.class);
-                intent.putExtra("User", user);
-                fetchEventData(hashedData, deviceID, event, posterUrl);
-            }
-        });
 
 
 
@@ -119,7 +99,7 @@ public class retrieveEventInfo extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful())
                         if (!task.getResult().isEmpty()){  // check something is in result
-                            Toast.makeText(retrieveEventInfo.this, "succesfully read data", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(JoinWaitlistScreen.this, "succesfully read data", Toast.LENGTH_SHORT).show();
 
                             for (DocumentSnapshot document : task.getResult()) {
                                 // Retrieve data directly from the document
@@ -130,12 +110,12 @@ public class retrieveEventInfo extends AppCompatActivity {
                                 // Call the display method with the retrieved data
                                 displayEventInfo(eventName, eventDescription, eventPosterUrl);//eventPosterUrl);
                             }
-                    } else {
-                        Toast.makeText(retrieveEventInfo.this, "Event does not exist", Toast.LENGTH_SHORT).show();
-                    }
+                        } else {
+                            Toast.makeText(JoinWaitlistScreen.this, "Event does not exist", Toast.LENGTH_SHORT).show();
+                        }
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(retrieveEventInfo.this, "Error retrieving event: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(JoinWaitlistScreen.this, "Error retrieving event: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
 
@@ -157,16 +137,7 @@ public class retrieveEventInfo extends AppCompatActivity {
         }
     }
 
-    private void fetchEventData(String hashedData, String deviceID, String event, String posterUrl) {
-        Intent intent2 = new Intent(retrieveEventInfo.this, JoinWaitlistScreen.class);
-        intent2.putExtra("hashed_data", hashedData);
-        intent2.putExtra("deviceID", deviceID);
-        intent2.putExtra("event", event);
-        intent2.putExtra("posterUrl", posterUrl);
 
-        startActivity(intent2);
-
-    }
 
 
 

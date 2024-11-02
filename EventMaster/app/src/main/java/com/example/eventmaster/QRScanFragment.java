@@ -80,6 +80,7 @@ public class QRScanFragment extends AppCompatActivity{
             intent2.putExtra("deviceID", deviceID);  // facility device id
 
             startActivity(intent2);
+
         }
     });
 
@@ -107,6 +108,7 @@ public class QRScanFragment extends AppCompatActivity{
                                 intent2.putExtra("posterUrl", eventPosterUrl);
 
                                 startActivity(intent2);
+
                             }
                         } else {
                             Toast.makeText(QRScanFragment.this, "No events found.", Toast.LENGTH_SHORT).show();
