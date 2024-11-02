@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d("DeviceID", "Android ID: " + deviceId);
 
         user = new Profile(deviceId, "", "", ""); // create a new user
-        storeDeviceID(deviceId, "profiles"); // store device id, skip if already stored
+        //storeDeviceID(deviceId, "profiles"); // store device id, skip if already stored
         initializeUser(deviceId); // grab all the user's info from firestore based on device id
 
         storeDeviceID(deviceId, "profiles");
@@ -237,16 +237,32 @@ public class MainActivity extends AppCompatActivity {
     private void storeDeviceID(String deviceId, String path) {
         db.collection(path).document(deviceId).get()
                 .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) { // checks if deviceID is already in Firestore
-                        if (task.getResult().exists()) {
-                            // deviceID already exists, so do not add the device ID again
-                            Log.d("Firestore", "Device ID already exists, skipping insertion.");
+                    if (task.isSuccessful()) { // checks for deviceID in firestore
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            // Check for "deviceID" field and check if it matches the document ID (which is the deviceID)
+                            String storedDeviceId = document.getString("deviceId");
+                            if (storedDeviceId == null || !storedDeviceId.equals(deviceId)) {
+                                // Update the "deviceId" field to ensure it matches the document ID
+                                Map<String, Object> updateData = new HashMap<>();
+                                updateData.put("deviceId", deviceId);
+
+                                db.collection(path).document(deviceId).set(updateData, SetOptions.merge())
+                                        .addOnSuccessListener(aVoid -> {
+                                            Log.d("Firestore", "Device ID field updated successfully.");
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            Log.e("Firestore", "Error updating device ID field", e);
+                                        });
+                            } else {
+                                Log.d("Firestore", "Device ID field already matches.");
+                            }
                         } else {
-                            // deviceID doesn't exist, add the device ID to Firestore
+                            // deviceID doesn't exist, create a new document
                             Map<String, Object> deviceData = new HashMap<>();
                             deviceData.put("deviceId", deviceId);
 
-                            db.collection(path).document(deviceId).set(deviceData) // document is deviceID
+                            db.collection(path).document(deviceId).set(deviceData)
                                     .addOnSuccessListener(aVoid -> {
                                         Log.d("Firestore", "Device ID stored successfully.");
                                     })
@@ -258,8 +274,8 @@ public class MainActivity extends AppCompatActivity {
                         Log.e("Firestore", "Error checking if device ID exists", task.getException());
                     }
                 });
-
     }
+
 
     /**
      * Initialize user profile with data from firestore
