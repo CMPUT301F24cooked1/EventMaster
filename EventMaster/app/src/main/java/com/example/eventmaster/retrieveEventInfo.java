@@ -2,6 +2,7 @@ package com.example.eventmaster;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -17,6 +18,8 @@ import androidx.appcompat.widget.AppCompatButton;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -39,6 +42,9 @@ public class retrieveEventInfo extends AppCompatActivity {
     AppCompatButton joinWaitlistButton;
     ActivityResultLauncher<Intent> joinWaitlistResultLauncher;
     private Profile user;
+    private String name;
+    private String email;
+    private String phone_number;
 
 
     /**
@@ -64,7 +70,29 @@ public class retrieveEventInfo extends AppCompatActivity {
         Intent intentMain = getIntent();
         user =  (Profile) intentMain.getSerializableExtra("User");
         // will need to access user device id but just hardcoded for now
-        String userDeviceId = "b61f150a76cf9176";
+        String userDeviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        //retrieves the data for the profile
+        db.collection("profiles").document(userDeviceId)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            name = documentSnapshot.getString("name");
+                            email = documentSnapshot.getString("email");
+                            phone_number = documentSnapshot.getString("phone number");
+                        }else{
+                            Log.d("Firestore", "Document does not exist");
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("Firestore", "Error getting profile information", e);
+                    }
+                });
 
 
         // retrieve information after scanning
@@ -260,9 +288,9 @@ public class retrieveEventInfo extends AppCompatActivity {
 
         Map<String, Object> entrantData = new HashMap<>();
         entrantData.put("entrantId", userDeviceId);
-        /*entrantData.put("email", user.getEmail());
-        entrantData.put("name", user.getName());
-        entrantData.put("phone number", user.getPhone_number());*/
+        entrantData.put("email", email);
+        entrantData.put("name", name);
+        entrantData.put("phone number", phone_number);
 
         db.collection("facilities")
                 .whereEqualTo("deviceId", deviceId)
