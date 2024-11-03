@@ -11,12 +11,19 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class JoinWaitlistScreen extends AppCompatActivity {
     private FirebaseFirestore db;
@@ -42,6 +49,7 @@ public class JoinWaitlistScreen extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
 
         Profile user = (Profile) getIntent().getSerializableExtra("User"); // user from MainActivity
+        String userDeviceID = "b61f150a76cf9176";
 
         // retrieve information after scanning
         Intent intent = getIntent();
@@ -54,6 +62,7 @@ public class JoinWaitlistScreen extends AppCompatActivity {
         // Ensure the received data is not null
         if (hashedData != null && deviceID != null) {
             retrieveEventInfo(hashedData, deviceID, event);
+            //joinWaitlist(userDeviceID);
 
         } else {
             Toast.makeText(this, "Failed to retrieve event data.", Toast.LENGTH_SHORT).show();
@@ -135,6 +144,24 @@ public class JoinWaitlistScreen extends AppCompatActivity {
         } catch (Exception e) {
             Log.e("RetrieveEventInfo", "Error loading image: " + e.getMessage());
         }
+    }
+
+    private void joinWaitlist(String userDeviceID) {
+        DocumentReference docRef = db.collection("entrants").document(userDeviceID);
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("waitlisted events", eventName);
+
+        docRef.update(updates)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d("Firestore", "Field 'waitlisted events' added successfully.");
+                        } else {
+                            Log.w("Firestore", "Error adding field", task.getException());
+                        }
+                    }
+                });
     }
 
 

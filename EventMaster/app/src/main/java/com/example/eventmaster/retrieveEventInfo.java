@@ -11,12 +11,20 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class retrieveEventInfo extends AppCompatActivity {
     private FirebaseFirestore db;
@@ -53,6 +61,8 @@ public class retrieveEventInfo extends AppCompatActivity {
         String event = intent.getStringExtra("event");
         String posterUrl = intent.getStringExtra("posterUrl");
 
+        String userDeviceID = "b61f150a76cf9176";
+
         Intent intent2 = new Intent(retrieveEventInfo.this, JoinWaitlistScreen.class);
         intent2.putExtra("hashed_data", hashedData);
         intent2.putExtra("deviceID", deviceID);
@@ -63,7 +73,6 @@ public class retrieveEventInfo extends AppCompatActivity {
         // Ensure the received data is not null
         if (hashedData != null && deviceID != null) {
             retrieveEventInfo(hashedData, deviceID, event);
-
         } else {
             Toast.makeText(this, "Failed to retrieve event data.", Toast.LENGTH_SHORT).show();
         }
@@ -77,6 +86,7 @@ public class retrieveEventInfo extends AppCompatActivity {
                 Intent intent = new Intent(retrieveEventInfo.this, JoinWaitlistScreen.class);
                 intent.putExtra("User", user);
                 fetchEventData(hashedData, deviceID, event, posterUrl);
+                joinWaitlist(userDeviceID);
             }
         });
 
@@ -169,6 +179,50 @@ public class retrieveEventInfo extends AppCompatActivity {
     }
 
 
+    /*private void joinWaitlist(String userDeviceID, String path) {
+        db.collection(path).document(userDeviceID)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) { // checks if deviceID is already in Firestore
+                        if (task.getResult().exists()) {
+                            String existingEventName = (String) task.getResult().get("Waitlisted events");
+                            if (existingEventName != null && existingEventName.contains(eventName.toString())) {
+                                Log.d("Firestore", "Event name already exists, skipping insertion.");
+                            }
+                            } else {
+                                Map<String, Object> deviceData = new HashMap<>();
+                                deviceData.put("Waitlisted events", eventName.toString());
 
+                                db.collection(path).document(userDeviceID).set(deviceData) // document is deviceID
+                                        .addOnSuccessListener(aVoid -> {
+                                            Log.d("Firestore", "Entrant successfully joined waitlist");
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            Log.e("Firestore", "Error joining waitlist", e);
+                                        });
+                            }
+                        }else {
+                        Log.e("Firestore", "Error checking if device ID exists", task.getException());
+                    }
+                });
+
+    }*/
+
+
+
+    private void joinWaitlist(String userDeviceID) {
+        Map<String, Object> WaitlistEvents = new HashMap<>();
+        WaitlistEvents.put("Waitlisted events", eventName);
+
+        db.collection("entrants")
+                .document(userDeviceID)
+                .set(WaitlistEvents, SetOptions.merge())
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("Firestore", "Entrant successfully joined waitlist.");
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Firestore", "Error joining waitlist", e);
+                });
+    }
 }
 
