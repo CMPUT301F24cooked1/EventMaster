@@ -38,8 +38,17 @@ public class retrieveEventInfo extends AppCompatActivity {
     ImageButton listButton;
     AppCompatButton joinWaitlistButton;
     ActivityResultLauncher<Intent> joinWaitlistResultLauncher;
+    private Profile user;
 
 
+    /**
+     * Creates the event information screen where the user can view event details, name and poster
+     * There is also a button that allows them to join the waiting list for the event
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +61,11 @@ public class retrieveEventInfo extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
 
-        Profile user = (Profile) getIntent().getSerializableExtra("User"); // user from MainActivity
+        Intent intentMain = getIntent();
+        user =  (Profile) intentMain.getSerializableExtra("User");
+        // will need to access user device id but just hardcoded for now
+        String userDeviceId = "b61f150a76cf9176";
+
 
         // retrieve information after scanning
         Intent intent = getIntent();
@@ -61,7 +74,6 @@ public class retrieveEventInfo extends AppCompatActivity {
         String event = intent.getStringExtra("event");
         String posterUrl = intent.getStringExtra("posterUrl");
 
-        String userDeviceID = "b61f150a76cf9176";
 
         Intent intent2 = new Intent(retrieveEventInfo.this, JoinWaitlistScreen.class);
         intent2.putExtra("hashed_data", hashedData);
@@ -78,15 +90,17 @@ public class retrieveEventInfo extends AppCompatActivity {
         }
 
 
-
-
+        /**
+         * Links the event description screen to join waitlist screen
+         */
         joinWaitlistButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(retrieveEventInfo.this, JoinWaitlistScreen.class);
                 intent.putExtra("User", user);
                 fetchEventData(hashedData, deviceID, event, posterUrl);
-                joinWaitlist(userDeviceID);
+                joinWaitlistEntrant(userDeviceId, hashedData, deviceID, posterUrl);
+                joinWaitlistOrganizer(userDeviceId, deviceID);
             }
         });
 
@@ -120,6 +134,13 @@ public class retrieveEventInfo extends AppCompatActivity {
 
     }
 
+    /**
+     * Retrieves the event data(name, description, poster)
+     * @param hashedData
+     * @param deviceID
+     * @param event
+     */
+
     private void retrieveEventInfo(String hashedData, String deviceID, String event) {
         db.collection("facilities")
                 .document(deviceID)
@@ -149,6 +170,12 @@ public class retrieveEventInfo extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Displays the event name, description and poster
+     * @param eventName
+     * @param eventDescription
+     * @param eventPosterUrl
+     */
     private void displayEventInfo(String eventName, String eventDescription, String eventPosterUrl ) {
         TextView eventNameTextView = findViewById(R.id.event_name);
         TextView eventDescriptionTextView = findViewById(R.id.event_decription);
@@ -167,6 +194,14 @@ public class retrieveEventInfo extends AppCompatActivity {
         }
     }
 
+    /**
+     * Sends data to JoinWaitlist screen
+     * @param hashedData
+     * @param deviceID
+     * @param event
+     * @param posterUrl
+     */
+
     private void fetchEventData(String hashedData, String deviceID, String event, String posterUrl) {
         Intent intent2 = new Intent(retrieveEventInfo.this, JoinWaitlistScreen.class);
         intent2.putExtra("hashed_data", hashedData);
@@ -178,51 +213,81 @@ public class retrieveEventInfo extends AppCompatActivity {
 
     }
 
+    /**
+     * Adds a collection to firebase of the events that are the entrant waitlisted
+     * @param userDeviceId entrant's user id
+     */
 
-    /*private void joinWaitlist(String userDeviceID, String path) {
-        db.collection(path).document(userDeviceID)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) { // checks if deviceID is already in Firestore
-                        if (task.getResult().exists()) {
-                            String existingEventName = (String) task.getResult().get("Waitlisted events");
-                            if (existingEventName != null && existingEventName.contains(eventName.toString())) {
-                                Log.d("Firestore", "Event name already exists, skipping insertion.");
-                            }
-                            } else {
-                                Map<String, Object> deviceData = new HashMap<>();
-                                deviceData.put("Waitlisted events", eventName.toString());
-
-                                db.collection(path).document(userDeviceID).set(deviceData) // document is deviceID
-                                        .addOnSuccessListener(aVoid -> {
-                                            Log.d("Firestore", "Entrant successfully joined waitlist");
-                                        })
-                                        .addOnFailureListener(e -> {
-                                            Log.e("Firestore", "Error joining waitlist", e);
-                                        });
-                            }
-                        }else {
-                        Log.e("Firestore", "Error checking if device ID exists", task.getException());
-                    }
-                });
-
-    }*/
-
-
-
-    private void joinWaitlist(String userDeviceID) {
+    private void joinWaitlistEntrant(String userDeviceId, String hashedData, String deviceID, String posterUrl) {
+        String event = eventName.getText().toString();
         Map<String, Object> WaitlistEvents = new HashMap<>();
-        WaitlistEvents.put("Waitlisted events", eventName);
+        WaitlistEvents.put("eventName", event);
+        WaitlistEvents.put("hashed_data", hashedData);
+        WaitlistEvents.put("deviceID", deviceID);
+        WaitlistEvents.put("posterUrl", posterUrl);
 
+        // add event to the entrants list of waitlisted events
         db.collection("entrants")
-                .document(userDeviceID)
-                .set(WaitlistEvents, SetOptions.merge())
-                .addOnSuccessListener(aVoid -> {
-                    Log.d("Firestore", "Entrant successfully joined waitlist.");
+                .whereEqualTo("deviceId", userDeviceId)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        String entrantId = queryDocumentSnapshots.getDocuments().get(0).getId();
+                        db.collection("entrants")
+                                .document(entrantId)
+                                .collection("Waitlisted Events")
+                                .document(event)
+                                .set(WaitlistEvents)
+                                .addOnSuccessListener(aVoid -> {
+                                    Toast.makeText(retrieveEventInfo.this, "Successfully joined waitlist", Toast.LENGTH_SHORT).show();
+                                })
+                                .addOnFailureListener(e -> Toast.makeText(retrieveEventInfo.this, "Error joining waitlist", Toast.LENGTH_SHORT).show());
+                    }else{
+                        Toast.makeText(retrieveEventInfo.this, "Waitlist not found", Toast.LENGTH_SHORT).show();
+                    }
                 })
-                .addOnFailureListener(e -> {
-                    Log.e("Firestore", "Error joining waitlist", e);
-                });
+                .addOnFailureListener(e -> Toast.makeText(retrieveEventInfo.this, "Error querying entrants", Toast.LENGTH_SHORT).show());
     }
+
+
+    /**
+     * Adds user id to a collection of users waitlisted in Firebase
+     * @param userDeviceId the user joining the waitlist
+     * @param deviceId the facility id correlated to the event
+     */
+    private void joinWaitlistOrganizer(String userDeviceId, String deviceId) {
+        String event = eventName.getText().toString();
+
+        Map<String, Object> entrantData = new HashMap<>();
+        entrantData.put("entrantId", userDeviceId);
+        /*entrantData.put("email", user.getEmail());
+        entrantData.put("name", user.getName());
+        entrantData.put("phone number", user.getPhone_number());*/
+
+        db.collection("facilities")
+                .whereEqualTo("deviceId", deviceId)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        String facilityId = queryDocumentSnapshots.getDocuments().get(0).getId();
+                        db.collection("facilities")
+                                .document(facilityId)
+                                .collection("My Events")
+                                .document(event)
+                                .collection("waitlist list")
+                                .document(userDeviceId)
+                                .set(entrantData)
+                                .addOnSuccessListener(aVoid1 -> {
+                                    Toast.makeText(retrieveEventInfo.this, "Entrant added to waitlist successfully", Toast.LENGTH_SHORT).show();
+                                })
+                                .addOnFailureListener(e -> Toast.makeText(retrieveEventInfo.this, "Error adding entrant to waitlist", Toast.LENGTH_SHORT).show());
+                    } else {
+                        Toast.makeText(retrieveEventInfo.this, "Entrant not found", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(e -> Toast.makeText(retrieveEventInfo.this, "Error querying entrant", Toast.LENGTH_SHORT).show());
+    }
+
+
 }
 

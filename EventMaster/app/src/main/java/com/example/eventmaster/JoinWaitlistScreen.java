@@ -62,7 +62,7 @@ public class JoinWaitlistScreen extends AppCompatActivity {
         // Ensure the received data is not null
         if (hashedData != null && deviceID != null) {
             retrieveEventInfo(hashedData, deviceID, event);
-            //joinWaitlist(userDeviceID);
+
 
         } else {
             Toast.makeText(this, "Failed to retrieve event data.", Toast.LENGTH_SHORT).show();
@@ -145,25 +145,6 @@ public class JoinWaitlistScreen extends AppCompatActivity {
             Log.e("RetrieveEventInfo", "Error loading image: " + e.getMessage());
         }
     }
-
-    private void joinWaitlist(String userDeviceID) {
-        DocumentReference docRef = db.collection("entrants").document(userDeviceID);
-        Map<String, Object> updates = new HashMap<>();
-        updates.put("waitlisted events", eventName);
-
-        docRef.update(updates)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Log.d("Firestore", "Field 'waitlisted events' added successfully.");
-                        } else {
-                            Log.w("Firestore", "Error adding field", task.getException());
-                        }
-                    }
-                });
-    }
-
 
 
 
