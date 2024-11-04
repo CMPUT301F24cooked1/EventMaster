@@ -1,16 +1,21 @@
 package com.example.eventmaster;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
-import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class SettingsScreen extends AppCompatActivity {
     private Switch notificationSwitch;
+    private View adminPrivilegesButton;
+    private ActivityResultLauncher<Intent> adminCodeResultLauncher;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +42,27 @@ public class SettingsScreen extends AppCompatActivity {
             }
         });
 
+
+        //Links the Settings Screen to the Admin Login screen
+        adminCodeResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(), result -> {
+                    if (result.getResultCode() == RESULT_OK) {
+
+                    }
+                }
+        );
+        adminPrivilegesButton = findViewById(R.id.admin_privileges_view);
+        adminPrivilegesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Send user to SettingsScreen class
+                Log.d("SettingsScreen", "Admin privileges button clicked");
+
+                Intent intent = new Intent(SettingsScreen.this, AdminLoginActivity.class);
+                intent.putExtra("User", user);
+                adminCodeResultLauncher.launch(intent);
+            }
+        });
 
     }
 

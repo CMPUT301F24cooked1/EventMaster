@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:id="@+id/main"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:background="@drawable/app_background">
+
+    <TextView
+        android:id="@+id/admin_code_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="696dp"
+        android:text="Code"
+        android:textColor="@color/grey"
+        android:textSize="25dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/edit_admin_code"
+        android:layout_width="271dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edittext_border"
+        android:gravity="center"
+        android:inputType="number"
+        android:maxLength="6"
+        android:hint="Enter a 6 digit numerical code"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/admin_code_text" />
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/done_button"
+        android:layout_width="271dp"
+        android:layout_height="70dp"
+        android:layout_marginStart="70dp"
+        android:layout_marginEnd="70dp"
+        android:layout_marginBottom="160dp"
+        android:background="@drawable/rounded_button"
+        android:text="Done"
+        android:textSize="20dp"
+        android:drawableLeft="@drawable/check_circle_outline"
+        android:padding="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageButton
+        android:id="@+id/back"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="38dp"
+        android:background="@drawable/vector"
+        android:scaleType="centerInside"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageButton
+        android:id="@+id/profile"
+        android:layout_width="66dp"
+        android:layout_height="65dp"
+        android:layout_marginStart="49dp"
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/profile_picture"
+        android:scaleType="centerInside"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageButton
+        android:id="@+id/settings"
+        android:layout_width="66dp"
+        android:layout_height="65dp"
+        android:layout_marginStart="128dp"
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/settings"
+        android:scaleType="centerInside"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageButton
+        android:id="@+id/list_icon"
+        android:layout_width="66dp"
+        android:layout_height="65dp"
+        android:layout_marginStart="212dp"
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/list_icon"
+        android:scaleType="centerInside"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageButton
+        android:id="@+id/notification_icon"
+        android:layout_width="66dp"
+        android:layout_height="65dp"
+        android:layout_marginStart="288dp"
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/notification_icon"
+        android:scaleType="centerInside"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
