@@ -12,6 +12,13 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class SettingsScreen extends AppCompatActivity {
+    /**
+     * Initializes the Setting Screen
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     * User can view and select all setting options
+     */
     private Switch notificationSwitch;
     private View adminPrivilegesButton;
     private ActivityResultLauncher<Intent> adminCodeResultLauncher;

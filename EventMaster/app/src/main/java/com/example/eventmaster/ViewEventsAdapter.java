@@ -15,6 +15,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 public class ViewEventsAdapter extends RecyclerView.Adapter<ViewEventsAdapter.EventViewHolder> {
+    /**
+     * Initializes the event adapter
+     * @param eventList list of events that will be displayed
+     * @param context context that the adapter is being used
+     * @param parent where the new view will be added
+     * @param viewType type of the new view
+     * @param holder will update the position of all the items being displayed
+     * @param position position of the item
+     * Creates an adapter to display all Events on the view events screen
+     */
     private List<Event> eventList;
     private Context context;
 
@@ -42,6 +52,13 @@ public class ViewEventsAdapter extends RecyclerView.Adapter<ViewEventsAdapter.Ev
     }
 
     public class EventViewHolder extends RecyclerView.ViewHolder {
+        /**
+         * Initializes the event adapter
+         * @param itemView the view that will be held
+         * @param event event data
+         * @param context context to start activities
+         * Create an adapter to display all Events on the view events screen
+         */
         TextView eventNameTextView;
         TextView eventDescriptionTextView;
 
