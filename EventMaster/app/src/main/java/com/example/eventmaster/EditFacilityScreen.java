@@ -132,6 +132,7 @@ public class EditFacilityScreen extends AppCompatActivity {
      * @param facilityName the facility Name of the edited Facility
      * @param facilityAddress the facility Address of the edited Facility
      * @param facilityDesc the facility Description of the edited Facility
+     * @return boolean array for each entry stating if it is valid or not
      */
     public boolean[] checkDataEntryFacility(String facilityName, String facilityAddress, String facilityDesc) {
         boolean[] entriesValid = {false, false, false};
