@@ -18,6 +18,15 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.net.URL;
 
+/**
+ * The class provides methods for handling the user's profile picture.
+ * It generates a default profile picture with the help of the ProfilePicture class.
+ * It crops the uploaded profile picture from the user and stores it into firebase,
+ * setting it using Glide.
+ *
+ * <p> This class also generates a unique ID based on the device ID</p>
+ *
+ */
 public class Image {
     private String deviceID;
     private String imageName;
@@ -169,6 +178,7 @@ public class Image {
     }
 
     /**
+     * Checks if there's a profile picture URL in firestore
      * Sets the uploaded profile picture / default profile picture depending on whether the user has uploaded an image or has set a name
      *
      * @param deviceID the device ID of the user
@@ -191,19 +201,19 @@ public class Image {
 
                     // Check firestore to see if the user has uploaded a PFP
                     if (profilePictureUrl == null || profilePictureUrl.isEmpty()) {
-                        ProfileActivity.generateProfilePicture(user, profilePicture, context);
+                        ProfilePicture.generateProfilePicture(user, profilePicture, context);
                         Log.d("Firestore", "User has not uploaded a profile picture.");
                     } else { // if not call setProfilePicture to set default ones
                         Log.d("Firestore", "User has uploaded a profile picture.");
                         setProfilePicture(profilePictureUrl, profilePicture, context);
                     }
                 } else { // if not call setProfilePicture to set default ones
-                    ProfileActivity.generateProfilePicture(user, profilePicture, context);
+                    ProfilePicture.generateProfilePicture(user, profilePicture, context);
                     Log.d("Firestore", "No such document.");
                 }
             } else { // if not call setProfilePicture to set default ones
                 Log.e("Firestore", "Failed to retrieve profile picture URL", task.getException());
-                ProfileActivity.generateProfilePicture(user, profilePicture, context);
+                ProfilePicture.generateProfilePicture(user, profilePicture, context);
             }
         });
     }
