@@ -94,7 +94,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         DocumentReference eventRef = firestore.collection("facilities")
                 .document(deviceId)
                 .collection("My Events")
-                .document(eventId); // Use the event ID to get the specific document
+                .document(); // Use the event ID to get the specific document
 
         eventRef.get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
