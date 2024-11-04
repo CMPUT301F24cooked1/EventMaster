@@ -36,6 +36,13 @@ public class JoinWaitlistScreen extends AppCompatActivity {
     ImageButton profileButton;
     ImageButton listButton;
 
+    /**
+     * Initializes screen telling user they have joined the waitlist
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +56,6 @@ public class JoinWaitlistScreen extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
 
         Profile user = (Profile) getIntent().getSerializableExtra("User"); // user from MainActivity
-        String userDeviceID = "b61f150a76cf9176";
 
         // retrieve information after scanning
         Intent intent = getIntent();
@@ -99,6 +105,13 @@ public class JoinWaitlistScreen extends AppCompatActivity {
 
     }
 
+    /**
+     * Retrieves the event's hash data, name, description and poster
+     * @param hashedData
+     * @param deviceID
+     * @param event
+     */
+
     private void retrieveEventInfo(String hashedData, String deviceID, String event) {
         db.collection("facilities")
                 .document(deviceID)
@@ -128,6 +141,13 @@ public class JoinWaitlistScreen extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Displays the event name, description and poster
+     * @param eventName
+     * @param eventDescription
+     * @param eventPosterUrl
+     */
+
     private void displayEventInfo(String eventName, String eventDescription, String eventPosterUrl ) {
         TextView eventNameTextView = findViewById(R.id.event_name);
         TextView eventDescriptionTextView = findViewById(R.id.event_decription);
@@ -145,7 +165,6 @@ public class JoinWaitlistScreen extends AppCompatActivity {
             Log.e("RetrieveEventInfo", "Error loading image: " + e.getMessage());
         }
     }
-
 
 
 
