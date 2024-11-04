@@ -17,6 +17,16 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class retrieveEventInfo extends AppCompatActivity {
+    /**
+     * Initializes the Event Information Screen
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     * @param hashedData the hash data from the firebase that a QR code is created by
+     * @param deviceID the facilities device ID
+     * @param event the event // dont think I need this
+     * Displays the event information of the chosen event
+     */
     private FirebaseFirestore db;
     TextView eventName;
     TextView eventDescription;

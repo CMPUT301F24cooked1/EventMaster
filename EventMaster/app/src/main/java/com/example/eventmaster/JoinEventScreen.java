@@ -27,6 +27,13 @@ import java.util.List;
 
 // https://www.c-sharpcorner.com/article/android-qr-code-bar-code-scanner/
 public class JoinEventScreen extends AppCompatActivity {
+    /**
+     * Initializes the Join Event Screen
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     * User can view all events and select any event
+     */
     private RecyclerView recyclerView;
    // private EventAdapter eventAdapter;
     private ViewEventsAdapter ViewEventsAdapter;
