@@ -187,12 +187,12 @@ public class Admin {
         });
     }
 
-    /*
-        /**
-         * Removes the qr code from the database collection
-         * @param qrCode the qrCode object to be deleted
-         *               NOTE: DOES NOT WORK SINCE THERE IS NO QRcode CLASS RIGHT NOW
 
+    /**
+     * Removes the qr code from the database collection
+     * @param qrCode the qrCode object to be deleted
+     *               NOTE: DOES NOT WORK SINCE THERE IS NO QRcode CLASS RIGHT NOW
+    **/
     void deleteQRCode(){
         db.collection(eventCollection).document(qrCode.getDeviceID()).delete().addOnSuccessListener(aVoid ->{
             // qrCode is deleted from firestore
@@ -201,7 +201,7 @@ public class Admin {
             Log.d("Firestore", "Error deleting document", e);
         });
     }
-    */
+
 
     /**
      * Removes the facility from the database collection
