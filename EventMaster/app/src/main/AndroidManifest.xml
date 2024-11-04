@@ -54,6 +54,10 @@
             android:name=".InputUserInformation"/>
         <activity
             android:name=".JoinWaitlistScreen"/>
+        <activity
+            android:name=".JoinedEventsActivity"/>
+        <activity
+            android:name=".WaitlistedEventsActivity"/>
 
 
 

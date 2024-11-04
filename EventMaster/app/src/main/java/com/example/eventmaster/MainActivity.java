@@ -56,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> profileResultLauncher;
     private ActivityResultLauncher<Intent> createEventResultLauncher;
     private ActivityResultLauncher<Intent> joinEventScreenResultLauncher;
+    private ActivityResultLauncher<Intent> joinedEventsActivityResultLauncher;
+
 
     Profile user;
 
@@ -103,6 +105,15 @@ public class MainActivity extends AppCompatActivity {
         // Connecting the home screen to the profile
         profileResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),result ->{
+                    if (result.getResultCode() == RESULT_OK){
+
+                    }
+                }
+        );
+
+        // Connecting home screen to list of joined events screen
+        joinedEventsActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(), result ->{
                     if (result.getResultCode() == RESULT_OK){
 
                     }
@@ -161,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+        // Reference to the profile button
         ImageButton profileButton = findViewById(R.id.profile);
 
         profileButton.setOnClickListener(new View.OnClickListener() {
@@ -171,6 +182,20 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
                 intent.putExtra("User", user);
                 profileResultLauncher.launch(intent);
+            }
+        });
+
+        // Reference to the list button
+        ImageButton listButton = findViewById(R.id.list_icon);
+
+        listButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Send user to JoinedEventsActivity class
+                Intent intent = new Intent(MainActivity.this, JoinedEventsActivity.class);
+                intent.putExtra("User", user);
+                joinedEventsActivityResultLauncher.launch(intent);
+
             }
         });
 
