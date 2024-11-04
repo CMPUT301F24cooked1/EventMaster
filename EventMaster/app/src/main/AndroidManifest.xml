@@ -15,6 +15,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EventMaster"
         tools:targetApi="31">
+        <activity android:name=".AdminActivity" />
+
+        <activity android:name=".AdminLoginActivity" />
+
         <activity
             android:name=".SettingsScreen" />
         <activity

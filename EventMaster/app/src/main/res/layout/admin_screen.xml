@@ -8,13 +8,13 @@
     android:background="@drawable/app_background">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/admin_top_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="92dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="93dp"
-        android:text="Settings"
+        android:text="Admin"
         android:textColor="@color/black"
         android:textSize="32dp"
         android:textStyle="bold"
@@ -25,7 +25,7 @@
 
 
     <View
-        android:id="@+id/view2"
+        android:id="@+id/events_view"
         android:layout_width="382dp"
         android:layout_height="81dp"
         android:layout_marginStart="16dp"
@@ -35,18 +35,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <View
-        android:id="@+id/app_info"
-        android:layout_width="382dp"
-        android:layout_height="81dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="368dp"
-        android:background="@drawable/rounded_corners"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <View
-        android:id="@+id/admin_priveleges"
-        android:id="@+id/admin_privileges_view"
+        android:id="@+id/profiles_view"
         android:layout_width="382dp"
         android:layout_height="81dp"
         android:layout_marginStart="16dp"
@@ -55,9 +44,51 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <View
+        android:id="@+id/images_view"
+        android:layout_width="382dp"
+        android:layout_height="81dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="368dp"
+        android:background="@drawable/rounded_corners"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <View
+
+        android:id="@+id/facilities_view"
+        android:layout_width="382dp"
+        android:layout_height="81dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="480dp"
+        android:background="@drawable/rounded_corners"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+
+    <View
+        android:id="@+id/data_view"
+        android:layout_width="382dp"
+        android:layout_height="81dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="590dp"
+        android:background="@drawable/rounded_corners"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
-        android:id="@+id/imageButton"
+        android:id="@+id/side_arrow_button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="368dp"
+        android:layout_marginTop="172dp"
+        android:background="@null"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/arrow" />
+
+    <ImageButton
+        android:id="@+id/side_arrow_button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="368dp"
@@ -68,7 +99,7 @@
         app:srcCompat="@drawable/arrow" />
 
     <ImageButton
-        android:id="@+id/imageButton2"
+        android:id="@+id/side_arrow_button3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="368dp"
@@ -78,26 +109,38 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/arrow" />
 
-    <Switch
-        android:id="@+id/notification_button"
+    <ImageButton
+        android:id="@+id/side_arrow_button4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="332dp"
-        android:layout_marginTop="168dp"
-        android:thumbTint="@color/white"
-        android:trackTint="#9E8A4D"
-        android:trackTintMode="src_over"
+        android:layout_marginStart="368dp"
+        android:layout_marginTop="510dp"
+        android:background="@null"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/arrow" />
+
+    <ImageButton
+        android:id="@+id/side_arrow_button5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="368dp"
+        android:layout_marginTop="618dp"
+        android:background="@null"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/arrow" />
+
+
 
     <TextView
-        android:id="@+id/notification_text"
+        android:id="@+id/events_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="92dp"
         android:layout_marginTop="168dp"
         android:layout_marginEnd="93dp"
-        android:text="Toggle Notifications"
+        android:text="Events"
         android:textColor="@color/black"
         android:textSize="22dp"
         android:textStyle="bold"
@@ -107,13 +150,13 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/admin_privileges_text"
+        android:id="@+id/profiles_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="92dp"
         android:layout_marginTop="284dp"
         android:layout_marginEnd="93dp"
-        android:text="Admin Privileges"
+        android:text="Profiles"
         android:textColor="@color/black"
         android:textSize="22dp"
         android:textStyle="bold"
@@ -123,23 +166,77 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/app_info_text"
+        android:id="@+id/images_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="92dp"
         android:layout_marginTop="396dp"
         android:layout_marginEnd="93dp"
-        android:text="App Info"
+        android:text="Images"
         android:textColor="@color/black"
         android:textSize="22dp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.056"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/facilities_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="92dp"
+        android:layout_marginTop="505dp"
+        android:layout_marginEnd="93dp"
+        android:text="Facilities"
+        android:textColor="@color/black"
+        android:textSize="22dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/data_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="92dp"
+        android:layout_marginTop="615dp"
+        android:layout_marginEnd="93dp"
+        android:text="Data"
+        android:textColor="@color/black"
+        android:textSize="22dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+
+    <!-- Ensure your images exist in the drawable folder -->
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/imageView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="164dp"
+        app:layout_constraintStart_toStartOf="parent"
+
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/calendar_image" />
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="280dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/calendar_image" />
+    <ImageView
+        android:id="@+id/imageView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
@@ -148,23 +245,23 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/calendar_image" />
 
-
     <ImageView
-        android:id="@+id/imageView3"
+        android:id="@+id/imageView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="280dp"
+        android:layout_marginTop="500dp"
         app:layout_constraintStart_toStartOf="parent"
+
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/calendar_image" />
-
     <ImageView
-        android:id="@+id/imageView2"
+
+        android:id="@+id/imageView5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="164dp"
+        android:layout_marginTop="610dp"
         app:layout_constraintStart_toStartOf="parent"
 
         app:layout_constraintTop_toTopOf="parent"

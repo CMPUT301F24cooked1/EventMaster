@@ -9,18 +9,28 @@ import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.activity.EdgeToEdge;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
 public class SettingsScreen extends AppCompatActivity {
+    /**
+     * Initializes the Setting Screen
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     * User can view and select all setting options
+     */
     private Switch notificationSwitch;
     private ImageButton backButton;
     private ActivityResultLauncher<Intent> MainActivityResultLauncher;
     private ActivityResultLauncher<Intent> profileResultLauncher;
+    private View adminPrivilegesButton;
+    private ActivityResultLauncher<Intent> adminCodeResultLauncher;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +81,27 @@ public class SettingsScreen extends AppCompatActivity {
             }
         });
 
+
+        //Links the Settings Screen to the Admin Login screen
+        adminCodeResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(), result -> {
+                    if (result.getResultCode() == RESULT_OK) {
+
+                    }
+                }
+        );
+        adminPrivilegesButton = findViewById(R.id.admin_privileges_view);
+        adminPrivilegesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Send user to SettingsScreen class
+                Log.d("SettingsScreen", "Admin privileges button clicked");
+
+                Intent intent = new Intent(SettingsScreen.this, AdminLoginActivity.class);
+                intent.putExtra("User", user);
+                adminCodeResultLauncher.launch(intent);
+            }
+        });
 
     }
 

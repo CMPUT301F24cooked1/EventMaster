@@ -22,6 +22,13 @@ import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
 public class QRScanFragment extends AppCompatActivity{
+    /**
+     * Initializes the QR scanning
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     * Scans a Qr code and sends data to retrieveEventInfo
+     */
     private FirebaseFirestore db;
 
     @Override
