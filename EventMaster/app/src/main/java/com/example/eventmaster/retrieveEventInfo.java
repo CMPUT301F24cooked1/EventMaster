@@ -59,7 +59,7 @@ public class retrieveEventInfo extends AppCompatActivity {
 
     /**
      * Creates the event information screen where the user can view event details, name and poster
-     * There is also a button that allows them to join the waiting list for the event
+     * There is also a button that allows them to join the waiting list for the event, this will update the firestore database
      * @param savedInstanceState If the activity is being re-initialized after
      *     previously being shut down then this Bundle contains the data it most
      *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
@@ -128,9 +128,7 @@ public class retrieveEventInfo extends AppCompatActivity {
         }
 
 
-        /**
-         * Links the event description screen to join waitlist screen
-         */
+        // links the description screen to the join waitlist screen
         joinWaitlistButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
