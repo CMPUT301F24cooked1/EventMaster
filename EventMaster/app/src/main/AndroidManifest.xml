@@ -20,7 +20,8 @@
         <activity android:name=".AdminLoginActivity" />
 
         <activity
-            android:name=".SettingsScreen" />
+            android:name=".SettingsScreen"
+            android:configChanges="uiMode|screenSize|orientation" />
         <activity
             android:name=".ProfileActivity" />
         <activity

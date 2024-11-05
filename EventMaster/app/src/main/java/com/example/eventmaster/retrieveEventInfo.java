@@ -68,6 +68,7 @@ public class retrieveEventInfo extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ModeActivity.applyTheme(this);
         setContentView(R.layout.event_details_screen);
         eventName = findViewById(R.id.event_name);
         eventDescription = findViewById(R.id.event_decription);

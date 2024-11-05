@@ -35,6 +35,7 @@ public class AdminLoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ModeActivity.applyTheme(this);
         setContentView(R.layout.admin_login_screen);
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("User")) {

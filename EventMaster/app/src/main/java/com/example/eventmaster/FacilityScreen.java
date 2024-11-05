@@ -56,6 +56,7 @@ public class FacilityScreen extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ModeActivity.applyTheme(this);
         EdgeToEdge.enable(this);
         setContentView(R.layout.facility_screen);
 
