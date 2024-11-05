@@ -16,14 +16,12 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
+/**
+ * Displays the settings screen
+ * Links the setting screen to the Admin Login screen and the App Info screen
+ */
 public class SettingsScreen extends AppCompatActivity {
-    /**
-     * Initializes the Setting Screen
-     * @param savedInstanceState If the activity is being re-initialized after
-     *     previously being shut down then this Bundle contains the data it most
-     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
-     * User can view and select all setting options
-     */
+
     private Switch notificationSwitch;
     private ImageButton backButton;
     private ActivityResultLauncher<Intent> settingResultLauncher;
@@ -33,7 +31,13 @@ public class SettingsScreen extends AppCompatActivity {
     private ActivityResultLauncher<Intent> appInfoResultLauncher;
     private View appInfoButton;
 
-
+    /**
+     * Initializes the Setting Screen
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     * User can view and select all setting options
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,11 +54,11 @@ public class SettingsScreen extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean toggleNotifications) {
                 if (toggleNotifications){
                     user.setNotifications(true);  // set notifications to on
-                //    Toast.makeText(SettingsScreen.this, "Notifications ON", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SettingsScreen.this, "Notifications ON", Toast.LENGTH_SHORT).show();
                 }
                 else{
                     user.setNotifications(false);
-                //    Toast.makeText(SettingsScreen.this, "Notifications OFF", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SettingsScreen.this, "Notifications OFF", Toast.LENGTH_SHORT).show();
                 }
 
             }

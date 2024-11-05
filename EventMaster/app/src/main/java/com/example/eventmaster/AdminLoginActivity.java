@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.firestore.auth.User;
 
 /**
+ *  Displays the Admin Login screen
  *  Ensures the person accessing admin privileges has the correct login information
  */
 public class AdminLoginActivity extends AppCompatActivity {
