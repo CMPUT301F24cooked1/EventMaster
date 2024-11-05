@@ -26,10 +26,12 @@ public class SettingsScreen extends AppCompatActivity {
      */
     private Switch notificationSwitch;
     private ImageButton backButton;
-    private ActivityResultLauncher<Intent> MainActivityResultLauncher;
+    private ActivityResultLauncher<Intent> settingResultLauncher;
     private ActivityResultLauncher<Intent> profileResultLauncher;
     private View adminPrivilegesButton;
     private ActivityResultLauncher<Intent> adminCodeResultLauncher;
+    private ActivityResultLauncher<Intent> appInfoResultLauncher;
+    private View appInfoButton;
 
 
     @Override
@@ -100,6 +102,25 @@ public class SettingsScreen extends AppCompatActivity {
                 Intent intent = new Intent(SettingsScreen.this, AdminLoginActivity.class);
                 intent.putExtra("User", user);
                 adminCodeResultLauncher.launch(intent);
+            }
+        });
+
+        appInfoResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(), result -> {
+                    if (result.getResultCode() == RESULT_OK) {
+
+                    }
+                }
+        );
+
+        appInfoButton = findViewById(R.id.app_info);
+        appInfoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Send user to appInfo screen
+                Intent intent = new Intent(SettingsScreen.this, AppInfoActivity.class);
+                intent.putExtra("User", user);
+                appInfoResultLauncher.launch(intent);
             }
         });
 

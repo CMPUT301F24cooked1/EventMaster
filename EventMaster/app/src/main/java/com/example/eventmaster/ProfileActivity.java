@@ -39,6 +39,8 @@ public class ProfileActivity extends AppCompatActivity {
     private ImageButton backButton;
     private ActivityResultLauncher<Intent> editProfileResultLauncher;
     private ActivityResultLauncher<Intent> MainActivityResultLauncher;
+    private ImageButton settingsButton;
+    private ActivityResultLauncher<Intent> settingResultLauncher;
 
     /**
      * Initializes the profile screen
@@ -83,6 +85,13 @@ public class ProfileActivity extends AppCompatActivity {
                 }
         );
 
+        settingResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+
+                }
+        );
+
         editProfileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,6 +107,16 @@ public class ProfileActivity extends AppCompatActivity {
                 Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
                 intent.putExtra("User", user);
                 MainActivityResultLauncher.launch(intent);
+            }
+        });
+
+        settingsButton = findViewById(R.id.settings);
+        settingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ProfileActivity.this, SettingsScreen.class);
+                intent.putExtra("User", user);
+                settingResultLauncher.launch(intent);
             }
         });
 
