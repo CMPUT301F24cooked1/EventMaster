@@ -15,6 +15,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EventMaster"
         tools:targetApi="31">
+        <activity android:name=".AdminEventActivity" />
+        <activity android:name=".AdminProfileActivity" />
+        <activity android:name=".AdminFacilitiesActivity" />
+        <activity android:name=".AdminImagesActivity" />
+        <activity android:name=".AdminQRActivity" />
+
         <activity android:name=".AdminActivity" />
 
         <activity android:name=".AdminLoginActivity" />
@@ -60,6 +66,9 @@
             android:name=".WaitlistedEventsActivity"/>
         <activity
             android:name=".UnjoinWaitlistScreen"/>
+        <activity
+            android:name=".AppInfoActivity" />
+
 
 
 
