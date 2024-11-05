@@ -58,6 +58,9 @@
             android:name=".JoinedEventsActivity"/>
         <activity
             android:name=".WaitlistedEventsActivity"/>
+        <activity
+            android:name=".AppInfoActivity" />
+
 
 
 
