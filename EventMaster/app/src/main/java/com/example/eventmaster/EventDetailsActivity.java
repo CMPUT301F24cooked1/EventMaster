@@ -37,6 +37,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ModeActivity.applyTheme(this);
         setContentView(R.layout.activity_event_details);
 
         eventNameTextView = findViewById(R.id.eventNameTextView);

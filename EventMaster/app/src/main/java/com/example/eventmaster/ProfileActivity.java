@@ -52,7 +52,7 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        ModeActivity.applyTheme(this);
         setContentView(R.layout.profile_screen);
         Profile user = (Profile) getIntent().getSerializableExtra("User"); // User from MainActivity
         ImageView profile_picture = findViewById(R.id.profile_picture );

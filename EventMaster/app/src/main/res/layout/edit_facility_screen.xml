@@ -10,16 +10,47 @@
 
     <ImageButton
         android:id="@+id/settings2"
-        android:layout_width="130dp"
-        android:layout_height="129dp"
-        android:layout_marginStart="27dp"
-        android:layout_marginEnd="23dp"
-        android:layout_marginBottom="-8dp"
+        android:layout_width="145dp"
+        android:layout_height="145dp"
+        android:layout_marginEnd="92dp"
+        android:layout_marginBottom="-12dp"
         android:background="@drawable/home_icon"
         android:scaleType="centerInside"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/notification_icon"
-        app:layout_constraintStart_toEndOf="@+id/settings" />
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageButton
+        android:id="@+id/notification_icon"
+        android:layout_width="62dp"
+        android:layout_height="58dp"
+        android:layout_marginStart="292dp"
+        android:layout_marginBottom="28dp"
+        android:background="@drawable/notification_icon"
+        android:scaleType="centerInside"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageButton
+        android:id="@+id/settings"
+        android:layout_width="66dp"
+        android:layout_height="64dp"
+        android:layout_marginStart="132dp"
+        android:layout_marginBottom="28dp"
+        android:background="@drawable/settings"
+        android:scaleType="centerInside"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageButton
+        android:id="@+id/profile"
+        android:layout_width="84dp"
+        android:layout_height="84dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/profile_picture"
+        android:scaleType="centerInside"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
         android:id="@+id/editTextInput3"
@@ -93,7 +124,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Facility Profile"
-        android:textColor="@color/black"
         android:textSize="40dp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/appLogo"
@@ -108,7 +138,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Facility Name"
-        android:textColor="@color/black"
         android:textSize="25dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -117,13 +146,11 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.344" />
 
-    <!-- Ensure your images exist in the drawable folder -->
     <TextView
         android:id="@+id/facilityAddressText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Facility Address"
-        android:textColor="@color/black"
         android:textSize="25dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -136,7 +163,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Facility Description"
-        android:textColor="@color/black"
         android:textSize="25dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -145,27 +171,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.614" />
 
-    <ImageButton
-        android:id="@+id/profile"
-        android:layout_width="66dp"
-        android:layout_height="65dp"
-        android:layout_marginStart="49dp"
-        android:layout_marginBottom="24dp"
-        android:background="@drawable/profile_picture"
-        android:scaleType="centerInside"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <ImageButton
-        android:id="@+id/settings"
-        android:layout_width="66dp"
-        android:layout_height="65dp"
-        android:layout_marginStart="128dp"
-        android:layout_marginBottom="24dp"
-        android:background="@drawable/settings"
-        android:scaleType="centerInside"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
         android:id="@+id/editTextInput"
@@ -184,15 +189,5 @@
         app:layout_constraintTop_toBottomOf="@+id/facilityNameText"
         app:layout_constraintVertical_bias="1.0" />
 
-    <ImageButton
-        android:id="@+id/notification_icon"
-        android:layout_width="66dp"
-        android:layout_height="65dp"
-        android:layout_marginStart="288dp"
-        android:layout_marginBottom="24dp"
-        android:background="@drawable/notification_icon"
-        android:scaleType="centerInside"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

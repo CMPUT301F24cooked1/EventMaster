@@ -55,6 +55,7 @@ public class CreateEventActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ModeActivity.applyTheme(this);
         setContentView(R.layout.activity_create_event);
 
         // Initialize Firebase instances
@@ -74,7 +75,7 @@ public class CreateEventActivity extends AppCompatActivity {
         Profile user = new Profile(deviceId, "Vansh", " ", " ");
 
         // Initialize navigation buttons
-        ImageButton notificationButton = findViewById(R.id.notifications);
+        ImageButton notificationButton = findViewById(R.id.notification);
         ImageButton settingsButton = findViewById(R.id.settings);
         ImageButton profileButton = findViewById(R.id.profile);
         ImageButton viewEventsButton = findViewById(R.id.view_events);

@@ -58,6 +58,7 @@ public class OrganizerEventListView extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ModeActivity.applyTheme(this);
         setContentView(R.layout.organizer_event_list_view_screen);
 
         eventNameTextView = findViewById(R.id.eventNameTextView);
