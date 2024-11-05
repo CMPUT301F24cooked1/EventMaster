@@ -16,7 +16,21 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
+/**
+ * Displays the settings screen
+ * Links the setting screen to the Admin Login screen and the App Info screen
+ */
 public class SettingsScreen extends AppCompatActivity {
+
+    private Switch notificationSwitch;
+    private ImageButton backButton;
+    private ActivityResultLauncher<Intent> settingResultLauncher;
+    private ActivityResultLauncher<Intent> profileResultLauncher;
+    private View adminPrivilegesButton;
+    private ActivityResultLauncher<Intent> adminCodeResultLauncher;
+    private ActivityResultLauncher<Intent> appInfoResultLauncher;
+    private View appInfoButton;
+
     /**
      * Initializes the Setting Screen
      * @param savedInstanceState If the activity is being re-initialized after
@@ -24,14 +38,6 @@ public class SettingsScreen extends AppCompatActivity {
      *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
      * User can view and select all setting options
      */
-    private Switch notificationSwitch;
-    private ImageButton backButton;
-    private ActivityResultLauncher<Intent> MainActivityResultLauncher;
-    private ActivityResultLauncher<Intent> profileResultLauncher;
-    private View adminPrivilegesButton;
-    private ActivityResultLauncher<Intent> adminCodeResultLauncher;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,11 +54,11 @@ public class SettingsScreen extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean toggleNotifications) {
                 if (toggleNotifications){
                     user.setNotifications(true);  // set notifications to on
-                //    Toast.makeText(SettingsScreen.this, "Notifications ON", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SettingsScreen.this, "Notifications ON", Toast.LENGTH_SHORT).show();
                 }
                 else{
                     user.setNotifications(false);
-                //    Toast.makeText(SettingsScreen.this, "Notifications OFF", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SettingsScreen.this, "Notifications OFF", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -100,6 +106,25 @@ public class SettingsScreen extends AppCompatActivity {
                 Intent intent = new Intent(SettingsScreen.this, AdminLoginActivity.class);
                 intent.putExtra("User", user);
                 adminCodeResultLauncher.launch(intent);
+            }
+        });
+
+        appInfoResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(), result -> {
+                    if (result.getResultCode() == RESULT_OK) {
+
+                    }
+                }
+        );
+
+        appInfoButton = findViewById(R.id.app_info);
+        appInfoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Send user to appInfo screen
+                Intent intent = new Intent(SettingsScreen.this, AppInfoActivity.class);
+                intent.putExtra("User", user);
+                appInfoResultLauncher.launch(intent);
             }
         });
 

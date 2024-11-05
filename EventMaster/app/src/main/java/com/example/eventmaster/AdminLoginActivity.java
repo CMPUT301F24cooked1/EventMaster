@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -17,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.firestore.auth.User;
 
 /**
+ *  Displays the Admin Login screen
  *  Ensures the person accessing admin privileges has the correct login information
  */
 public class AdminLoginActivity extends AppCompatActivity {
@@ -25,6 +27,10 @@ public class AdminLoginActivity extends AppCompatActivity {
     private EditText adminCodeInput;
     private ActivityResultLauncher<Intent> adminMainResultLauncher;
     private Profile user;
+    private ImageButton backButton;
+    private ImageButton settingsButton;
+    private ActivityResultLauncher<Intent> settingResultLauncher;
+    private ActivityResultLauncher<Intent> profileResultLauncher;
 
 
     @Override
@@ -50,6 +56,52 @@ public class AdminLoginActivity extends AppCompatActivity {
 
         Button doneButton = findViewById(R.id.done_button);
         doneButton.setOnClickListener(v -> checkAdminCode());
+
+        settingResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+
+                }
+        );
+
+        profileResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+
+                }
+        );
+
+
+        backButton = findViewById(R.id.back);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(AdminLoginActivity.this, SettingsScreen.class);
+                intent.putExtra("User", user);
+                settingResultLauncher.launch(intent);
+            }
+        });
+
+        ImageButton profileButton = findViewById(R.id.profile);
+        profileButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(AdminLoginActivity.this, ProfileActivity.class);
+                intent.putExtra("User", user);
+                profileResultLauncher.launch(intent);
+            }
+        });
+
+        settingsButton = findViewById(R.id.settings);
+        settingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(AdminLoginActivity.this, SettingsScreen.class);
+                intent.putExtra("User", user);
+                settingResultLauncher.launch(intent);
+            }
+        });
+
     }
 
     private void checkAdminCode() {

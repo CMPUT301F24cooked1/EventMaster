@@ -35,8 +35,7 @@ public class WaitlistedEventsActivity extends AppCompatActivity {
      * User can view all events and select any event
      */
     private RecyclerView recyclerView;
-    // private EventAdapter eventAdapter;
-    private ViewEventsAdapter ViewEventsAdapter;
+    private WaitlistedEventsAdapter WaitlistedEventsAdapter;
     private List<Event> eventList;
     private FirebaseFirestore firestore;
     private String deviceId; // Replace with actual device ID
@@ -60,8 +59,8 @@ public class WaitlistedEventsActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         eventList = new ArrayList<>();
-        ViewEventsAdapter = new ViewEventsAdapter(eventList, this);
-        recyclerView.setAdapter(ViewEventsAdapter);
+        WaitlistedEventsAdapter = new WaitlistedEventsAdapter(eventList, this);
+        recyclerView.setAdapter(WaitlistedEventsAdapter);
         // Retrieve events from Firestore
         retrieveWaitlistedEvents();
 
@@ -72,40 +71,38 @@ public class WaitlistedEventsActivity extends AppCompatActivity {
      * Retrieve waitlisted events for user
      */
     private void retrieveWaitlistedEvents() {
-        //TODO: change the firestore references to find the waitlisted events of user
+        CollectionReference entrantsRef = firestore.collection("entrants");
 
-        CollectionReference facilitiesRef = firestore.collection("facilities");
-
-        facilitiesRef.get().addOnCompleteListener(task -> {
+        entrantsRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
 
-                for (QueryDocumentSnapshot facilityDoc : task.getResult()) {
-                    String facilityId = facilityDoc.getId();  // get facility for each event
+                for (QueryDocumentSnapshot entrantDoc : task.getResult()) {
+                    String entrantId = entrantDoc.getId();  // get entrant for each waitlist
                     //Toast.makeText(JoinEventScreen.this, "Facility ID: " + facilityId, Toast.LENGTH_SHORT).show();
 
                     // retrieve events for each facility
-                    CollectionReference eventsRef = facilityDoc.getReference().collection("My Events");
+                    CollectionReference eventsRef = entrantDoc.getReference().collection("Waitlisted Events");
 
                     eventsRef.get().addOnCompleteListener(eventTask -> {
                         if (eventTask.isSuccessful()) {
                             for (QueryDocumentSnapshot eventDoc : eventTask.getResult()) {
                                 Event event = eventDoc.toObject(Event.class);
-                                event.setDeviceID(facilityId);  // set the facility name to be the device id
+                                event.setDeviceID(entrantId);  // set the facility name to be the device id
                                 eventList.add(event);
 
 
                             }
-                            ViewEventsAdapter.notifyDataSetChanged(); // Notify the adapter of data changes
-                            Log.d("JoinEventScreen", "Number of events: " + eventList.size());
+                            WaitlistedEventsAdapter.notifyDataSetChanged(); // Notify the adapter of data changes
+                            Log.d("JoinEventScreen", "Number of waitlisted events: " + eventList.size());
                             Log.d("JoinEventScreen", "Device ID: " + deviceId);
 
                         } else {
-                            Log.d("JoinEventScreen", "QuerySnapshot is null");
+                            Log.d("WaitlistedEventsActivity", "QuerySnapshot is null");
                         }
                     });
 
                 }} else {
-                Log.e("JoinEventScreen", "Error getting documents: ", task.getException());
+                Log.e("WaitlistedEventsActivity", "Error getting documents: ", task.getException());
             }
         });
     }
