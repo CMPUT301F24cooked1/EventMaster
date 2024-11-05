@@ -58,6 +58,7 @@ public class InputUserInformation extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ModeActivity.applyTheme(this);
         setContentView(R.layout.edit_profile_screen);
 
         db = FirebaseFirestore.getInstance();

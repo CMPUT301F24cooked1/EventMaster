@@ -15,7 +15,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="52dp"
         android:text="@string/profile_screen"
-        android:textColor="@color/black"
         android:textSize="40dp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -65,6 +64,7 @@
         android:layout_marginTop="392dp"
         android:background="@drawable/edittext_border"
         android:gravity="center"
+        android:textColor="@color/black"
         app:layout_constraintBottom_toTopOf="@+id/profile_email"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -90,6 +90,7 @@
         android:layout_marginTop="484dp"
         android:background="@drawable/edittext_border"
         android:gravity="center"
+        android:textColor="@color/black"
         app:layout_constraintBottom_toTopOf="@+id/profile_phone_number"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -113,6 +114,7 @@
         android:layout_width="271dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="580dp"
+        android:textColor="@color/black"
         android:background="@drawable/edittext_border"
         android:gravity="center"
         android:hint="OPTIONAL"
@@ -138,45 +140,45 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageButton
-        android:id="@+id/profile"
+        android:id="@+id/list_icon"
         android:layout_width="66dp"
         android:layout_height="65dp"
-        android:layout_marginStart="49dp"
-        android:layout_marginBottom="24dp"
-        android:background="@drawable/profile_picture"
+        android:layout_marginEnd="132dp"
+        android:layout_marginBottom="27dp"
+        android:background="@drawable/list_icon"
         android:scaleType="centerInside"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageButton
+        android:id="@+id/notification_icon"
+        android:layout_width="62dp"
+        android:layout_height="58dp"
+        android:layout_marginEnd="57dp"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/notification_icon"
+        android:scaleType="centerInside"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <ImageButton
         android:id="@+id/settings"
         android:layout_width="66dp"
-        android:layout_height="65dp"
-        android:layout_marginStart="128dp"
-        android:layout_marginBottom="24dp"
+        android:layout_height="64dp"
+        android:layout_marginStart="132dp"
+        android:layout_marginBottom="28dp"
         android:background="@drawable/settings"
         android:scaleType="centerInside"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageButton
-        android:id="@+id/list_icon"
-        android:layout_width="66dp"
-        android:layout_height="65dp"
-        android:layout_marginStart="212dp"
-        android:layout_marginBottom="24dp"
-        android:background="@drawable/list_icon"
-        android:scaleType="centerInside"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <ImageButton
-        android:id="@+id/notification_icon"
-        android:layout_width="66dp"
-        android:layout_height="65dp"
-        android:layout_marginStart="288dp"
-        android:layout_marginBottom="24dp"
-        android:background="@drawable/notification_icon"
+        android:id="@+id/profile"
+        android:layout_width="84dp"
+        android:layout_height="84dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/profile_picture"
         android:scaleType="centerInside"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

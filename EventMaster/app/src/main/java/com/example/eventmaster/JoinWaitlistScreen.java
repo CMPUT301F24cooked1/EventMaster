@@ -47,6 +47,7 @@ public class JoinWaitlistScreen extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ModeActivity.applyTheme(this);
         setContentView(R.layout.join_waitlist_screen);
         eventName = findViewById(R.id.event_name);
         eventDescription = findViewById(R.id.event_decription);

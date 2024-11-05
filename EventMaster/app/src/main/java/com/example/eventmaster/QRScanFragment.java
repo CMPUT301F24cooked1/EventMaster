@@ -35,6 +35,7 @@ public class QRScanFragment extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         db = FirebaseFirestore.getInstance();
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.scan_qr_screen);
 
         AppCompatButton scanButton = findViewById(R.id.scan_qr_code_button);
