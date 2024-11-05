@@ -261,6 +261,7 @@ public class retrieveEventInfo extends AppCompatActivity {
         WaitlistEvents.put("hashed_data", hashedData);
         WaitlistEvents.put("deviceID", deviceID);
         WaitlistEvents.put("posterUrl", posterUrl);
+        WaitlistEvents.put("eventDescription", eventDescription.getText().toString());
 
         // add event to the entrants list of waitlisted events
         db.collection("entrants")
