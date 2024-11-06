@@ -68,6 +68,7 @@ public class retrieveEventInfo extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ModeActivity.applyTheme(this);
         setContentView(R.layout.event_details_screen);
         eventName = findViewById(R.id.event_name);
         eventDescription = findViewById(R.id.event_decription);
@@ -272,6 +273,7 @@ public class retrieveEventInfo extends AppCompatActivity {
         WaitlistEvents.put("hashed_data", hashedData);
         WaitlistEvents.put("deviceID", deviceID);
         WaitlistEvents.put("posterUrl", posterUrl);
+        WaitlistEvents.put("eventDescription", eventDescription.getText().toString());
 
         // add event to the entrants list of waitlisted events
         db.collection("entrants")

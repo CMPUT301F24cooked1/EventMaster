@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.firestore.auth.User;
 
 /**
+ *  Displays the Admin Login screen
  *  Ensures the person accessing admin privileges has the correct login information
  */
 public class AdminLoginActivity extends AppCompatActivity {
@@ -35,6 +36,7 @@ public class AdminLoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ModeActivity.applyTheme(this);
         setContentView(R.layout.admin_login_screen);
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("User")) {

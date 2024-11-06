@@ -35,6 +35,7 @@ public class QRScanFragment extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         db = FirebaseFirestore.getInstance();
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.scan_qr_screen);
         Profile user = (Profile) getIntent().getSerializableExtra("User");
         //Profile user = (Profile) getIntent().getSerializableExtra("User"); // user from MainActivity

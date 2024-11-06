@@ -68,6 +68,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        ModeActivity.applyTheme(this);
+
         EdgeToEdge.enable(this);
         setContentView(R.layout.home_screen);
 

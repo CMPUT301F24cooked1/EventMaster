@@ -32,6 +32,7 @@ public class ViewCreatedEventsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ModeActivity.applyTheme(this);
         setContentView(R.layout.activity_view_created_events);
 
         // Initialize Firebase Firestore

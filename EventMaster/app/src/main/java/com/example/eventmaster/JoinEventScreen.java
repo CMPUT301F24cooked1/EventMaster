@@ -47,6 +47,7 @@ public class JoinEventScreen extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ModeActivity.applyTheme(this);
         setContentView(R.layout.view_events_screen);
         Profile user = (Profile) getIntent().getSerializableExtra("User"); // user from MainActivity
 
