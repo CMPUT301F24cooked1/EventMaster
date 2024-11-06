@@ -24,9 +24,13 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Random;
 
+/**
+ * The class represents the profile screen where the user's information is displayed.
+ * It initializes the profile screen, displays uer information like nane, email
+ * and phone number. It also handles navigation between profile and other activities.
+ *
+ */
 public class ProfileActivity extends AppCompatActivity {
-    private static final String PREFS_NAME = "ProfilePrefs";
-    private static final String PROFILE_COLOR_KEY = "profile_color";
 
     private TextView displayName;
     private TextView displayEmail;
@@ -35,6 +39,8 @@ public class ProfileActivity extends AppCompatActivity {
     private ImageButton backButton;
     private ActivityResultLauncher<Intent> editProfileResultLauncher;
     private ActivityResultLauncher<Intent> MainActivityResultLauncher;
+    private ImageButton settingsButton;
+    private ActivityResultLauncher<Intent> settingResultLauncher;
 
     /**
      * Initializes the profile screen
@@ -46,7 +52,7 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        ModeActivity.applyTheme(this);
         setContentView(R.layout.profile_screen);
         Profile user = (Profile) getIntent().getSerializableExtra("User"); // User from MainActivity
         ImageView profile_picture = findViewById(R.id.profile_picture );
@@ -79,6 +85,13 @@ public class ProfileActivity extends AppCompatActivity {
                 }
         );
 
+        settingResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+
+                }
+        );
+
         editProfileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,58 +110,19 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-    }
-
-    /**
-     * Random generates a color for the background of the profile picture
-     *
-     * @return a color that isn't close to white
-     */
-    public static int randomColorGenerator() {
-        Random random = new Random();
-
-        int red, green, blue;
-
-        do {
-            red = random.nextInt(256);
-            green = random.nextInt(256);
-            blue = random.nextInt(256);
-        } while ((red + green + blue) > 600); // Makes sure that the background color won't be close to the text color white
-
-        return Color.rgb(red, green, blue);
-    }
-    /**
-     * Sets a default profile picture based on the user's name
-     * @param user the user object
-     * @param profile_picture the ImageView ID of the profile picture
-     * @param context the context of which activity screen it's being ran on
-     *
-     */
-    public static void generateProfilePicture(Profile user, ImageView profile_picture, Context context) {
-        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        int savedColor = prefs.getInt(PROFILE_COLOR_KEY, -1);
-
-        // Check if the name is empty
-        if (user.getName().isEmpty()) {
-            profile_picture.setImageResource(R.drawable.profile_picture); // set to default profile picture if name is empty
-        } else {
-            if (savedColor == -1) {
-                // If no color is saved, generate a new random background color
-                int newColor = randomColorGenerator(); // Generates a random color
-
-                // Save the new color in SharedPreferences
-                SharedPreferences.Editor editor = prefs.edit();
-                editor.putInt(PROFILE_COLOR_KEY, newColor);
-                editor.apply();
-
-                savedColor = newColor; // Use the new generated color
+        settingsButton = findViewById(R.id.settings);
+        settingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ProfileActivity.this, SettingsScreen.class);
+                intent.putExtra("User", user);
+                settingResultLauncher.launch(intent);
             }
+        });
 
-            // Generate the profile picture bitmap with the saved color or the new generated color
-            Bitmap pfpBitmap = Image.generateProfilePicture(user.getName(), 200, savedColor, Color.WHITE);
-            profile_picture.setImageBitmap(pfpBitmap);
-        }
     }
+
+
 
 
 

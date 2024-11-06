@@ -22,12 +22,20 @@ import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
 public class QRScanFragment extends AppCompatActivity{
+    /**
+     * Initializes the QR scanning
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     * Scans a Qr code and sends data to retrieveEventInfo
+     */
     private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         db = FirebaseFirestore.getInstance();
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.scan_qr_screen);
 
         AppCompatButton scanButton = findViewById(R.id.scan_qr_code_button);
@@ -80,6 +88,7 @@ public class QRScanFragment extends AppCompatActivity{
             intent2.putExtra("deviceID", deviceID);  // facility device id
 
             startActivity(intent2);
+
         }
     });
 
@@ -107,6 +116,7 @@ public class QRScanFragment extends AppCompatActivity{
                                 intent2.putExtra("posterUrl", eventPosterUrl);
 
                                 startActivity(intent2);
+
                             }
                         } else {
                             Toast.makeText(QRScanFragment.this, "No events found.", Toast.LENGTH_SHORT).show();

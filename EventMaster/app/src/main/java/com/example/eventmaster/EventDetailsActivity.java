@@ -37,6 +37,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ModeActivity.applyTheme(this);
         setContentView(R.layout.activity_event_details);
 
         eventNameTextView = findViewById(R.id.eventNameTextView);
@@ -94,7 +95,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         DocumentReference eventRef = firestore.collection("facilities")
                 .document(deviceId)
                 .collection("My Events")
-                .document(eventId); // Use the event ID to get the specific document
+                .document(); // Use the event ID to get the specific document
 
         eventRef.get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {

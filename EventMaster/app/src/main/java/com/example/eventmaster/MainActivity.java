@@ -56,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> profileResultLauncher;
     private ActivityResultLauncher<Intent> createEventResultLauncher;
     private ActivityResultLauncher<Intent> joinEventScreenResultLauncher;
+    private ActivityResultLauncher<Intent> joinedEventsActivityResultLauncher;
+
 
     Profile user;
 
@@ -65,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        ModeActivity.applyTheme(this);
 
         EdgeToEdge.enable(this);
         setContentView(R.layout.home_screen);
@@ -77,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d("DeviceID", "Android ID: " + deviceId);
 
         user = new Profile(deviceId, "", "", ""); // create a new user
-        storeDeviceID(deviceId, "profiles"); // store device id, skip if already stored
+        //storeDeviceID(deviceId, "profiles"); // store device id, skip if already stored
         initializeUser(deviceId); // grab all the user's info from firestore based on device id
 
         storeDeviceID(deviceId, "profiles");
@@ -103,6 +107,15 @@ public class MainActivity extends AppCompatActivity {
         // Connecting the home screen to the profile
         profileResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),result ->{
+                    if (result.getResultCode() == RESULT_OK){
+
+                    }
+                }
+        );
+
+        // Connecting home screen to list of joined events screen
+        joinedEventsActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(), result ->{
                     if (result.getResultCode() == RESULT_OK){
 
                     }
@@ -161,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+        // Reference to the profile button
         ImageButton profileButton = findViewById(R.id.profile);
 
         profileButton.setOnClickListener(new View.OnClickListener() {
@@ -171,6 +184,20 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
                 intent.putExtra("User", user);
                 profileResultLauncher.launch(intent);
+            }
+        });
+
+        // Reference to the list button
+        ImageButton listButton = findViewById(R.id.list_icon);
+
+        listButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Send user to JoinedEventsActivity class
+                Intent intent = new Intent(MainActivity.this, JoinedEventsActivity.class);
+                intent.putExtra("User", user);
+                joinedEventsActivityResultLauncher.launch(intent);
+
             }
         });
 
@@ -237,16 +264,32 @@ public class MainActivity extends AppCompatActivity {
     private void storeDeviceID(String deviceId, String path) {
         db.collection(path).document(deviceId).get()
                 .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) { // checks if deviceID is already in Firestore
-                        if (task.getResult().exists()) {
-                            // deviceID already exists, so do not add the device ID again
-                            Log.d("Firestore", "Device ID already exists, skipping insertion.");
+                    if (task.isSuccessful()) { // checks for deviceID in firestore
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            // Check for "deviceID" field and check if it matches the document ID (which is the deviceID)
+                            String storedDeviceId = document.getString("deviceId");
+                            if (storedDeviceId == null || !storedDeviceId.equals(deviceId)) {
+                                // Update the "deviceId" field to ensure it matches the document ID
+                                Map<String, Object> updateData = new HashMap<>();
+                                updateData.put("deviceId", deviceId);
+
+                                db.collection(path).document(deviceId).set(updateData, SetOptions.merge())
+                                        .addOnSuccessListener(aVoid -> {
+                                            Log.d("Firestore", "Device ID field updated successfully.");
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            Log.e("Firestore", "Error updating device ID field", e);
+                                        });
+                            } else {
+                                Log.d("Firestore", "Device ID field already matches.");
+                            }
                         } else {
-                            // deviceID doesn't exist, add the device ID to Firestore
+                            // deviceID doesn't exist, create a new document
                             Map<String, Object> deviceData = new HashMap<>();
                             deviceData.put("deviceId", deviceId);
 
-                            db.collection(path).document(deviceId).set(deviceData) // document is deviceID
+                            db.collection(path).document(deviceId).set(deviceData)
                                     .addOnSuccessListener(aVoid -> {
                                         Log.d("Firestore", "Device ID stored successfully.");
                                     })
@@ -258,8 +301,8 @@ public class MainActivity extends AppCompatActivity {
                         Log.e("Firestore", "Error checking if device ID exists", task.getException());
                     }
                 });
-
     }
+
 
     /**
      * Initialize user profile with data from firestore
@@ -292,6 +335,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
 
 
 
