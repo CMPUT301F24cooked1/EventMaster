@@ -30,6 +30,7 @@ public class QRScanFragment extends AppCompatActivity{
      * Scans a Qr code and sends data to retrieveEventInfo
      */
     private FirebaseFirestore db;
+    private Profile user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +38,14 @@ public class QRScanFragment extends AppCompatActivity{
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.scan_qr_screen);
-        Profile user = (Profile) getIntent().getSerializableExtra("User");
+
+        user = (Profile) getIntent().getSerializableExtra("User");
+
+
+        // send user to retrieveEventInfo screen
+//        Intent newIntent = new Intent(QRScanFragment.this, retrieveEventInfo.class);
+//        newIntent.putExtra("user", user);
+//        startActivity(newIntent);
         //Profile user = (Profile) getIntent().getSerializableExtra("User"); // user from MainActivity
 
         AppCompatButton scanButton = findViewById(R.id.scan_qr_code_button);
@@ -115,6 +123,7 @@ public class QRScanFragment extends AppCompatActivity{
     ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result->{
         if(result.getContents() != null)
         {
+
             // information from ViewEventsAdapter
             String scannedHash = result.getContents();
             Intent intent = getIntent();
@@ -126,7 +135,7 @@ public class QRScanFragment extends AppCompatActivity{
             intent2.putExtra("hashed_data", scannedHash);
             intent2.putExtra("event", event);
             intent2.putExtra("deviceID", deviceID);  // facility device id
-
+            intent2.putExtra("User", user);
             startActivity(intent2);
 
         }
@@ -144,6 +153,7 @@ public class QRScanFragment extends AppCompatActivity{
                     if (task.isSuccessful()) {
                         if (!task.getResult().isEmpty()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
+
                                 String hashedData = document.getString("hash");
                                 String eventDescription = document.getString("eventDescription");
                                 String eventPosterUrl = document.getString("posterUrl");
@@ -154,6 +164,7 @@ public class QRScanFragment extends AppCompatActivity{
                                 intent2.putExtra("deviceID", deviceID);
                                 intent2.putExtra("eventDescription", eventDescription);
                                 intent2.putExtra("posterUrl", eventPosterUrl);
+                                intent2.putExtra("User", user);
 
                                 startActivity(intent2);
 
