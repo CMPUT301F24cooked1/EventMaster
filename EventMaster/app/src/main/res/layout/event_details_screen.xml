@@ -103,6 +103,11 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageButton
+<<<<<<< Updated upstream
+=======
+
+        android:id="@+id/back_button"
+>>>>>>> Stashed changes
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_marginStart="8dp"

@@ -75,7 +75,7 @@ public class QRScanFragment extends AppCompatActivity{
 
             // send information over to retrieveEventInfo
             Intent intent2 = new Intent(QRScanFragment.this, retrieveEventInfo.class);
-            intent2.putExtra("HASHED_DATA", scannedHash);
+            intent2.putExtra("hashed_data", scannedHash);
             intent2.putExtra("event", event);
             intent2.putExtra("deviceID", deviceID);  // facility device id
 

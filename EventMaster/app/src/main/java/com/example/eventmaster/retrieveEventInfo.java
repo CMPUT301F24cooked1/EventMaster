@@ -88,14 +88,14 @@ public class retrieveEventInfo extends AppCompatActivity {
                 .document(deviceID)
                 .collection("My Events")
                 .whereEqualTo("hash", hashedData)
+                .whereEqualTo("eventName", event)  // added this
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful())
                         if (!task.getResult().isEmpty()){  // check something is in result
-                            Toast.makeText(retrieveEventInfo.this, "succesfully read data", Toast.LENGTH_SHORT).show();
-
                             for (DocumentSnapshot document : task.getResult()) {
                                 // Retrieve data directly from the document
+                                Toast.makeText(retrieveEventInfo.this, "Data is passed!!!", Toast.LENGTH_SHORT).show();
                                 String eventName = document.getString("eventName");
                                 String eventDescription = document.getString("eventDescription");
                                 String eventPosterUrl = document.getString("posterUrl");
