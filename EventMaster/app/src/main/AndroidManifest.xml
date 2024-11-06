@@ -70,6 +70,10 @@
         <activity
             android:name=".AppInfoActivity" />
 
+        <activity
+            android:name=".QrCaptureActivity" />
+
+
 
 
 

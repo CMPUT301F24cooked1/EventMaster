@@ -45,20 +45,29 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <TextView
-            android:id="@+id/event_decription"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="172dp"
-            android:text="Event Description"
-            android:textColor="@color/grey"
-            android:textSize="24dp"
-            app:layout_constraintBottom_toTopOf="@+id/event_open_time"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.524"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/event_details_text"
-            app:layout_constraintVertical_bias="1.0" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            >
+            <TextView
+                android:id="@+id/event_decription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="172dp"
+                android:text="Event Description"
+                android:textColor="@color/grey"
+                android:textSize="24dp"
+                app:layout_constraintBottom_toTopOf="@+id/event_open_time"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.524"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/event_details_text"
+                app:layout_constraintVertical_bias="1.0" />
+
+
+        </LinearLayout>
 
     </ScrollView>
 
