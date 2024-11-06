@@ -33,8 +33,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/event_poster"
-        app:layout_constraintVertical_bias="0.636" />
-
+        app:layout_constraintVertical_bias="0.506" />
 
     <ScrollView
         android:id="@+id/scrollView2"
