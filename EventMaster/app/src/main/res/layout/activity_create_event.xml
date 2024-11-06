@@ -36,7 +36,7 @@ android:background="@drawable/app_background">
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/facility_name_text5"
+        android:id="@+id/waitlist_countdown"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Waitlist Countdown"
@@ -49,7 +49,7 @@ android:background="@drawable/app_background">
         app:layout_constraintVertical_bias="0.559" />
 
     <TextView
-        android:id="@+id/facility_name_text4"
+        android:id="@+id/waitlist_capacity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Waitlist Capacity"
@@ -114,7 +114,7 @@ android:background="@drawable/app_background">
         app:layout_constraintVertical_bias="0.499" />
 
     <TextView
-        android:id="@+id/facility_name_text2"
+        android:id="@+id/event_description_text2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Event Description"
@@ -127,7 +127,7 @@ android:background="@drawable/app_background">
         app:layout_constraintVertical_bias="0.218" />
 
     <TextView
-        android:id="@+id/facility_name_text3"
+        android:id="@+id/event_capcacity_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Event Capacity"
