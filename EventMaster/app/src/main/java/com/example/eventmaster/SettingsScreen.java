@@ -69,6 +69,7 @@ public class SettingsScreen extends AppCompatActivity {
             }
         });
 
+
         // Toggles on and off dark mode
         SharedPreferences sharedPreferences = getSharedPreferences("themePrefs", MODE_PRIVATE);
         boolean isDarkMode = sharedPreferences.getBoolean("darkMode", false);
