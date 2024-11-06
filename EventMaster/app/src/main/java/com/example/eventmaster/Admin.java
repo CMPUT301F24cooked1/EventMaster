@@ -2,7 +2,6 @@ package com.example.eventmaster;
 
 import static android.content.ContentValues.TAG;
 
-import android.media.Image;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -12,12 +11,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.zxing.qrcode.encoder.QRCode;
 
 import java.util.ArrayList;
 
 /**
  * Responsible for the privileges the admin has
- * NOTE: going to implement the removal for
  */
 public class Admin {
     private FirebaseFirestore db;
@@ -167,7 +166,69 @@ public class Admin {
      * @param event the event object to be deleted
      */
     void deleteEvent(Event event){
-        db.collection(eventCollection).document();
+        db.collection(eventCollection).document(event.getDeviceID()).delete().addOnSuccessListener(aVoid ->{
+            // Event is deleted from firestore
+            Log.d("Firestore", "Document successfully deleted!");
+        }).addOnFailureListener(e -> {
+            Log.d("Firestore", "Error deleting document", e);
+        });
+    }
+
+    /**
+     * Removes the profile from the database collection
+     * @param profile the profile object to be deleted
+     */
+    void deleteProfile(Profile profile){
+        db.collection(eventCollection).document(profile.getDeviceId()).delete().addOnSuccessListener(aVoid ->{
+            // Profile is deleted from firestore
+            Log.d("Firestore", "Document successfully deleted!");
+        }).addOnFailureListener(e -> {
+            Log.d("Firestore", "Error deleting document", e);
+        });
+    }
+
+
+    /**
+     * Removes the qr code from the database collection
+     * @param qrCode the qrCode object to be deleted
+     *               NOTE: DOES NOT WORK SINCE THERE IS NO QRcode CLASS RIGHT NOW
+
+    void deleteQRCode(){
+        db.collection(eventCollection).document(qrCode.getDeviceID()).delete().addOnSuccessListener(aVoid ->{
+            // qrCode is deleted from firestore
+            Log.d("Firestore", "Document successfully deleted!");
+        }).addOnFailureListener(e -> {
+            Log.d("Firestore", "Error deleting document", e);
+        });
+    }
+     **/
+
+
+    /**
+     * Removes the facility from the database collection
+     * @param facility the facility object to be deleted
+     */
+    void deleteFacility(Facility facility){
+        db.collection(eventCollection).document(facility.getDeviceID()).delete().addOnSuccessListener(aVoid ->{
+            // Facility is deleted from firestore
+            Log.d("Firestore", "Document successfully deleted!");
+        }).addOnFailureListener(e -> {
+            Log.d("Firestore", "Error deleting document", e);
+        });
+    }
+
+    /**
+     * Removes the event from the database collection
+     * @param image the image object to be deleted
+     *              NOTE: not sure how to get the image from the firestore database
+     */
+    void deleteImage(Image image){
+        db.collection(eventCollection).document(image.getImageID()).delete().addOnSuccessListener(aVoid ->{
+            // Event is deleted from firestore
+            Log.d("Firestore", "Document successfully deleted!");
+        }).addOnFailureListener(e -> {
+            Log.d("Firestore", "Error deleting document", e);
+        });
     }
 
 }

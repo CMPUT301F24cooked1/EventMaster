@@ -58,13 +58,14 @@ public class InputUserInformation extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ModeActivity.applyTheme(this);
         setContentView(R.layout.edit_profile_screen);
 
         db = FirebaseFirestore.getInstance();
 
         Profile user = (Profile) getIntent().getSerializableExtra("User"); // user from MainActivity
 
-
+        //input boxes for user
         name_edit = findViewById(R.id.edit_name);
         email_edit = findViewById(R.id.edit_email);
         phone_number_edit = findViewById(R.id.edit_phone_number);
@@ -73,6 +74,7 @@ public class InputUserInformation extends AppCompatActivity {
         profile_picture = findViewById(R.id.profile_picture);
         upload_profile_picture = findViewById(R.id.upload_profile_picture);
 
+        //saves the user's input
         name_edit.setText(user.getName());
         email_edit.setText(user.getEmail());
         phone_number_edit.setText(user.getPhone_number());
@@ -140,6 +142,11 @@ public class InputUserInformation extends AppCompatActivity {
         );
     }
 
+
+    /**
+     * Makes sure the phone number is valid with only integers
+     * @param phone_number
+     */
     private void validatePhoneNumber(String phone_number) {
         String trimmedPhoneNumber = phone_number.trim(); // Remove leading/trailing whitespace
         if (trimmedPhoneNumber.isEmpty()) {

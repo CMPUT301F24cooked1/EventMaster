@@ -2,6 +2,13 @@ package com.example.eventmaster;
 
 import java.io.Serializable;
 
+/**
+ * The Profile class represents the user's profile information. It stores the personal details of the users,
+ * this includes the device ID, email, phone number, and admin password. it also includes enabling/disabling notifications.
+ *
+ * <p>The class implements Serializable to allow profile data to be passed between activities</p>
+ *
+ */
 public class Profile implements Serializable {
     private String deviceId;
     private boolean notificationSwitch;
@@ -10,6 +17,15 @@ public class Profile implements Serializable {
     private String phone_number;
     private String password;
 
+    /**
+     * Constructs a new Profile object with all the details
+     *
+     * This constructor initializes the profile with the given device ID, name, email, and phone number.
+     * @param deviceId The unique device ID associated with the user's device
+     * @param name Name of the user
+     * @param email Email of the user
+     * @param phone_number Phone number of the user
+     */
     public Profile(String deviceId, String name, String email, String phone_number) {
         this.deviceId = deviceId;
         this.name = name;

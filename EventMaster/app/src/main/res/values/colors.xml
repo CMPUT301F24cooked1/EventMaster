@@ -4,5 +4,9 @@
     <color name="white">#FFFFFFFF</color>
     <color name="grey">#757575</color>
     <color name="soft_blue">#3351A6</color>
+    <color name = "light_mode_color">#FF000000</color>
+    <color name = "dark_mode_color">#FFFFFFFF</color>
+    <color name = "text_color">#FF000000</color>
+
 
 </resources>

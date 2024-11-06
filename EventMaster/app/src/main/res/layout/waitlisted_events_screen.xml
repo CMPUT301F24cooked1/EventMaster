@@ -15,7 +15,6 @@
         android:layout_marginTop="32dp"
         android:layout_marginEnd="93dp"
         android:text="Waitlisted Events"
-        android:textColor="@color/black"
         android:textSize="32sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
