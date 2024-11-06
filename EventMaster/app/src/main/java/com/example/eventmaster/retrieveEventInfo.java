@@ -3,6 +3,7 @@ package com.example.eventmaster;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -78,8 +79,13 @@ public class retrieveEventInfo extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
 
+
+
+
         Intent intentMain = getIntent();
         user =  (Profile) intentMain.getSerializableExtra("User");
+
+
         // will need to access user device id but just hardcoded for now
         String userDeviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
@@ -114,6 +120,7 @@ public class retrieveEventInfo extends AppCompatActivity {
         String posterUrl = intent.getStringExtra("posterUrl");
 
 
+
         Intent intent2 = new Intent(retrieveEventInfo.this, JoinWaitlistScreen.class);
         intent2.putExtra("hashed_data", hashedData);
         intent2.putExtra("deviceID", deviceID);
@@ -141,32 +148,40 @@ public class retrieveEventInfo extends AppCompatActivity {
             }
         });
 
+        // Initialize navigation buttons
+        ImageButton notificationButton = findViewById(R.id.notification_icon);
+        ImageButton settingsButton = findViewById(R.id.settings);
+        ImageButton profileButton = findViewById(R.id.profile);
+        ImageButton listButton = findViewById(R.id.list_icon);
+        ImageButton backButton = findViewById(R.id.back_button); // Initialize back button
 
+        // Set click listeners for navigation
+        notificationButton.setOnClickListener(v -> {
+            Intent newIntent = new Intent(retrieveEventInfo.this, Notifications.class);
+            startActivity(newIntent);
+        });
 
-        // Bottom Bar TODO: Complete for this class and the settings screen and the join events screen
-//        notificationButton = findViewById(R.id.notification_icon);
-//        notificationButton.setOnClickListener(v -> {
-//            Intent intent1 = new Intent(retrieveEventInfo.this, Notifications.class);
-//            startActivity(intent1);
-//        });
-//
-//        settingsButton = findViewById(R.id.settings);
-//        settingsButton.setOnClickListener(v -> {
-//            Intent intent2 = new Intent(retrieveEventInfo.this, SettingsScreen.class);
-//            startActivity(intent2);
-//        });
-//
-//        profileButton = findViewById(R.id.profile);
-//        profileButton.setOnClickListener(v -> {
-//            Intent intent3 = new Intent(retrieveEventInfo.this, ProfileActivity.class);
-//            startActivity(intent3);
-//        });
-//
-//        listButton = findViewById(R.id.list_icon);
-//        listButton.setOnClickListener(v -> {
-//            Intent intent4 = new Intent(retrieveEventInfo.this, ViewCreatedEventsActivity.class);
-//            startActivity(intent4);
-//        });
+        settingsButton.setOnClickListener(v -> {
+            Intent newIntent = new Intent(retrieveEventInfo.this, SettingsScreen.class);
+            startActivity(newIntent);
+        });
+
+        // TODO: fix this so we actually get sent to the correct profile screen
+        profileButton.setOnClickListener(v -> {
+            Intent newIntent = new Intent(retrieveEventInfo.this, ProfileActivity.class);
+            newIntent.putExtra("User", user);
+            startActivity(newIntent);
+        });
+
+        listButton.setOnClickListener(v -> {
+            Intent newIntent = new Intent(retrieveEventInfo.this, JoinEventScreen.class);
+            startActivity(newIntent);
+        });
+        // Set click listener for the back button
+        backButton.setOnClickListener(v -> {
+            finish(); // Close the current activity and return to the previous one
+        });
+
 
 
     }
@@ -177,26 +192,28 @@ public class retrieveEventInfo extends AppCompatActivity {
      * @param deviceID
      * @param event
      */
-
+    // INNAS PART
+    // check if the hash data matches any of the hash data in the firebase when the qr code is scanned
     private void retrieveEventInfo(String hashedData, String deviceID, String event) {
         db.collection("facilities")
                 .document(deviceID)
                 .collection("My Events")
+                // todo event name
                 .whereEqualTo("hash", hashedData)
+                .whereEqualTo("eventName", event)  // added this
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful())
                         if (!task.getResult().isEmpty()){  // check something is in result
-                            Toast.makeText(retrieveEventInfo.this, "succesfully read data", Toast.LENGTH_SHORT).show();
-
                             for (DocumentSnapshot document : task.getResult()) {
                                 // Retrieve data directly from the document
+                                Toast.makeText(retrieveEventInfo.this, "Data is passed!!!", Toast.LENGTH_SHORT).show();
                                 String eventName = document.getString("eventName");
                                 String eventDescription = document.getString("eventDescription");
                                 String eventPosterUrl = document.getString("posterUrl");
 
                                 // Call the display method with the retrieved data
-                                displayEventInfo(eventName, eventDescription, eventPosterUrl);//eventPosterUrl);
+                                displayEventInfo(eventName, eventDescription, eventPosterUrl);
                             }
                     } else {
                         Toast.makeText(retrieveEventInfo.this, "Event does not exist", Toast.LENGTH_SHORT).show();
@@ -220,6 +237,8 @@ public class retrieveEventInfo extends AppCompatActivity {
         // Set the text for the TextViews
         eventNameTextView.setText(eventName);
         eventDescriptionTextView.setText(eventDescription);
+
+
 
         // upload the image from the firebase
         try {
