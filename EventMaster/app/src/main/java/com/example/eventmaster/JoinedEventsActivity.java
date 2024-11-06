@@ -52,7 +52,7 @@ public class JoinedEventsActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         eventList = new ArrayList<>();
-        ViewEventsAdapter = new ViewEventsAdapter(eventList, this);
+        ViewEventsAdapter = new ViewEventsAdapter(eventList, this, user);
         recyclerView.setAdapter(ViewEventsAdapter);
         // Retrieve events from Firestore
         retrieveEvents();

@@ -60,6 +60,7 @@ public class SettingsScreen extends AppCompatActivity {
             }
         });
 
+
         backButton = findViewById(R.id.back);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override

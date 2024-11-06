@@ -140,32 +140,41 @@ public class retrieveEventInfo extends AppCompatActivity {
             }
         });
 
+        // Initialize navigation buttons
+        ImageButton notificationButton = findViewById(R.id.notification_icon);
+        ImageButton settingsButton = findViewById(R.id.settings);
+        ImageButton profileButton = findViewById(R.id.profile);
+        ImageButton listButton = findViewById(R.id.list_icon);
+        ImageButton backButton = findViewById(R.id.back_button); // Initialize back button
 
-
-        // Bottom Bar TODO: Complete for this class and the settings screen and the join events screen
-//        notificationButton = findViewById(R.id.notification_icon);
+//        // Set click listeners for navigation
 //        notificationButton.setOnClickListener(v -> {
-//            Intent intent1 = new Intent(retrieveEventInfo.this, Notifications.class);
-//            startActivity(intent1);
+//            Intent newIntent = new Intent(retrieveEventInfo.this, Notifications.class);
+//            startActivity(newIntent);
 //        });
 //
-//        settingsButton = findViewById(R.id.settings);
 //        settingsButton.setOnClickListener(v -> {
-//            Intent intent2 = new Intent(retrieveEventInfo.this, SettingsScreen.class);
-//            startActivity(intent2);
+//            Intent newIntent = new Intent(retrieveEventInfo.this, SettingsScreen.class);
+//            startActivity(newIntent);
 //        });
 //
-//        profileButton = findViewById(R.id.profile);
+//        // TODO: fix this so we actually get sent to the correct profile screen
 //        profileButton.setOnClickListener(v -> {
-//            Intent intent3 = new Intent(retrieveEventInfo.this, ProfileActivity.class);
-//            startActivity(intent3);
+//
+//            Intent newIntent = new Intent(retrieveEventInfo.this, ProfileActivity.class);
+//            newIntent.putExtra("User", user);
+//            startActivity(newIntent);
 //        });
 //
-//        listButton = findViewById(R.id.list_icon);
 //        listButton.setOnClickListener(v -> {
-//            Intent intent4 = new Intent(retrieveEventInfo.this, ViewCreatedEventsActivity.class);
-//            startActivity(intent4);
+//            Intent newIntent = new Intent(retrieveEventInfo.this, JoinEventScreen.class);
+//            startActivity(newIntent);
 //        });
+//        // Set click listener for the back button
+//        backButton.setOnClickListener(v -> {
+//            finish(); // Close the current activity and return to the previous one
+//        });
+
 
 
     }
@@ -176,11 +185,13 @@ public class retrieveEventInfo extends AppCompatActivity {
      * @param deviceID
      * @param event
      */
-
+    // INNAS PART
+    // check if the hash data matches any of the hash data in the firebase when the qr code is scanned
     private void retrieveEventInfo(String hashedData, String deviceID, String event) {
         db.collection("facilities")
                 .document(deviceID)
                 .collection("My Events")
+                // todo event name
                 .whereEqualTo("hash", hashedData)
                 .get()
                 .addOnCompleteListener(task -> {
@@ -195,7 +206,7 @@ public class retrieveEventInfo extends AppCompatActivity {
                                 String eventPosterUrl = document.getString("posterUrl");
 
                                 // Call the display method with the retrieved data
-                                displayEventInfo(eventName, eventDescription, eventPosterUrl);//eventPosterUrl);
+                                displayEventInfo(eventName, eventDescription, eventPosterUrl);
                             }
                     } else {
                         Toast.makeText(retrieveEventInfo.this, "Event does not exist", Toast.LENGTH_SHORT).show();

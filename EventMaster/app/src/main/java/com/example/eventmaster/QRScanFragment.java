@@ -36,9 +36,13 @@ public class QRScanFragment extends AppCompatActivity{
         db = FirebaseFirestore.getInstance();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.scan_qr_screen);
+        Profile user = (Profile) getIntent().getSerializableExtra("User");
+        //Profile user = (Profile) getIntent().getSerializableExtra("User"); // user from MainActivity
 
         AppCompatButton scanButton = findViewById(R.id.scan_qr_code_button);
         Button button = findViewById(R.id.next_button);
+
+
 
         // click on the scan button
         scanButton.setOnClickListener(new View.OnClickListener() {
@@ -57,9 +61,45 @@ public class QRScanFragment extends AppCompatActivity{
                 Intent intent = getIntent();
                 String event = intent.getStringExtra("event");
                 String deviceID = intent.getStringExtra("deviceID");
+
                 fetchEventData(deviceID, event);
             }
         });
+
+
+        // Initialize navigation buttons
+        ImageButton notificationButton = findViewById(R.id.notification_icon);
+        ImageButton settingsButton = findViewById(R.id.settings);
+        ImageButton profileButton = findViewById(R.id.profile);
+        ImageButton listButton = findViewById(R.id.list_icon);
+        ImageButton backButton = findViewById(R.id.back_button); // Initialize back button
+
+        // Set click listeners for navigation
+        notificationButton.setOnClickListener(v -> {
+            Intent intent = new Intent(QRScanFragment.this, Notifications.class);
+            startActivity(intent);
+        });
+
+        settingsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(QRScanFragment.this, SettingsScreen.class);
+            startActivity(intent);
+        });
+
+        profileButton.setOnClickListener(v -> {
+            Intent intent = new Intent(QRScanFragment.this, ProfileActivity.class);
+            intent.putExtra("User", user);
+            startActivity(intent);
+        });
+
+        listButton.setOnClickListener(v -> {
+            Intent intent = new Intent(QRScanFragment.this, JoinEventScreen.class);
+            startActivity(intent);
+        });
+        // Set click listener for the back button
+        backButton.setOnClickListener(v -> {
+            finish(); // Close the current activity and return to the previous one
+        });
+
 
     }
 
