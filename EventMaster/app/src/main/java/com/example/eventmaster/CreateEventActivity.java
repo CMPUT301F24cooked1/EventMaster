@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
@@ -43,7 +44,7 @@ public class CreateEventActivity extends AppCompatActivity {
     private EditText waitlistCapacityInput;
     private EditText waitlistCountdownInput;
     private AppCompatButton createEventButton;
-    private AppCompatButton uploadPosterButton;
+    private TextView uploadPosterButton;
     private Switch geolocationSwitch;
 
     private Uri posterUri; // To hold the URI of the selected poster

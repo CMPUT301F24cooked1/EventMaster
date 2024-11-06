@@ -6,10 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
@@ -27,10 +24,12 @@ public class ViewEventsAdapter extends RecyclerView.Adapter<ViewEventsAdapter.Ev
      */
     private List<Event> eventList;
     private Context context;
+    private Profile user;
 
-    public ViewEventsAdapter(List<Event> eventList, Context context) {
+    public ViewEventsAdapter(List<Event> eventList, Context context, Profile user) {
         this.eventList = eventList;
         this.context = context;
+        this.user = user;
     }
 
     @NonNull
@@ -43,7 +42,7 @@ public class ViewEventsAdapter extends RecyclerView.Adapter<ViewEventsAdapter.Ev
     @Override
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
         Event event = eventList.get(position);
-        holder.bind(event, context);
+        holder.bind(event, context, user);
     }
 
     @Override
@@ -68,7 +67,7 @@ public class ViewEventsAdapter extends RecyclerView.Adapter<ViewEventsAdapter.Ev
             eventDescriptionTextView = itemView.findViewById(R.id.eventDescriptionTextView);
         }
 
-        public void bind(Event event, Context context) {
+        public void bind(Event event, Context context, Profile user) {
 
             // set the text on the recycler view
             eventNameTextView.setText(event.getEventName());   // grab facility name/device id
@@ -81,8 +80,7 @@ public class ViewEventsAdapter extends RecyclerView.Adapter<ViewEventsAdapter.Ev
                 Intent intent = new Intent(context, QRScanFragment.class);
                 intent.putExtra("event", event.getEventName());
                 intent.putExtra("deviceID", event.getDeviceID());
-
-                //Toast.makeText(context, "facility id: "+ deviceID, Toast.LENGTH_SHORT).show();
+                intent.putExtra("User", user);
                 context.startActivity(intent);
             });
         }
