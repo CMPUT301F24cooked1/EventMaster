@@ -78,8 +78,13 @@ public class retrieveEventInfo extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
 
+
+
+
         Intent intentMain = getIntent();
         user =  (Profile) intentMain.getSerializableExtra("User");
+
+
         // will need to access user device id but just hardcoded for now
         String userDeviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
@@ -112,6 +117,7 @@ public class retrieveEventInfo extends AppCompatActivity {
         String deviceID = intent.getStringExtra("deviceID");  // facility id
         String event = intent.getStringExtra("event");
         String posterUrl = intent.getStringExtra("posterUrl");
+
 
 
         Intent intent2 = new Intent(retrieveEventInfo.this, JoinWaitlistScreen.class);
@@ -148,33 +154,32 @@ public class retrieveEventInfo extends AppCompatActivity {
         ImageButton listButton = findViewById(R.id.list_icon);
         ImageButton backButton = findViewById(R.id.back_button); // Initialize back button
 
-//        // Set click listeners for navigation
-//        notificationButton.setOnClickListener(v -> {
-//            Intent newIntent = new Intent(retrieveEventInfo.this, Notifications.class);
-//            startActivity(newIntent);
-//        });
-//
-//        settingsButton.setOnClickListener(v -> {
-//            Intent newIntent = new Intent(retrieveEventInfo.this, SettingsScreen.class);
-//            startActivity(newIntent);
-//        });
-//
-//        // TODO: fix this so we actually get sent to the correct profile screen
-//        profileButton.setOnClickListener(v -> {
-//
-//            Intent newIntent = new Intent(retrieveEventInfo.this, ProfileActivity.class);
-//            newIntent.putExtra("User", user);
-//            startActivity(newIntent);
-//        });
-//
-//        listButton.setOnClickListener(v -> {
-//            Intent newIntent = new Intent(retrieveEventInfo.this, JoinEventScreen.class);
-//            startActivity(newIntent);
-//        });
-//        // Set click listener for the back button
-//        backButton.setOnClickListener(v -> {
-//            finish(); // Close the current activity and return to the previous one
-//        });
+        // Set click listeners for navigation
+        notificationButton.setOnClickListener(v -> {
+            Intent newIntent = new Intent(retrieveEventInfo.this, Notifications.class);
+            startActivity(newIntent);
+        });
+
+        settingsButton.setOnClickListener(v -> {
+            Intent newIntent = new Intent(retrieveEventInfo.this, SettingsScreen.class);
+            startActivity(newIntent);
+        });
+
+        // TODO: fix this so we actually get sent to the correct profile screen
+        profileButton.setOnClickListener(v -> {
+            Intent newIntent = new Intent(retrieveEventInfo.this, ProfileActivity.class);
+            newIntent.putExtra("User", user);
+            startActivity(newIntent);
+        });
+
+        listButton.setOnClickListener(v -> {
+            Intent newIntent = new Intent(retrieveEventInfo.this, JoinEventScreen.class);
+            startActivity(newIntent);
+        });
+        // Set click listener for the back button
+        backButton.setOnClickListener(v -> {
+            finish(); // Close the current activity and return to the previous one
+        });
 
 
 

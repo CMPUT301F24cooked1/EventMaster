@@ -81,8 +81,6 @@ public class ViewEventsAdapter extends RecyclerView.Adapter<ViewEventsAdapter.Ev
                 intent.putExtra("event", event.getEventName());
                 intent.putExtra("deviceID", event.getDeviceID());
                 intent.putExtra("User", user);
-
-                //Toast.makeText(context, "facility id: "+ deviceID, Toast.LENGTH_SHORT).show();
                 context.startActivity(intent);
             });
         }
