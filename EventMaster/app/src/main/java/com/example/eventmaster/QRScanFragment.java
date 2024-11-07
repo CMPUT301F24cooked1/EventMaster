@@ -13,6 +13,7 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
@@ -34,6 +35,12 @@ public class QRScanFragment extends AppCompatActivity{
      */
     private FirebaseFirestore db;
     private Profile user;
+
+    private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
+    private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
+    private ActivityResultLauncher<Intent> settingsResultLauncher;
+    private ActivityResultLauncher<Intent> listActivityResultLauncher;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,30 +80,78 @@ public class QRScanFragment extends AppCompatActivity{
         ImageButton listButton = findViewById(R.id.list_icon);
         ImageButton backButton = findViewById(R.id.back_button); // Initialize back button
 
+        // Set result launchers to set up navigation buttons on the bottom of the screen
+        settingsResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {});
+
+        listActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {});
+
+        notificationActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {});
+
+        ProfileActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {});
+
         // Set click listeners for navigation buttons on the bottom of the screen
-        // button for notification screen
-        notificationButton.setOnClickListener(v -> {
-            Intent intent = new Intent(QRScanFragment.this, Notifications.class);
-            startActivity(intent);
-        });
-
-        // button for settings screen
-        settingsButton.setOnClickListener(v -> {
-            Intent intent = new Intent(QRScanFragment.this, SettingsScreen.class);
-            startActivity(intent);
-        });
-
-        // button for profile screen
+        // sends you to profile screen
         profileButton.setOnClickListener(v -> {
-            Intent intent = new Intent(QRScanFragment.this, ProfileActivity.class);
-            intent.putExtra("User", user);
-            startActivity(intent);
+            Intent newIntent = new Intent(QRScanFragment.this, ProfileActivity.class);
+            newIntent.putExtra("User", user);
+            ProfileActivityResultLauncher.launch(newIntent);
+        });
+
+        // sends you to settings screen
+        settingsButton.setOnClickListener(v -> {
+            Intent newIntent = new Intent(QRScanFragment.this, SettingsScreen.class);
+            newIntent.putExtra("User", user);
+            settingsResultLauncher.launch(newIntent);
+        });
+
+        // sends you to a list of invited events that you accepted
+        listButton.setOnClickListener(v -> {
+            Intent newIntent = new Intent(QRScanFragment.this, JoinedEventsActivity.class);
+            newIntent.putExtra("User", user);
+            listActivityResultLauncher.launch(newIntent);
+        });
+        notificationButton.setOnClickListener(v -> {
+            Intent newIntent = new Intent(QRScanFragment.this, Notifications.class);
+            newIntent.putExtra("User", user);
+            notificationActivityResultLauncher.launch(newIntent);
         });
 
         // Set click listener for the back button
         backButton.setOnClickListener(v -> {
             finish(); // Close the current activity and return to the previous one
         });
+        // Set click listeners for navigation buttons on the bottom of the screen
+//        // button for notification screen
+//        notificationButton.setOnClickListener(v -> {
+//            Intent intent = new Intent(QRScanFragment.this, Notifications.class);
+//            startActivity(intent);
+//        });
+//
+//        // button for settings screen
+//        settingsButton.setOnClickListener(v -> {
+//            Intent intent = new Intent(QRScanFragment.this, SettingsScreen.class);
+//            startActivity(intent);
+//        });
+//
+//        // button for profile screen
+//        profileButton.setOnClickListener(v -> {
+//            Intent intent = new Intent(QRScanFragment.this, ProfileActivity.class);
+//            intent.putExtra("User", user);
+//            startActivity(intent);
+//        });
+//
+//        // Set click listener for the back button
+//        backButton.setOnClickListener(v -> {
+//            finish(); // Close the current activity and return to the previous one
+//        });
     }
 
     // Set the Scanner
