@@ -101,9 +101,9 @@ public class UnjoinWaitlistScreen extends AppCompatActivity {
         });
 
         // Set click listener for the back button
-        backButton.setOnClickListener(v -> {
+        /*backButton.setOnClickListener(v -> {
             finish(); // Close the current activity and return to the previous one
-        });
+        });*/
     }
 
 
