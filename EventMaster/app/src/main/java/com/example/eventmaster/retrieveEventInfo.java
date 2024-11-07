@@ -255,9 +255,8 @@ public class retrieveEventInfo extends AppCompatActivity {
         eventDescriptionTextView.setText(eventDescription);
 
         if (eventPosterUrl == null){
-            eventPoster.setImageResource(R.drawable.default_poster);
+            eventPoster.setImageResource(R.drawable.default_poster); // set default poster
         }
-
         else {
             // upload the image from the firebase
             try {

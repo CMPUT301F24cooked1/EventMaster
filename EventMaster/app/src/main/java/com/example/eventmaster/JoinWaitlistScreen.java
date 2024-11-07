@@ -157,14 +157,21 @@ public class JoinWaitlistScreen extends AppCompatActivity {
         eventNameTextView.setText(eventName);
         eventDescriptionTextView.setText(eventDescription);
 
-        // upload the image from the firebase
-        try {
-            Glide.with(this)
-                    .load(eventPosterUrl)
-                    .into(eventPoster);
-        } catch (Exception e) {
-            Log.e("RetrieveEventInfo", "Error loading image: " + e.getMessage());
+        if (eventPosterUrl == null){
+            eventPoster.setImageResource(R.drawable.default_poster);  // set default poster
         }
+        else {
+            // upload the image from the firebase
+            try {
+                Glide.with(this)
+                        .load(eventPosterUrl)
+                        .into(eventPoster);
+            } catch (Exception e) {
+                Log.e("RetrieveEventInfo", "Error loading image: " + e.getMessage());
+            }
+        }
+
+
     }
 
 
