@@ -47,6 +47,7 @@ public class WaitlistedEventsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ModeActivity.applyTheme(this);
         setContentView(R.layout.waitlisted_events_screen);
         Profile user = (Profile) getIntent().getSerializableExtra("User"); // user from MainActivity
 
@@ -61,8 +62,10 @@ public class WaitlistedEventsActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         eventList = new ArrayList<>();
+
         WaitlistedEventsAdapter = new WaitlistedEventsAdapter(eventList, this);
         recyclerView.setAdapter(WaitlistedEventsAdapter);
+
         // Retrieve events from Firestore
         retrieveWaitlistedEvents(entrantId);
 

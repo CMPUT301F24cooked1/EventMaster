@@ -3,4 +3,6 @@
     <string name="app_name_home_screen">Eventmaster</string>
     <string name="profile_screen">My Profile</string>
     <string name="Developers">Developed by \n Daniel V.\n Ellen C.\n Nelson W.\n Inna D.\n Ray S.\n Vansh S.</string>
+    <string name="remove_pfp"><u>remove profile picture</u></string>
+
 </resources>

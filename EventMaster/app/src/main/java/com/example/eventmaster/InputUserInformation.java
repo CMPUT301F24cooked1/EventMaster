@@ -1,8 +1,10 @@
 package com.example.eventmaster;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,24 +13,22 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
 import java.io.ByteArrayOutputStream;
+
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 public class InputUserInformation extends AppCompatActivity {
     private EditText name_edit;
@@ -40,98 +40,74 @@ public class InputUserInformation extends AppCompatActivity {
     private ImageView profile_picture;
     private ImageButton upload_profile_picture;
     private ActivityResultLauncher<Intent> profileActivityResultLauncher;
-    private FirebaseFirestore db;
     private static final String PREFS_NAME = "ProfilePrefs";
     private static final String PROFILE_COLOR_KEY = "profile_color";
-    private byte[] byteArrayPFP;
-
-
-
-    /**
-     * Initializes the input user information screen
-     * @param savedInstanceState If the activity is being re-initialized after
-     *     previously being shut down then this Bundle contains the data it most
-     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
-     * Allows the user to set their name, email, phone number
-     */
+    private Profile user;
+    private TextView remove_pfp;
+    private static final String FIREBASE_PROFILE_PIC_KEY = "profilePictureUrl";
+    private FirebaseStorage storage;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ModeActivity.applyTheme(this);
         setContentView(R.layout.edit_profile_screen);
 
+        storage = FirebaseStorage.getInstance();
         db = FirebaseFirestore.getInstance();
-
-        Profile user = (Profile) getIntent().getSerializableExtra("User"); // user from MainActivity
+        user = (Profile) getIntent().getSerializableExtra("User");
 
         //input boxes for user
         name_edit = findViewById(R.id.edit_name);
         email_edit = findViewById(R.id.edit_email);
         phone_number_edit = findViewById(R.id.edit_phone_number);
         profile_change_button = findViewById(R.id.save_changes_button);
-
         profile_picture = findViewById(R.id.profile_picture);
         upload_profile_picture = findViewById(R.id.upload_profile_picture);
 
-        //saves the user's input
+        // Saves the user's input
         name_edit.setText(user.getName());
         email_edit.setText(user.getEmail());
         phone_number_edit.setText(user.getPhone_number());
-        Image.getProfilePictureUrl(user.getDeviceId(), user, profile_picture, InputUserInformation.this);
+        ProfilePicture.loadProfilePicture(user, profile_picture, InputUserInformation.this);
 
-        profile_change_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String name = name_edit.getText().toString();
-                String email = email_edit.getText().toString();
-                String phone_number = phone_number_edit.getText().toString();
-                user.setName(name);
-                user.setEmail(email);
-                try {
-                    validatePhoneNumber(phone_number);
-                    user.setPhone_number(phone_number);
-                } catch (IllegalArgumentException e) {
-                    Toast.makeText(InputUserInformation.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-                updateUserInfo(user.getDeviceId(), user.getName(), user.getEmail(), user.getPhone_number());
+        // Set the changes and finish the activity, results are sent back to ProfileActivity
+        profile_change_button.setOnClickListener(v -> {
+            String name = name_edit.getText().toString();
+            String email = email_edit.getText().toString();
+            String phone_number = phone_number_edit.getText().toString();
+            user.setName(name);
+            user.setEmail(email);
+            try {
+                validatePhoneNumber(phone_number);
+                user.setPhone_number(phone_number);
+            } catch (IllegalArgumentException e) {
+                Toast.makeText(InputUserInformation.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+            updateUserInfo(user.getDeviceId(), user.getName(), user.getEmail(), user.getPhone_number(), () -> {
+                ProfilePicture.loadProfilePicture(user, profile_picture, InputUserInformation.this);
                 Intent intent = new Intent(InputUserInformation.this, ProfileActivity.class);
                 intent.putExtra("User", user);
-                profileActivityResultLauncher.launch(intent);
-            }
+                setResult(RESULT_OK, intent);
+                finish();
+            });
         });
 
+        // results after user uploads their profile picture
         profileActivityResultLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(), result ->{
-                    if (result.getResultCode() == RESULT_OK){
-
-                    }
-                }
-        );
-
-        // launches intent when user uploads their profile picture
-        upload_profile_picture.setOnClickListener(v -> {
-            Intent intent = new Intent(Intent.ACTION_PICK);
-            intent.setType("image/*");
-            profileActivityResultLauncher.launch(intent);
-        });
-
-        profileActivityResultLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
+                new ActivityResultContracts.StartActivityForResult(), result -> {
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                         Uri selectedImageUri = result.getData().getData();
                         if (selectedImageUri != null) {
                             try {
-                                // Get the input stream of the selected image
                                 InputStream imageStream = getContentResolver().openInputStream(selectedImageUri);
                                 Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-
-                                uploadProfileFirebase(user.getDeviceId(), selectedImage);
-
-                                // Crop the image into a circle with a radius of 100
-                                Bitmap croppedPFP = Image.cropProfilePicture(selectedImage, 100);
+                                Bitmap croppedPFP = Image.cropProfilePicture(selectedImage, 90);
                                 profile_picture.setImageBitmap(croppedPFP);
 
+                                Image.saveProfilePicture(croppedPFP, InputUserInformation.this);
+                                uploadProfilePictureToFirebase(croppedPFP);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -139,22 +115,20 @@ public class InputUserInformation extends AppCompatActivity {
                     }
                 }
         );
+
+        // Allows users to pick their profile picture
+        upload_profile_picture.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_PICK);
+            intent.setType("image/*");
+            profileActivityResultLauncher.launch(intent);
+        });
+
+        // User can click "remove pfp" to remove their uploaded photo
+        remove_pfp = findViewById(R.id.remove_profile_picture);
+        remove_pfp.setOnClickListener(v -> removeProfilePicture());
     }
 
 
-    /**
-     * Makes sure the phone number is valid with only integers
-     * @param phone_number
-     */
-    private void validatePhoneNumber(String phone_number) {
-        String trimmedPhoneNumber = phone_number.trim(); // Remove leading/trailing whitespace
-        if (trimmedPhoneNumber.isEmpty()) {
-            return;
-        }
-        if (!trimmedPhoneNumber.matches("^[0-9]+$")) { // Ensure only digits
-            throw new IllegalArgumentException("Phone number should contain only digits.");
-        }
-    }
 
     /**
      * Updates firestore with the user's information
@@ -165,88 +139,118 @@ public class InputUserInformation extends AppCompatActivity {
      * @param phone_number the phone number of the user
      *
      */
-    private void updateUserInfo(String deviceId, String name, String email, String phone_number) {
-        // Create a map with the additional user data
+    private void updateUserInfo(String deviceId, String name, String email, String phone_number, Runnable onComplete) {
         Map<String, Object> userData = new HashMap<>();
         userData.put("name", name);
         userData.put("email", email);
         userData.put("phone number", phone_number);
 
-        // Update the document with the new user data, merging with existing data
-        db.collection("profiles")
-                .document(deviceId)
-                .set(userData, SetOptions.merge()) // Merge with existing data
+        db.collection("profiles").document(deviceId)
+                .set(userData, SetOptions.merge())
                 .addOnSuccessListener(aVoid -> {
                     Log.d("Firestore", "User info updated successfully.");
+                    onComplete.run(); // Finish activity after successful update
                 })
                 .addOnFailureListener(e -> {
                     Log.e("Firestore", "Error updating user info", e);
+                    Toast.makeText(this, "Failed to save data.", Toast.LENGTH_SHORT).show();
                 });
     }
 
     /**
-     * Update firebase with the uploaded profile picture
+     * Uploads the profile picture to Firebase Storage and saves the download URL in Firestore.
      *
-     * @param deviceId the deviceID of the user
-     * @param bitmap the bitmap of the image
-     *
+     * @param bitmap The profile picture bitmap.
      */
-    private void uploadProfileFirebase(String deviceId, Bitmap bitmap) {
-        // Convert the Bitmap to a byte array
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
-        byte[] imageData = byteArrayOutputStream.toByteArray();
+    private void uploadProfilePictureToFirebase(Bitmap bitmap) {
+        // Convert bitmap to byte array
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        byte[] data = baos.toByteArray();
 
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReference();
-
-        // Create a reference where the profile picture will be stored under "profile_pictures" folder
-        StorageReference profilePictureRef = storageRef.child("profile_pictures/" + deviceId + "_profile_picture.png");
+        // Create a reference to the Firebase Storage location
+        StorageReference profilePicRef = storage.getReference().child("profile_pictures/" + user.getDeviceId() + "_profile_picture.png");
 
         // Upload the image to Firebase Storage
-        UploadTask uploadTask = profilePictureRef.putBytes(imageData);
+        UploadTask uploadTask = profilePicRef.putBytes(data);
+        uploadTask.addOnSuccessListener(taskSnapshot -> {
+            profilePicRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                String downloadUrl = uri.toString();
+                saveProfilePictureUrlToFirestore(downloadUrl);
+            }).addOnFailureListener(e -> Log.e("FirebaseStorage", "Failed to get download URL", e));
+        }).addOnFailureListener(e -> Log.e("FirebaseStorage", "Failed to upload image", e));
+    }
 
-        // Check if the upload to firebase was successful or not & save it to Firestore
-        uploadTask.addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                // Get the download URL if upload was successful
-                profilePictureRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                    // Save the download URL to Firestore
-                    saveProfilePictureFirestore(deviceId, uri.toString());
-                }).addOnFailureListener(e -> {
-                    // Handle failure to get the download URL
-                    Log.e("FirebaseStorage", "Error getting download URL", e);
-                });
-            } else {
-                // Handle failure to upload the image
-                Log.e("FirebaseStorage", "Error uploading image", task.getException());
-            }
+    /**
+     * Saves the profile picture URL to Firestore under the user's document.
+     *
+     * @param downloadUrl The download URL of the profile picture.
+     */
+    private void saveProfilePictureUrlToFirestore(String downloadUrl) {
+        db.collection("profiles").document(user.getDeviceId())
+                .update(FIREBASE_PROFILE_PIC_KEY, downloadUrl)
+                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Profile picture URL saved successfully."))
+                .addOnFailureListener(e -> Log.e("Firestore", "Error saving profile picture URL", e));
+    }
+
+    /**
+     * When user removes their profile picture, it gets removed off shared preference and sets their profile to their default one.
+     * It also gets deleted off firestore and firebase.
+     */
+    private void removeProfilePicture() {
+        // Removes the photo from saved preference
+        SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove("profile_picture_bitmap");
+        editor.apply();
+
+        // Get the saved color from shared prefernce to set their auto generated pfp
+        int savedColor = sharedPreferences.getInt(PROFILE_COLOR_KEY, -1);
+        if (savedColor == -1) {
+            savedColor = ProfilePicture.randomColorGenerator();
+            editor.putInt(PROFILE_COLOR_KEY, savedColor); // Save the newly generated color
+            editor.apply();
+        }
+
+        // Generate the default profile picture using the saved or generated color
+        if (user.getName().isEmpty()){
+            profile_picture.setImageResource(R.drawable.profile_picture);
+        }
+        else{
+            Bitmap defaultPicture = Image.generateProfilePicture(user.getName(), 200, savedColor, Color.WHITE);
+            profile_picture.setImageBitmap(defaultPicture);
+        }
+
+        // Delete the profile picture from Firebase Storage
+        StorageReference profilePicRef = FirebaseStorage.getInstance().getReference()
+                .child("profile_pictures/" + user.getDeviceId() + "_profile_picture.png");
+        profilePicRef.delete().addOnSuccessListener(aVoid -> {
+            Log.d("FirebaseStorage", "Profile picture deleted from Firebase Storage");
+            // Remove the profile picture URL from Firestore
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db.collection("profiles").document(user.getDeviceId())
+                    .update("profilePictureUrl", null) // Set URL to null to indicate no profile picture
+                    .addOnSuccessListener(aVoid1 -> {
+                        Log.d("Firestore", "Profile picture URL removed from Firestore");
+                    })
+                    .addOnFailureListener(e -> Log.e("Firestore", "Error removing profile picture URL", e));
+        }).addOnFailureListener(e -> {
+            Log.e("FirebaseStorage", "Error deleting profile picture from Firebase Storage", e);
         });
     }
 
     /**
-     * Update Firestore with the URL of the image that is stored in Firebase
-     *
-     * @param deviceId the deviceID of the user
-     * @param downloadUrl the URL of the image
-     *
+     * Makes sure the phone number is valid with only integers
+     * @param phone_number
      */
-    private void saveProfilePictureFirestore(String deviceId, String downloadUrl) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-        // Create a map to store the image's URL
-        Map<String, Object> userProfileUpdate = new HashMap<>();
-        userProfileUpdate.put("profilePictureUrl", downloadUrl);
-
-        // Update the user's document in Firestore with the profile picture URL
-        db.collection("profiles").document(deviceId)
-                .set(userProfileUpdate, SetOptions.merge())
-                .addOnSuccessListener(aVoid -> {
-                    Log.d("Firestore", "Profile picture URL saved successfully.");
-                })
-                .addOnFailureListener(e -> {
-                    Log.e("Firestore", "Error saving profile picture URL", e);
-                });
+    private void validatePhoneNumber(String phone_number) {
+        String trimmedPhoneNumber = phone_number.trim();
+        if (trimmedPhoneNumber.isEmpty()) {
+            return;
+        }
+        if (!trimmedPhoneNumber.matches("^[0-9]+$")) {
+            throw new IllegalArgumentException("Phone number should contain only digits.");
+        }
     }
 
 

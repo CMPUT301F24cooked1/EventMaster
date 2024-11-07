@@ -39,6 +39,7 @@ public class JoinedEventsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.joined_events_screen);
+        ModeActivity.applyTheme(this);
         Profile user = (Profile) getIntent().getSerializableExtra("User"); // user from MainActivity
 
 
@@ -52,7 +53,7 @@ public class JoinedEventsActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         eventList = new ArrayList<>();
-        ViewEventsAdapter = new ViewEventsAdapter(eventList, this);
+        ViewEventsAdapter = new ViewEventsAdapter(eventList, this, user);
         recyclerView.setAdapter(ViewEventsAdapter);
         // Retrieve events from Firestore
         retrieveEvents();

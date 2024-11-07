@@ -6,10 +6,12 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
@@ -43,7 +45,7 @@ public class CreateEventActivity extends AppCompatActivity {
     private EditText waitlistCapacityInput;
     private EditText waitlistCountdownInput;
     private AppCompatButton createEventButton;
-    private AppCompatButton uploadPosterButton;
+    private TextView uploadPosterButton;
     private Switch geolocationSwitch;
 
     private Uri posterUri; // To hold the URI of the selected poster
@@ -55,6 +57,7 @@ public class CreateEventActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ModeActivity.applyTheme(this);
         setContentView(R.layout.activity_create_event);
 
         // Initialize Firebase instances
@@ -74,7 +77,7 @@ public class CreateEventActivity extends AppCompatActivity {
         Profile user = new Profile(deviceId, "Vansh", " ", " ");
 
         // Initialize navigation buttons
-        ImageButton notificationButton = findViewById(R.id.notifications);
+        ImageButton notificationButton = findViewById(R.id.notification);
         ImageButton settingsButton = findViewById(R.id.settings);
         ImageButton profileButton = findViewById(R.id.profile);
         ImageButton viewEventsButton = findViewById(R.id.view_events);
@@ -255,14 +258,18 @@ public class CreateEventActivity extends AppCompatActivity {
                                 .document(eventName)
                                 .set(eventData)
                                 .addOnSuccessListener(aVoid -> {
+                                    Log.d("CreateEvent 1", "1" + eventName);
                                     Toast.makeText(CreateEventActivity.this, "Event created successfully", Toast.LENGTH_SHORT).show();
                                     // Generate and store QR code
                                     generateQRCode(eventName, facilityId);
-
+                                    Log.d("CreateEvent 2 ", "2 " + eventName);
                                     // Navigate directly to EventDetailsActivity
                                     Intent intent = new Intent(CreateEventActivity.this, EventDetailsActivity.class);
+                                    Log.d("CreateEvent 3", "3 " + eventName);
                                     intent.putExtra("eventId", eventName); // Pass the event ID or name as needed
+                                    Log.d("CreateEvent 4", "4 " + eventName);
                                     startActivity(intent);
+                                    Log.d("CreateEvent 5", "5 " + eventName);
                                     finish(); // Optional: finish CreateEventActivity if no back navigation needed
                                 })
                                 .addOnFailureListener(e -> Toast.makeText(CreateEventActivity.this, "Error creating event", Toast.LENGTH_SHORT).show());

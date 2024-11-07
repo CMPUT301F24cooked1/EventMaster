@@ -37,6 +37,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ModeActivity.applyTheme(this);
         setContentView(R.layout.activity_event_details);
 
         eventNameTextView = findViewById(R.id.eventNameTextView);
@@ -50,7 +51,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         // Load event details from Firestore
         loadEventDetails();
         // Initialize navigation buttons
-        ImageButton notificationButton = findViewById(R.id.notifications);
+        ImageButton notificationButton = findViewById(R.id.notification_icon);
         ImageButton settingsButton = findViewById(R.id.settings);
         ImageButton profileButton = findViewById(R.id.profile);
         ImageButton homeButton = findViewById(R.id.home_icon);
@@ -94,7 +95,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         DocumentReference eventRef = firestore.collection("facilities")
                 .document(deviceId)
                 .collection("My Events")
-                .document(); // Use the event ID to get the specific document
+                .document(eventId); // Use the event ID to get the specific document
 
         eventRef.get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {

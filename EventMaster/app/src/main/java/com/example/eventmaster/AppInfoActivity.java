@@ -18,6 +18,7 @@ public class AppInfoActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ModeActivity.applyTheme(this);
         setContentView(R.layout.app_info_screen);
 
         Profile user = (Profile) getIntent().getSerializableExtra("User");

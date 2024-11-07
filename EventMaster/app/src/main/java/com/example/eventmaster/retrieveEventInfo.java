@@ -3,6 +3,7 @@ package com.example.eventmaster;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -35,7 +36,7 @@ public class retrieveEventInfo extends AppCompatActivity {
      * @param savedInstanceState If the activity is being re-initialized after
      *     previously being shut down then this Bundle contains the data it most
      *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
-     * @param hashedData the hash data from the firebase that a QR code is created by
+     * @param hashedData the hash data of the event that is needed in order to access proper data
      * @param deviceID the facilities device ID
      * @param event the event // dont think I need this
      * Displays the event information of the chosen event
@@ -68,6 +69,7 @@ public class retrieveEventInfo extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ModeActivity.applyTheme(this);
         setContentView(R.layout.event_details_screen);
         eventName = findViewById(R.id.event_name);
         eventDescription = findViewById(R.id.event_decription);
@@ -79,6 +81,7 @@ public class retrieveEventInfo extends AppCompatActivity {
 
         Intent intentMain = getIntent();
         user =  (Profile) intentMain.getSerializableExtra("User");
+
         // will need to access user device id but just hardcoded for now
         String userDeviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
@@ -112,13 +115,11 @@ public class retrieveEventInfo extends AppCompatActivity {
         String event = intent.getStringExtra("event");
         String posterUrl = intent.getStringExtra("posterUrl");
 
-
         Intent intent2 = new Intent(retrieveEventInfo.this, JoinWaitlistScreen.class);
         intent2.putExtra("hashed_data", hashedData);
         intent2.putExtra("deviceID", deviceID);
         intent2.putExtra("event", event);
         intent2.putExtra("posterUrl", posterUrl);
-
 
         // Ensure the received data is not null
         if (hashedData != null && deviceID != null) {
@@ -126,7 +127,6 @@ public class retrieveEventInfo extends AppCompatActivity {
         } else {
             Toast.makeText(this, "Failed to retrieve event data.", Toast.LENGTH_SHORT).show();
         }
-
 
         // links the description screen to the join waitlist screen
         joinWaitlistButton.setOnClickListener(new View.OnClickListener() {
@@ -140,62 +140,67 @@ public class retrieveEventInfo extends AppCompatActivity {
             }
         });
 
+        // Initialize navigation buttons
+        ImageButton notificationButton = findViewById(R.id.notification_icon);
+        ImageButton settingsButton = findViewById(R.id.settings);
+        ImageButton profileButton = findViewById(R.id.profile);
+        ImageButton listButton = findViewById(R.id.list_icon);
+        ImageButton backButton = findViewById(R.id.back_button); // Initialize back button
 
+        // Set click listeners for navigation buttons on the bottom of the screen
+        // button for notification screen
+        notificationButton.setOnClickListener(v -> {
+            Intent newIntent = new Intent(retrieveEventInfo.this, Notifications.class);
+            startActivity(newIntent);
+        });
 
-        // Bottom Bar TODO: Complete for this class and the settings screen and the join events screen
-//        notificationButton = findViewById(R.id.notification_icon);
-//        notificationButton.setOnClickListener(v -> {
-//            Intent intent1 = new Intent(retrieveEventInfo.this, Notifications.class);
-//            startActivity(intent1);
-//        });
-//
-//        settingsButton = findViewById(R.id.settings);
-//        settingsButton.setOnClickListener(v -> {
-//            Intent intent2 = new Intent(retrieveEventInfo.this, SettingsScreen.class);
-//            startActivity(intent2);
-//        });
-//
-//        profileButton = findViewById(R.id.profile);
-//        profileButton.setOnClickListener(v -> {
-//            Intent intent3 = new Intent(retrieveEventInfo.this, ProfileActivity.class);
-//            startActivity(intent3);
-//        });
-//
-//        listButton = findViewById(R.id.list_icon);
-//        listButton.setOnClickListener(v -> {
-//            Intent intent4 = new Intent(retrieveEventInfo.this, ViewCreatedEventsActivity.class);
-//            startActivity(intent4);
-//        });
+        // button for settings screen
+        settingsButton.setOnClickListener(v -> {
+            Intent newIntent = new Intent(retrieveEventInfo.this, SettingsScreen.class);
+            startActivity(newIntent);
+        });
 
+        // button for profile screen
+        profileButton.setOnClickListener(v -> {
+            Intent newIntent = new Intent(retrieveEventInfo.this, ProfileActivity.class);
+            newIntent.putExtra("User", user);
+            startActivity(newIntent);
+        });
 
+        // Set click listener for the back button
+        backButton.setOnClickListener(v -> {
+            finish(); // Close the current activity and return to the previous one
+        });
     }
 
     /**
      * Retrieves the event data(name, description, poster)
-     * @param hashedData
-     * @param deviceID
-     * @param event
+     * @param hashedData the hash data of the event that is needed in order to access proper data
+     * @param deviceID the device ID of the entrant that is needed to access data in the firebase
+     * @param event the event name that is needed to access data in the firebase
      */
-
+    // INNAS PART
+    // check if the hash data matches any of the hash data in the firebase when the qr code is scanned
     private void retrieveEventInfo(String hashedData, String deviceID, String event) {
         db.collection("facilities")
                 .document(deviceID)
                 .collection("My Events")
+                // todo event name
                 .whereEqualTo("hash", hashedData)
+                .whereEqualTo("eventName", event)  // added this
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful())
                         if (!task.getResult().isEmpty()){  // check something is in result
-                            Toast.makeText(retrieveEventInfo.this, "succesfully read data", Toast.LENGTH_SHORT).show();
-
                             for (DocumentSnapshot document : task.getResult()) {
                                 // Retrieve data directly from the document
+                                Toast.makeText(retrieveEventInfo.this, "Data is passed!!!", Toast.LENGTH_SHORT).show();
                                 String eventName = document.getString("eventName");
                                 String eventDescription = document.getString("eventDescription");
                                 String eventPosterUrl = document.getString("posterUrl");
 
                                 // Call the display method with the retrieved data
-                                displayEventInfo(eventName, eventDescription, eventPosterUrl);//eventPosterUrl);
+                                displayEventInfo(eventName, eventDescription, eventPosterUrl);
                             }
                     } else {
                         Toast.makeText(retrieveEventInfo.this, "Event does not exist", Toast.LENGTH_SHORT).show();
@@ -208,9 +213,9 @@ public class retrieveEventInfo extends AppCompatActivity {
 
     /**
      * Displays the event name, description and poster
-     * @param eventName
-     * @param eventDescription
-     * @param eventPosterUrl
+     * @param eventName Display the event name on screen
+     * @param eventDescription Display the event description that is scrollable on screen
+     * @param eventPosterUrl Display the proper event poster on screen
      */
     private void displayEventInfo(String eventName, String eventDescription, String eventPosterUrl ) {
         TextView eventNameTextView = findViewById(R.id.event_name);
@@ -220,13 +225,19 @@ public class retrieveEventInfo extends AppCompatActivity {
         eventNameTextView.setText(eventName);
         eventDescriptionTextView.setText(eventDescription);
 
-        // upload the image from the firebase
-        try {
-            Glide.with(this)
-                    .load(eventPosterUrl)
-                    .into(eventPoster);
-        } catch (Exception e) {
-            Log.e("RetrieveEventInfo", "Error loading image: " + e.getMessage());
+        if (eventPosterUrl == null){
+            eventPoster.setImageResource(R.drawable.default_poster);
+        }
+
+        else {
+            // upload the image from the firebase
+            try {
+                Glide.with(this)
+                        .load(eventPosterUrl)
+                        .into(eventPoster);
+            } catch (Exception e) {
+                Log.e("RetrieveEventInfo", "Error loading image: " + e.getMessage());
+            }
         }
     }
 

@@ -1,6 +1,7 @@
 package com.example.eventmaster;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
@@ -58,15 +59,21 @@ public class MainActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> joinEventScreenResultLauncher;
     private ActivityResultLauncher<Intent> joinedEventsActivityResultLauncher;
 
-
     Profile user;
 
-  //private ActivityResultLauncher<Intent> scanQRFragmentResultLauncher;
+    //private ActivityResultLauncher<Intent> scanQRFragmentResultLauncher;
 
-
+    /**
+     * Initializes the MainActivity and sets up the icons for navigation.
+     * Also checks for device ID and retrieves or stores user data in Firestore.
+     *
+     * @param savedInstanceState If the activity is restarted this Bundle contains the data it most recently supplied.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        ModeActivity.applyTheme(this);
 
         EdgeToEdge.enable(this);
         setContentView(R.layout.home_screen);
@@ -80,12 +87,13 @@ public class MainActivity extends AppCompatActivity {
 
         user = new Profile(deviceId, "", "", ""); // create a new user
         //storeDeviceID(deviceId, "profiles"); // store device id, skip if already stored
-        initializeUser(deviceId); // grab all the user's info from firestore based on device id
-
         storeDeviceID(deviceId, "profiles");
         storeDeviceID(deviceId, "facilities");
         storeDeviceID(deviceId, "entrants");
         storeDeviceID(deviceId, "organizers");
+        initializeUser(deviceId); // grab all the user's info from firestore based on device id
+
+
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -284,6 +292,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                         } else {
                             // deviceID doesn't exist, create a new document
+                            clearSharedPreferences();
                             Map<String, Object> deviceData = new HashMap<>();
                             deviceData.put("deviceId", deviceId);
 
@@ -332,6 +341,17 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("Firestore", "Error fetching document", task.getException());
             }
         });
+    }
+
+    /**
+     * Removes the User's shared preferences if they don't have a deviceID already in firebase
+     * This is used when we delete users off firebase to test the App
+     */
+    private void clearSharedPreferences() {
+        SharedPreferences sharedPreferences = getSharedPreferences("ProfilePrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.apply();
     }
 
 
