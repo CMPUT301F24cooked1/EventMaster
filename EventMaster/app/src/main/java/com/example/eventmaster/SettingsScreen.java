@@ -99,10 +99,7 @@ public class SettingsScreen extends AppCompatActivity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Send user to MainActivity class
-                Intent intent = new Intent(SettingsScreen.this, MainActivity.class);
-                intent.putExtra("User", user);
-                startActivity(intent);
+                finish();
             }
         });
 

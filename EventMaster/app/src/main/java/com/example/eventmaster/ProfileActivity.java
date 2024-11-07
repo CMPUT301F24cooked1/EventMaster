@@ -103,9 +103,9 @@ public class ProfileActivity extends AppCompatActivity {
 
         // sends you back to previous screen
         backButton.setOnClickListener(v -> {
-            Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
-            intent.putExtra("User", user);
-            mainActivityResultLauncher.launch(intent);
+
+            finish();
+
         });
 
         // sends you to settings screen
