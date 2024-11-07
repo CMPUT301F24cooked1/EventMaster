@@ -261,8 +261,9 @@ public class retrieveEventInfo extends AppCompatActivity {
     }
 
     /**
-     * Adds a collection to firebase of the events that are the entrant waitlisted
+     * Adds a collection to firebase of the events that the entrant waitlisted
      * @param userDeviceId entrant's user id
+     * entrants document
      */
 
     private void joinWaitlistEntrant(String userDeviceId, String hashedData, String deviceID, String posterUrl) {
