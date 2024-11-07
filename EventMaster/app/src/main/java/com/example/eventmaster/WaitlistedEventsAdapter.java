@@ -81,6 +81,7 @@ public class WaitlistedEventsAdapter extends RecyclerView.Adapter<WaitlistedEven
 
             // Handle the click event
             itemView.setOnClickListener(v -> {
+
                 deviceID = event.getDeviceID();
                 fetchHashData(deviceID, event, new FirestoreCallback<String>() {
                     @Override

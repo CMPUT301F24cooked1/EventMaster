@@ -45,6 +45,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         qrCodeImageView = findViewById(R.id.qrCodeImageView);
         eventPosterImageView = findViewById(R.id.eventPosterImageView); // Reference the poster ImageView
 
+
         // Retrieve the event ID from the intent
         eventId = getIntent().getStringExtra("eventId");
 
