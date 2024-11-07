@@ -27,6 +27,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
+import org.w3c.dom.Text;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -227,9 +229,10 @@ public class retrieveEventInfo extends AppCompatActivity {
                                 String eventName = document.getString("eventName");
                                 String eventDescription = document.getString("eventDescription");
                                 String eventPosterUrl = document.getString("posterUrl");
+                                String waitlistCountdown = document.getString("waitlistCountdown");
 
                                 // Call the display method with the retrieved data
-                                displayEventInfo(eventName, eventDescription, eventPosterUrl);
+                                displayEventInfo(eventName, eventDescription, eventPosterUrl, waitlistCountdown);
                             }
                     } else {
                         Toast.makeText(retrieveEventInfo.this, "Event does not exist", Toast.LENGTH_SHORT).show();
@@ -246,13 +249,15 @@ public class retrieveEventInfo extends AppCompatActivity {
      * @param eventDescription Display the event description that is scrollable on screen
      * @param eventPosterUrl Display the proper event poster on screen
      */
-    private void displayEventInfo(String eventName, String eventDescription, String eventPosterUrl ) {
+    private void displayEventInfo(String eventName, String eventDescription, String eventPosterUrl, String waitlistCountdown ) {
         TextView eventNameTextView = findViewById(R.id.event_name);
         TextView eventDescriptionTextView = findViewById(R.id.event_decription);
+        TextView countdownTextView = findViewById(R.id.event_open_time);
 
         // Set the text for the TextViews
         eventNameTextView.setText(eventName);
         eventDescriptionTextView.setText(eventDescription);
+        countdownTextView.setText(waitlistCountdown);
 
         if (eventPosterUrl == null){
             eventPoster.setImageResource(R.drawable.default_poster); // set default poster

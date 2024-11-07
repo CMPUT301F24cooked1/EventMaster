@@ -129,9 +129,10 @@ public class JoinWaitlistScreen extends AppCompatActivity {
                                 String eventName = document.getString("eventName");
                                 String eventDescription = document.getString("eventDescription");
                                 String eventPosterUrl = document.getString("posterUrl");
+                                String waitlistCountdown = document.getString("waitlist_countdown");
 
                                 // Call the display method with the retrieved data
-                                displayEventInfo(eventName, eventDescription, eventPosterUrl);//eventPosterUrl);
+                                displayEventInfo(eventName, eventDescription, eventPosterUrl, waitlistCountdown);//eventPosterUrl);
                             }
                         } else {
                             Toast.makeText(JoinWaitlistScreen.this, "Event does not exist", Toast.LENGTH_SHORT).show();
@@ -149,13 +150,15 @@ public class JoinWaitlistScreen extends AppCompatActivity {
      * @param eventPosterUrl
      */
 
-    private void displayEventInfo(String eventName, String eventDescription, String eventPosterUrl ) {
+    private void displayEventInfo(String eventName, String eventDescription, String eventPosterUrl, String waitlistCountdown) {
         TextView eventNameTextView = findViewById(R.id.event_name);
         TextView eventDescriptionTextView = findViewById(R.id.event_decription);
+        TextView countdownTextView = findViewById(R.id.event_open_time);
 
         // Set the text for the TextViews
         eventNameTextView.setText(eventName);
         eventDescriptionTextView.setText(eventDescription);
+        countdownTextView.setText(waitlistCountdown);
 
         if (eventPosterUrl == null){
             eventPoster.setImageResource(R.drawable.default_poster);  // set default poster
