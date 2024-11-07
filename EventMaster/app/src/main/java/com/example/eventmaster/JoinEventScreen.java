@@ -43,7 +43,13 @@ public class JoinEventScreen extends AppCompatActivity {
     private String deviceId; // Replace with actual device ID
     private FirebaseFirestore db; // Firestore instance
 
-  //  private ActivityResultLauncher<Intent> QRScanScreenResultLauncher;
+    private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
+    private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
+    private ActivityResultLauncher<Intent> settingsResultLauncher;
+    private ActivityResultLauncher<Intent> MainActivityResultLauncher;
+
+
+    //  private ActivityResultLauncher<Intent> QRScanScreenResultLauncher;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,27 +77,50 @@ public class JoinEventScreen extends AppCompatActivity {
         ImageButton homeButton = findViewById(R.id.home_icon);
         ImageButton backButton = findViewById(R.id.back_button); // Initialize back button
 
-        // Set click listeners for navigation
-        notificationButton.setOnClickListener(v -> {
-            Intent newIntent = new Intent(JoinEventScreen.this, Notifications.class);
-            startActivity(newIntent);
-        });
+        // Set result launchers to set up navigation buttons on the bottom of the screen
+        settingsResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {});
 
-        settingsButton.setOnClickListener(v -> {
-            Intent newIntent = new Intent(JoinEventScreen.this, SettingsScreen.class);
-            startActivity(newIntent);
-        });
+        MainActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {});
 
+        notificationActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {});
+
+        ProfileActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {});
+
+        // Set click listeners for navigation buttons on the bottom of the screen
+        // sends you to profile screen
         profileButton.setOnClickListener(v -> {
             Intent newIntent = new Intent(JoinEventScreen.this, ProfileActivity.class);
             newIntent.putExtra("User", user);
-            startActivity(newIntent);
+            ProfileActivityResultLauncher.launch(newIntent);
         });
 
+        // sends you to settings screen
+        settingsButton.setOnClickListener(v -> {
+            Intent newIntent = new Intent(JoinEventScreen.this, SettingsScreen.class);
+            newIntent.putExtra("User", user);
+            settingsResultLauncher.launch(newIntent);
+        });
+
+        // sends you to a list of invited events that you accepted
         homeButton.setOnClickListener(v -> {
             Intent newIntent = new Intent(JoinEventScreen.this, MainActivity.class);
-            startActivity(newIntent);
+            newIntent.putExtra("User", user);
+            MainActivityResultLauncher.launch(newIntent);
         });
+        notificationButton.setOnClickListener(v -> {
+            Intent newIntent = new Intent(JoinEventScreen.this, Notifications.class);
+            newIntent.putExtra("User", user);
+            notificationActivityResultLauncher.launch(newIntent);
+        });
+
         // Set click listener for the back button
         backButton.setOnClickListener(v -> {
             finish(); // Close the current activity and return to the previous one
