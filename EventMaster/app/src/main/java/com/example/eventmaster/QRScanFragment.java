@@ -74,6 +74,7 @@ public class QRScanFragment extends AppCompatActivity{
         ImageButton backButton = findViewById(R.id.back_button); // Initialize back button
 
         // Set click listeners for navigation buttons on the bottom of the screen
+        // button for notification screen
         notificationButton.setOnClickListener(v -> {
             Intent intent = new Intent(QRScanFragment.this, Notifications.class);
             startActivity(intent);
@@ -92,11 +93,6 @@ public class QRScanFragment extends AppCompatActivity{
             startActivity(intent);
         });
 
-        // button for my joined events screen
-        listButton.setOnClickListener(v -> {
-            Intent intent = new Intent(QRScanFragment.this, JoinEventScreen.class);
-            startActivity(intent);
-        });
         // Set click listener for the back button
         backButton.setOnClickListener(v -> {
             finish(); // Close the current activity and return to the previous one
@@ -115,7 +111,6 @@ public class QRScanFragment extends AppCompatActivity{
     ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result->{
         if(result.getContents() != null)
         {
-
             // information sent from ViewEventsAdapter class
             String scannedHash = result.getContents();
             Intent intent = getIntent();
@@ -129,7 +124,6 @@ public class QRScanFragment extends AppCompatActivity{
             intent2.putExtra("deviceID", deviceID);  // facility device id
             intent2.putExtra("User", user);
             startActivity(intent2);
-
         }
     });
 
