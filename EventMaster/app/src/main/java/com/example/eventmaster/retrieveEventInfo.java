@@ -319,7 +319,10 @@ public class retrieveEventInfo extends AppCompatActivity {
                                 .addOnSuccessListener(aVoid -> {
                                     Toast.makeText(retrieveEventInfo.this, "Successfully joined waitlist", Toast.LENGTH_SHORT).show();
                                 })
-                                .addOnFailureListener(e -> Toast.makeText(retrieveEventInfo.this, "Error joining waitlist", Toast.LENGTH_SHORT).show());
+                                .addOnFailureListener(e -> {
+                                    Log.e("Firestore", "Error adding event to waitlist: " + e.getMessage());
+                                    Toast.makeText(retrieveEventInfo.this, "Error joining waitlist", Toast.LENGTH_SHORT).show();
+                                });
                     }else{
                         Toast.makeText(retrieveEventInfo.this, "Waitlist not found", Toast.LENGTH_SHORT).show();
                     }

@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -73,48 +74,11 @@ public class WaitlistedEventsActivity extends AppCompatActivity {
 
 
     /**
-     * Retrieve waitlisted events for user
+     * Retrieve the waitlisted events for specific entrant
+     * @param entrantId
      */
-    /*private void retrieveWaitlistedEvents(String entrantID) {
-        eventList.clear();
-        CollectionReference entrantsRef = firestore.collection("entrants");
-
-        entrantsRef.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-
-                for (QueryDocumentSnapshot entrantDoc : task.getResult()) {
-                    String entrantId = entrantDoc.getId();  // get entrant for each waitlist
-                    //Toast.makeText(JoinEventScreen.this, "Facility ID: " + facilityId, Toast.LENGTH_SHORT).show();
-
-                    // retrieve waitlisted events for each entrant
-                    CollectionReference eventsRef = entrantDoc.getReference().collection("Waitlisted Events");
-
-                    eventsRef.get().addOnCompleteListener(eventTask -> {
-                        if (eventTask.isSuccessful()) {
-                            for (QueryDocumentSnapshot eventDoc : eventTask.getResult()) {
-                                Event event = eventDoc.toObject(Event.class);
-                                event.setDeviceID(entrantId);  // set the facility name to be the device id
-                                eventList.add(event);
-
-
-                            }
-                            WaitlistedEventsAdapter.notifyDataSetChanged(); // Notify the adapter of data changes
-                            Log.d("JoinEventScreen", "Number of waitlisted events: " + eventList.size());
-                            Log.d("JoinEventScreen", "Device ID: " + entrantID);
-
-                        } else {
-                            Log.d("WaitlistedEventsActivity", "QuerySnapshot is null");
-                        }
-                    });
-
-                }} else {
-                Log.e("WaitlistedEventsActivity", "Error getting documents: ", task.getException());
-            }
-        });
-    }*/
-
     private void retrieveWaitlistedEvents(String entrantId) {
-        eventList.clear();
+        //eventList.clear();
         DocumentReference entrantDocRef = firestore.collection("entrants").document(entrantId);
 
         // Retrieve waitlisted events for the specific entrant
