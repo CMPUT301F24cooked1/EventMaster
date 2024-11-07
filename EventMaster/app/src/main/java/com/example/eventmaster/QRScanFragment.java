@@ -128,30 +128,6 @@ public class QRScanFragment extends AppCompatActivity{
         backButton.setOnClickListener(v -> {
             finish(); // Close the current activity and return to the previous one
         });
-        // Set click listeners for navigation buttons on the bottom of the screen
-//        // button for notification screen
-//        notificationButton.setOnClickListener(v -> {
-//            Intent intent = new Intent(QRScanFragment.this, Notifications.class);
-//            startActivity(intent);
-//        });
-//
-//        // button for settings screen
-//        settingsButton.setOnClickListener(v -> {
-//            Intent intent = new Intent(QRScanFragment.this, SettingsScreen.class);
-//            startActivity(intent);
-//        });
-//
-//        // button for profile screen
-//        profileButton.setOnClickListener(v -> {
-//            Intent intent = new Intent(QRScanFragment.this, ProfileActivity.class);
-//            intent.putExtra("User", user);
-//            startActivity(intent);
-//        });
-//
-//        // Set click listener for the back button
-//        backButton.setOnClickListener(v -> {
-//            finish(); // Close the current activity and return to the previous one
-//        });
     }
 
     // Set the Scanner
