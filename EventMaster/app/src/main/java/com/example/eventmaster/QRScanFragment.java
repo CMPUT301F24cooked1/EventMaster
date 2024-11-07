@@ -39,30 +39,17 @@ public class QRScanFragment extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         db = FirebaseFirestore.getInstance();
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.scan_qr_screen);
-
-        user = (Profile) getIntent().getSerializableExtra("User");
-
-
-        // send user to retrieveEventInfo screen
-//        Intent newIntent = new Intent(QRScanFragment.this, retrieveEventInfo.class);
-//        newIntent.putExtra("user", user);
-//        startActivity(newIntent);
-        //Profile user = (Profile) getIntent().getSerializableExtra("User"); // user from MainActivity
-
+        user = (Profile) getIntent().getSerializableExtra("User");  // the user information is passed in
         AppCompatButton scanButton = findViewById(R.id.scan_qr_code_button);
         Button button = findViewById(R.id.next_button);
 
 
-
-        // click on the scan button
+        // click on the scan button to be sent to a QR Scanner
         scanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // implement scanner inside here
                 ScanCode();
-
             }
         });
 
@@ -79,30 +66,33 @@ public class QRScanFragment extends AppCompatActivity{
         });
 
 
-        // Initialize navigation buttons
+        // Initialize navigation buttons on the bottom of the screen
         ImageButton notificationButton = findViewById(R.id.notification_icon);
         ImageButton settingsButton = findViewById(R.id.settings);
         ImageButton profileButton = findViewById(R.id.profile);
         ImageButton listButton = findViewById(R.id.list_icon);
         ImageButton backButton = findViewById(R.id.back_button); // Initialize back button
 
-        // Set click listeners for navigation
+        // Set click listeners for navigation buttons on the bottom of the screen
         notificationButton.setOnClickListener(v -> {
             Intent intent = new Intent(QRScanFragment.this, Notifications.class);
             startActivity(intent);
         });
 
+        // button for settings screen
         settingsButton.setOnClickListener(v -> {
             Intent intent = new Intent(QRScanFragment.this, SettingsScreen.class);
             startActivity(intent);
         });
 
+        // button for profile screen
         profileButton.setOnClickListener(v -> {
             Intent intent = new Intent(QRScanFragment.this, ProfileActivity.class);
             intent.putExtra("User", user);
             startActivity(intent);
         });
 
+        // button for my joined events screen
         listButton.setOnClickListener(v -> {
             Intent intent = new Intent(QRScanFragment.this, JoinEventScreen.class);
             startActivity(intent);
@@ -113,14 +103,12 @@ public class QRScanFragment extends AppCompatActivity{
         });
     }
 
-
+    // Set the Scanner
     private void ScanCode() {
-       // setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         ScanOptions options = new ScanOptions();
         options.setBeepEnabled(false);
         options.setOrientationLocked(false);
-        options.setCaptureActivity(QrCaptureActivity.class);
-        //options.setCaptureActivity(CaptureActivity.class);
+        options.setCaptureActivity(QrCaptureActivity.class);  // access the QrCaptureActivity class to ensure the orientation is vertical
         barLauncher.launch(options);
     }
 
@@ -128,13 +116,13 @@ public class QRScanFragment extends AppCompatActivity{
         if(result.getContents() != null)
         {
 
-            // information from ViewEventsAdapter
+            // information sent from ViewEventsAdapter class
             String scannedHash = result.getContents();
             Intent intent = getIntent();
             String event = intent.getStringExtra("event");
             String deviceID = intent.getStringExtra("deviceID");  // facility device id
 
-            // send information over to retrieveEventInfo
+            // create new intent to send information over to the retrieveEventInfo class
             Intent intent2 = new Intent(QRScanFragment.this, retrieveEventInfo.class);
             intent2.putExtra("hashed_data", scannedHash);
             intent2.putExtra("event", event);
