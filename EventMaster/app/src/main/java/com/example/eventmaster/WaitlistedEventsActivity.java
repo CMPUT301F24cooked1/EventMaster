@@ -118,7 +118,7 @@ public class WaitlistedEventsActivity extends AppCompatActivity {
         DocumentReference entrantDocRef = firestore.collection("entrants").document(entrantId);
 
         // Retrieve waitlisted events for the specific entrant
-        entrantDocRef.collection("Waitlisted Events").get().addOnCompleteListener(eventTask -> {
+        entrantDocRef.collection("Waitlisted Events").get(Source.SERVER).addOnCompleteListener(eventTask -> {
             if (eventTask.isSuccessful()) {
                 for (QueryDocumentSnapshot eventDoc : eventTask.getResult()) {
                     Event event = eventDoc.toObject(Event.class);
