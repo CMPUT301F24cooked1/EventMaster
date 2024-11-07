@@ -36,7 +36,7 @@ public class retrieveEventInfo extends AppCompatActivity {
      * @param savedInstanceState If the activity is being re-initialized after
      *     previously being shut down then this Bundle contains the data it most
      *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
-     * @param hashedData the hash data from the firebase that a QR code is created by
+     * @param hashedData the hash data of the event that is needed in order to access proper data
      * @param deviceID the facilities device ID
      * @param event the event // dont think I need this
      * Displays the event information of the chosen event
@@ -79,12 +79,8 @@ public class retrieveEventInfo extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
 
-
-
-
         Intent intentMain = getIntent();
         user =  (Profile) intentMain.getSerializableExtra("User");
-
 
         // will need to access user device id but just hardcoded for now
         String userDeviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -119,14 +115,11 @@ public class retrieveEventInfo extends AppCompatActivity {
         String event = intent.getStringExtra("event");
         String posterUrl = intent.getStringExtra("posterUrl");
 
-
-
         Intent intent2 = new Intent(retrieveEventInfo.this, JoinWaitlistScreen.class);
         intent2.putExtra("hashed_data", hashedData);
         intent2.putExtra("deviceID", deviceID);
         intent2.putExtra("event", event);
         intent2.putExtra("posterUrl", posterUrl);
-
 
         // Ensure the received data is not null
         if (hashedData != null && deviceID != null) {
@@ -134,7 +127,6 @@ public class retrieveEventInfo extends AppCompatActivity {
         } else {
             Toast.makeText(this, "Failed to retrieve event data.", Toast.LENGTH_SHORT).show();
         }
-
 
         // links the description screen to the join waitlist screen
         joinWaitlistButton.setOnClickListener(new View.OnClickListener() {
@@ -155,42 +147,37 @@ public class retrieveEventInfo extends AppCompatActivity {
         ImageButton listButton = findViewById(R.id.list_icon);
         ImageButton backButton = findViewById(R.id.back_button); // Initialize back button
 
-        // Set click listeners for navigation
+        // Set click listeners for navigation buttons on the bottom of the screen
+        // button for notification screen
         notificationButton.setOnClickListener(v -> {
             Intent newIntent = new Intent(retrieveEventInfo.this, Notifications.class);
             startActivity(newIntent);
         });
 
+        // button for settings screen
         settingsButton.setOnClickListener(v -> {
             Intent newIntent = new Intent(retrieveEventInfo.this, SettingsScreen.class);
             startActivity(newIntent);
         });
 
-        // TODO: fix this so we actually get sent to the correct profile screen
+        // button for profile screen
         profileButton.setOnClickListener(v -> {
             Intent newIntent = new Intent(retrieveEventInfo.this, ProfileActivity.class);
             newIntent.putExtra("User", user);
             startActivity(newIntent);
         });
 
-        listButton.setOnClickListener(v -> {
-            Intent newIntent = new Intent(retrieveEventInfo.this, JoinEventScreen.class);
-            startActivity(newIntent);
-        });
         // Set click listener for the back button
         backButton.setOnClickListener(v -> {
             finish(); // Close the current activity and return to the previous one
         });
-
-
-
     }
 
     /**
      * Retrieves the event data(name, description, poster)
-     * @param hashedData
-     * @param deviceID
-     * @param event
+     * @param hashedData the hash data of the event that is needed in order to access proper data
+     * @param deviceID the device ID of the entrant that is needed to access data in the firebase
+     * @param event the event name that is needed to access data in the firebase
      */
     // INNAS PART
     // check if the hash data matches any of the hash data in the firebase when the qr code is scanned
@@ -226,9 +213,9 @@ public class retrieveEventInfo extends AppCompatActivity {
 
     /**
      * Displays the event name, description and poster
-     * @param eventName
-     * @param eventDescription
-     * @param eventPosterUrl
+     * @param eventName Display the event name on screen
+     * @param eventDescription Display the event description that is scrollable on screen
+     * @param eventPosterUrl Display the proper event poster on screen
      */
     private void displayEventInfo(String eventName, String eventDescription, String eventPosterUrl ) {
         TextView eventNameTextView = findViewById(R.id.event_name);
@@ -238,15 +225,19 @@ public class retrieveEventInfo extends AppCompatActivity {
         eventNameTextView.setText(eventName);
         eventDescriptionTextView.setText(eventDescription);
 
+        if (eventPosterUrl == null){
+            eventPoster.setImageResource(R.drawable.default_poster);
+        }
 
-
-        // upload the image from the firebase
-        try {
-            Glide.with(this)
-                    .load(eventPosterUrl)
-                    .into(eventPoster);
-        } catch (Exception e) {
-            Log.e("RetrieveEventInfo", "Error loading image: " + e.getMessage());
+        else {
+            // upload the image from the firebase
+            try {
+                Glide.with(this)
+                        .load(eventPosterUrl)
+                        .into(eventPoster);
+            } catch (Exception e) {
+                Log.e("RetrieveEventInfo", "Error loading image: " + e.getMessage());
+            }
         }
     }
 

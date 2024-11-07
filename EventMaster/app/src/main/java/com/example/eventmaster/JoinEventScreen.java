@@ -51,12 +51,9 @@ public class JoinEventScreen extends AppCompatActivity {
         setContentView(R.layout.view_events_screen);
         Profile user = (Profile) getIntent().getSerializableExtra("User"); // user from MainActivity
 
-
-
         // Initialize Firebase Firestore
         firestore = FirebaseFirestore.getInstance();
         deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-
 
         // Set up RecyclerView
         recyclerView = findViewById(R.id.recyclerView);
@@ -66,8 +63,6 @@ public class JoinEventScreen extends AppCompatActivity {
         recyclerView.setAdapter(ViewEventsAdapter);
         // Retrieve events from Firestore
         retrieveEvents();
-
-
 
         // Initialize navigation buttons
         ImageButton notificationButton = findViewById(R.id.notifications);
@@ -101,11 +96,6 @@ public class JoinEventScreen extends AppCompatActivity {
         backButton.setOnClickListener(v -> {
             finish(); // Close the current activity and return to the previous one
         });
-
-
-
-
-
     }
 
     // for the recycler view
@@ -143,12 +133,6 @@ public class JoinEventScreen extends AppCompatActivity {
             }
         });
     }
-
-
-
-
-
-
 }
 
 
