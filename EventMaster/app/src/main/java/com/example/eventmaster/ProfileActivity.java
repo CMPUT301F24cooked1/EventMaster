@@ -1,13 +1,11 @@
 package com.example.eventmaster;
 
+import android.app.ListActivity;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,114 +15,124 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
-import com.bumptech.glide.Glide;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.Random;
-
-/**
- * The class represents the profile screen where the user's information is displayed.
- * It initializes the profile screen, displays uer information like nane, email
- * and phone number. It also handles navigation between profile and other activities.
- *
- */
 public class ProfileActivity extends AppCompatActivity {
-
+    private static final String PREFS_NAME = "ProfilePrefs";
     private TextView displayName;
     private TextView displayEmail;
     private TextView displayPhoneNumber;
     private AppCompatButton editProfileButton;
     private ImageButton backButton;
-    private ActivityResultLauncher<Intent> editProfileResultLauncher;
-    private ActivityResultLauncher<Intent> MainActivityResultLauncher;
     private ImageButton settingsButton;
-    private ActivityResultLauncher<Intent> settingResultLauncher;
+    private ImageButton listButton;
+    private ImageView profilePicture;
+    private Profile user;
+    private ActivityResultLauncher<Intent> editProfileResultLauncher;
+    private ActivityResultLauncher<Intent> mainActivityResultLauncher;
+    private ActivityResultLauncher<Intent> settingsResultLauncher;
+    private ActivityResultLauncher<Intent> listActivityResultLauncher;
 
     /**
-     * Initializes the profile screen
-     * @param savedInstanceState If the activity is being re-initialized after
-     *     previously being shut down then this Bundle contains the data it most
-     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
-     * Sets the user's inputted information
+     * Initializes the ProfileActivity layout and sets up the bottom icons for navigation.
+     * Loads the user information from the Profile object.
+     *
+     * @param savedInstanceState If the activity is restarted this Bundle contains the most recent data.
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ModeActivity.applyTheme(this);
         setContentView(R.layout.profile_screen);
-        Profile user = (Profile) getIntent().getSerializableExtra("User"); // User from MainActivity
-        ImageView profile_picture = findViewById(R.id.profile_picture );
 
-        Image.getProfilePictureUrl(user.getDeviceId(), user, profile_picture, ProfileActivity.this);
+        user = (Profile) getIntent().getSerializableExtra("User");
+        profilePicture = findViewById(R.id.profile_picture);
+        backButton = findViewById(R.id.back);
+        settingsButton = findViewById(R.id.settings);
+        listButton = findViewById(R.id.list_icon);
 
         displayName = findViewById(R.id.profile_name);
         displayEmail = findViewById(R.id.profile_email);
         displayPhoneNumber = findViewById(R.id.profile_phone_number);
         editProfileButton = findViewById(R.id.edit_profile_button);
-        backButton = findViewById(R.id.back);
 
-        displayName.setText(user.getName());
-        displayEmail.setText(user.getEmail());
-        displayPhoneNumber.setText(user.getPhone_number());
+        loadUserInfo();
 
+        // update all the inputs once user clicks save
         editProfileResultLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(), result ->{
-                    if (result.getResultCode() == RESULT_OK){
+                new ActivityResultContracts.StartActivityForResult(), result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        user = (Profile) result.getData().getSerializableExtra("User");
+                        loadUserInfo();
+                    }
+                }
+        );
+
+        // sends you to inputuserinformation screen where user edits their details
+        editProfileButton.setOnClickListener(v -> {
+            Intent intent = new Intent(ProfileActivity.this, InputUserInformation.class);
+            intent.putExtra("User", user);
+            editProfileResultLauncher.launch(intent);
+        });
+
+        mainActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(), result -> {
+                    if (result.getResultCode() == RESULT_OK) {
 
                     }
                 }
         );
 
-        MainActivityResultLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(), result ->{
-                    if (result.getResultCode() == RESULT_OK){
-
-                    }
-                }
-        );
-
-        settingResultLauncher = registerForActivityResult(
+        settingsResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
 
                 }
         );
 
-        editProfileButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ProfileActivity.this, InputUserInformation.class);
-                intent.putExtra("User", user);
-                editProfileResultLauncher.launch(intent);
-            }
+        listActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+
+                }
+        );
+
+        // sends you to profile (ur already in it)
+        editProfileButton.setOnClickListener(v -> {
+            Intent intent = new Intent(ProfileActivity.this, InputUserInformation.class);
+            intent.putExtra("User", user);
+            editProfileResultLauncher.launch(intent);
         });
 
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
-                intent.putExtra("User", user);
-                MainActivityResultLauncher.launch(intent);
-            }
+        // sends you back to previous screen
+        backButton.setOnClickListener(v -> {
+            Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
+            intent.putExtra("User", user);
+            mainActivityResultLauncher.launch(intent);
         });
 
-        settingsButton = findViewById(R.id.settings);
-        settingsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ProfileActivity.this, SettingsScreen.class);
-                intent.putExtra("User", user);
-                settingResultLauncher.launch(intent);
-            }
+        // sends you to settings screen
+        settingsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(ProfileActivity.this, SettingsScreen.class);
+            intent.putExtra("User", user);
+            settingsResultLauncher.launch(intent);
+        });
+
+        // sends you to a list of invited events that you accepted
+        listButton.setOnClickListener(v -> {
+            Intent intent = new Intent(ProfileActivity.this, JoinedEventsActivity.class);
+            intent.putExtra("User", user);
+            listActivityResultLauncher.launch(intent);
         });
 
     }
 
-
-
-
+    /**
+     * Loads the user’s profile information into the display fields.
+     */
+    private void loadUserInfo() {
+        displayName.setText(user.getName());
+        displayEmail.setText(user.getEmail());
+        displayPhoneNumber.setText(user.getPhone_number());
+        ProfilePicture.loadProfilePicture(user, profilePicture, ProfileActivity.this);
+    }
 
 
 }

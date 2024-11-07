@@ -1,36 +1,35 @@
 package com.example.eventmaster;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.util.Base64;
 import android.util.Log;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.net.URL;
+import java.io.ByteArrayOutputStream;
 
 /**
- * The class provides methods for handling the user's profile picture.
- * It generates a default profile picture with the help of the ProfilePicture class.
- * It crops the uploaded profile picture from the user and stores it into firebase,
- * setting it using Glide.
- *
- * <p> This class also generates a unique ID based on the device ID</p>
- *
+ * The Image class provides functionality for managing and changing a profile picture.
+ * It supports generating a default profile picture based on a user's name, cropping an uploaded picture,
+ * and saving or retrieving images from SharedPreferences as Base64 strings.
  */
 public class Image {
+
+    private static final String PREFS_NAME = "ProfilePrefs";
+    private static final String PROFILE_PICTURE_KEY = "profile_picture_bitmap";
+
     private String deviceID;
     private String imageName;
     private String imageID;
+
 
     public Image(String deviceID, String imageName){
         this.deviceID = deviceID;
@@ -67,163 +66,110 @@ public class Image {
         return result.toString();
     }
 
+    /**
+     * Saves a profile picture Bitmap to SharedPreferences as a Base64 string.
+     *
+     * @param bitmap  the Bitmap of the profile picture
+     * @param context the current context
+     */
+    public static void saveProfilePicture(Bitmap bitmap, Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
 
+        // Encode Bitmap to Base64
+        String encodedImage = encodeBitmapToBase64(bitmap);
+        editor.putString(PROFILE_PICTURE_KEY, encodedImage);
+        editor.apply();
+        Log.d("Image", "Profile picture saved to SharedPreferences.");
+    }
 
     /**
-     * Creates a bitmap of the profile picture that is based on the name of the User
+     * Generates a default profile picture Bitmap based on the user's name.
      *
-     * @param name the user's name
-     * @param imageSize the size of the image
-     * @param backgroundColor the profile picture color
-     * @param textColor the text color
-     *
-     * @return the bitmap of the created profile picture for the user
+     * @param name            the user's name, used to extract the initial
+     * @param imageSize       the size of the generated image
+     * @param backgroundColor the background color of the profile picture
+     * @param textColor       the color of the initial text
+     * @return a Bitmap representing the generated profile picture
      */
     public static Bitmap generateProfilePicture(String name, int imageSize, int backgroundColor, int textColor) {
-        Bitmap bitmap = Bitmap.createBitmap(imageSize, imageSize, Bitmap.Config.ARGB_8888);
 
+        Bitmap bitmap = Bitmap.createBitmap(imageSize, imageSize, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
 
-        // Set background to the background color
         Paint backgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         backgroundPaint.setColor(backgroundColor);
-
-        // Draws a circle
         float radius = imageSize / 2f;
         canvas.drawCircle(radius, radius, radius, backgroundPaint);
 
-        // Changes the color and sets text
         Paint textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         textPaint.setColor(textColor);
         textPaint.setTextSize(imageSize * 0.5f);
         textPaint.setTextAlign(Paint.Align.CENTER);
 
-        // Get the first letter of the name
         String firstLetter = name.substring(0, 1).toUpperCase();
-
-        // Measure the text size
         Rect textBounds = new Rect();
         textPaint.getTextBounds(firstLetter, 0, firstLetter.length(), textBounds);
 
-        // Center the text position
         int xPos = (canvas.getWidth() / 2);
         int yPos = (int) ((canvas.getHeight() / 2) - ((textPaint.descent() + textPaint.ascent()) / 2));
 
-        // Draw the letter on the canvas
         canvas.drawText(firstLetter, xPos, yPos, textPaint);
 
-        return bitmap; // Return the bitmap
+        return bitmap;
     }
 
     /**
-     * Creates a bitmap of the profile picture that is based on the uploaded photo
+     * Crops an uploaded profile picture Bitmap into a circular shape.
      *
-     * @param source the bitmap of the image
-     * @param desiredRadius the radius of the profile picture that we'll crop
-     *
-     * @return the bitmap of the uploaded profile picture for the user
+     * @param source       the source Bitmap
+     * @param desiredRadius the radius for the circular crop
+     * @return a circular cropped Bitmap
      */
     public static Bitmap cropProfilePicture(Bitmap source, float desiredRadius) {
-        // Calculate diameter
         int diameter = (int) (desiredRadius * 2);
-
-        // Create a new Bitmap
         Bitmap profilePicture = Bitmap.createBitmap(diameter, diameter, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(profilePicture);
 
         Paint paint = new Paint();
         paint.setAntiAlias(true);
 
-        // Draw the circular crop
         Path path = new Path();
         path.addCircle(desiredRadius, desiredRadius, desiredRadius, Path.Direction.CCW);
         canvas.clipPath(path);
 
-        // Calculate the center of the image
         int sourceWidth = source.getWidth();
         int sourceHeight = source.getHeight();
-        int centerX = sourceWidth / 2;
-        int centerY = sourceHeight / 2;
-
         int cropSize = Math.min(sourceWidth, sourceHeight);
-        int left = centerX - (cropSize / 2);
-        int top = centerY - (cropSize / 2);
-        int right = centerX + (cropSize / 2);
-        int bottom = centerY + (cropSize / 2);
-
-        Rect srcRect = new Rect(left, top, right, bottom);
-
+        Rect srcRect = new Rect(sourceWidth / 2 - cropSize / 2, sourceHeight / 2 - cropSize / 2,
+                sourceWidth / 2 + cropSize / 2, sourceHeight / 2 + cropSize / 2);
         RectF destRect = new RectF(0, 0, diameter, diameter);
 
-        // Draw the cropped photo into the circular area & scale it to fit the diameter
         canvas.drawBitmap(source, srcRect, destRect, paint);
 
         return profilePicture;
     }
 
     /**
-     * Sets the uploaded profile picture to the Imageview VIA Glide
+     * Encodes a Bitmap into a Base64 string.
      *
-     * @param profilePictureUrl the URL of the image
-     * @param profilePicture the imageview ID of the profile picture
-     * @param context the context of which activity screen it's being ran on
-     *
+     * @param bitmap the Bitmap to encode
+     * @return the Base64 string representation of the Bitmap
      */
-    public static void setProfilePicture(String profilePictureUrl, ImageView profilePicture, Context context) {
-        // Use Glide to load the profile picture into the ImageView
-        Glide.with(context)
-                .load(profilePictureUrl)
-                .circleCrop()  // Crop it
-                .into(profilePicture);
+    public static String encodeBitmapToBase64(Bitmap bitmap) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        return Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
     }
 
     /**
-     * Checks if there's a profile picture URL in firestore
-     * Sets the uploaded profile picture / default profile picture depending on whether the user has uploaded an image or has set a name
+     * Decodes a Base64 string into a Bitmap.
      *
-     * @param deviceID the device ID of the user
-     * @param user the user object of the device ID
-     * @param profilePicture the imageview ID of the profile picture
-     * @param context the context of which activity screen it's being ran on
-     *
+     * @param encodedImage the Base64 string to decode
+     * @return the decoded Bitmap
      */
-    public static void getProfilePictureUrl(String deviceID, Profile user, ImageView profilePicture, Context context) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-        DocumentReference userDocRef = db.collection("profiles").document(deviceID);
-
-        userDocRef.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                DocumentSnapshot document = task.getResult();
-                if (document.exists()) {
-                    // Get the profile picture URL from Firestore
-                    String profilePictureUrl = document.getString("profilePictureUrl");
-
-                    // Check firestore to see if the user has uploaded a PFP
-                    if (profilePictureUrl == null || profilePictureUrl.isEmpty()) {
-                        ProfilePicture.generateProfilePicture(user, profilePicture, context);
-                        Log.d("Firestore", "User has not uploaded a profile picture.");
-                    } else { // if not call setProfilePicture to set default ones
-                        Log.d("Firestore", "User has uploaded a profile picture.");
-                        setProfilePicture(profilePictureUrl, profilePicture, context);
-                    }
-                } else { // if not call setProfilePicture to set default ones
-                    ProfilePicture.generateProfilePicture(user, profilePicture, context);
-                    Log.d("Firestore", "No such document.");
-                }
-            } else { // if not call setProfilePicture to set default ones
-                Log.e("Firestore", "Failed to retrieve profile picture URL", task.getException());
-                ProfilePicture.generateProfilePicture(user, profilePicture, context);
-            }
-        });
+    public static Bitmap decodeBase64ToBitmap(String encodedImage) {
+        byte[] decodedBytes = Base64.decode(encodedImage, Base64.DEFAULT);
+        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }
-
-
-
-
-
-
-
-
-
 }
