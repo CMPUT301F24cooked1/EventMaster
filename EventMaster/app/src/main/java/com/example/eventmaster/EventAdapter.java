@@ -9,15 +9,17 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
-
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
 
     private List<Event> eventList;
     private Context context;
+    private Profile user; // Add a Profile member variable
 
-    public EventAdapter(List<Event> eventList, Context context) {
+    // Update the constructor to accept 'user'
+    public EventAdapter(List<Event> eventList, Context context, Profile user) {
         this.eventList = eventList;
-        this.context = context; // Add context for starting the intent
+        this.context = context;
+        this.user = user; // Store the user object
     }
 
     @NonNull
@@ -33,10 +35,11 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         holder.eventNameTextView.setText(event.getEventName());
         holder.eventDescriptionTextView.setText(event.getEventDescription());
 
-        // Set click listener to open EventDetailsActivity
+        // Set click listener to open OrganizerEventListView and pass the user object
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, OrganizerEventListView.class);
             intent.putExtra("eventId", event.getEventName()); // Assuming event ID is the event name
+            intent.putExtra("User", user); // Pass the user object
             context.startActivity(intent);
         });
     }

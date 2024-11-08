@@ -27,6 +27,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -45,7 +46,7 @@ public class OrganizerEventListView extends AppCompatActivity{
     private String eventId;
     private static Bitmap cachedPosterBitmap; // Static variable to cache the poster image
     private String deviceId; // Replace with actual device ID
-
+    private Profile user;
     private FirebaseStorage storage;
     private FirebaseFirestore firestore;
     private StorageReference storageRef;
@@ -60,7 +61,10 @@ public class OrganizerEventListView extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         ModeActivity.applyTheme(this);
         setContentView(R.layout.organizer_event_list_view_screen);
+        deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
+        Intent intentMain = getIntent();
+        user =  (Profile) intentMain.getSerializableExtra("User");
         eventNameTextView = findViewById(R.id.eventNameTextView);
         eventDescriptionTextView = findViewById(R.id.eventDescriptionTextView);
         editPosterButton = findViewById(R.id.editPoster);
@@ -78,16 +82,8 @@ public class OrganizerEventListView extends AppCompatActivity{
         ImageButton profileButton = findViewById(R.id.profile);
         ImageButton homeButton = findViewById(R.id.home_icon);
         ImageButton backButton = findViewById(R.id.back_button); // Initialize back button
-        deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-        Profile user = new Profile(deviceId,"Vansh", " ", " ");
-
+        AppCompatButton waitingListButton = findViewById(R.id.waiting_list_button);
         editPosterButton.setOnClickListener(v -> openFileChooser());
-
-        // Set click listeners for navigation
-        notificationButton.setOnClickListener(v -> {
-            Intent intent = new Intent(OrganizerEventListView.this, Notifications.class);
-            startActivity(intent);
-        });
 
         // Set click listeners for navigation
         notificationButton.setOnClickListener(v -> {
@@ -114,7 +110,11 @@ public class OrganizerEventListView extends AppCompatActivity{
         backButton.setOnClickListener(v -> {
             finish(); // Close the current activity and return to the previous one
         });
-
+        waitingListButton.setOnClickListener(v -> {
+            Intent intent = new Intent(OrganizerEventListView.this, ViewWaitlistActivity.class);
+            intent.putExtra("eventName", eventNameTextView.getText().toString()); // Pass the event name or ID as an extra
+            startActivity(intent);
+        });
     }
 
     /**
