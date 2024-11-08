@@ -43,11 +43,12 @@ public class WaitlistedEventsActivity extends AppCompatActivity {
     private FirebaseFirestore firestore;
     private String entrantId; // Replace with actual device ID
     private FirebaseFirestore db; // Firestore instance
+    private Profile user;
 
     private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
     private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
     private ActivityResultLauncher<Intent> settingsResultLauncher;
-    private ActivityResultLauncher<Intent> homeActivityResultLauncher;
+    private ActivityResultLauncher<Intent> MainActivityResultLauncher;
 
     //  private ActivityResultLauncher<Intent> QRScanScreenResultLauncher;
     @Override
@@ -55,7 +56,7 @@ public class WaitlistedEventsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         ModeActivity.applyTheme(this);
         setContentView(R.layout.waitlisted_events_screen);
-        Profile user = (Profile) getIntent().getSerializableExtra("User"); // user from MainActivity
+        user = (Profile) getIntent().getSerializableExtra("User"); // user from MainActivity
 
 
 
@@ -84,22 +85,57 @@ public class WaitlistedEventsActivity extends AppCompatActivity {
         ImageButton homeButton = findViewById(R.id.home_icon);
         ImageButton backButton = findViewById(R.id.back_button); // Initialize back button
 
-        // Set result launchers to set up navigation buttons on the bottom of the screen
         settingsResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
-                result -> {});
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
 
-        homeActivityResultLauncher = registerForActivityResult(
+                });
+
+        MainActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
-                result -> {});
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+
+                });
 
         notificationActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
-                result -> {});
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+
+                });
 
         ProfileActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
-                result -> {});
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+
+                });
 
         // Set click listeners for navigation buttons on the bottom of the screen
         // sends you to profile screen
@@ -120,7 +156,7 @@ public class WaitlistedEventsActivity extends AppCompatActivity {
         homeButton.setOnClickListener(v -> {
             Intent newIntent = new Intent(WaitlistedEventsActivity.this, MainActivity.class);
             newIntent.putExtra("User", user);
-            homeActivityResultLauncher.launch(newIntent);
+            MainActivityResultLauncher.launch(newIntent);
         });
         notificationButton.setOnClickListener(v -> {
             Intent newIntent = new Intent(WaitlistedEventsActivity.this, Notifications.class);

@@ -31,6 +31,7 @@ public class JoinWaitlistScreen extends AppCompatActivity {
     TextView eventDescription;
     TextView eventFinalDate;
     ImageView eventPoster;
+    private Profile user;
 
 
     private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
@@ -58,7 +59,7 @@ public class JoinWaitlistScreen extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
 
-        Profile user = (Profile) getIntent().getSerializableExtra("User"); // user from MainActivity
+        user = (Profile) getIntent().getSerializableExtra("User"); // user from MainActivity
 
         // retrieve information after scanning
         Intent intent = getIntent();
