@@ -113,6 +113,7 @@ public class OrganizerEventListView extends AppCompatActivity{
         waitingListButton.setOnClickListener(v -> {
             Intent intent = new Intent(OrganizerEventListView.this, ViewWaitlistActivity.class);
             intent.putExtra("eventName", eventNameTextView.getText().toString()); // Pass the event name or ID as an extra
+            intent.putExtra("User", user);
             startActivity(intent);
         });
     }
