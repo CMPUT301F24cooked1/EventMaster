@@ -36,12 +36,9 @@ public class SettingsScreen extends AppCompatActivity {
     private View appInfoButton;
     private Switch modeSwitch;
     private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
-
-    private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
     private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
     private ActivityResultLauncher<Intent> settingsResultLauncher;
     private ActivityResultLauncher<Intent> listResultLauncher;
-    private Profile user;
 
     /**
      * Initializes the Setting Screen

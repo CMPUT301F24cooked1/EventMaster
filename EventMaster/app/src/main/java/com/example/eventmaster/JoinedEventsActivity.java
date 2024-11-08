@@ -50,7 +50,6 @@ public class JoinedEventsActivity extends AppCompatActivity {
         setContentView(R.layout.joined_events_screen);
         ModeActivity.applyTheme(this);
         user = (Profile) getIntent().getSerializableExtra("User"); // user from MainActivity
-        ImageButton backButton = findViewById(R.id.back_button);
 
 
 

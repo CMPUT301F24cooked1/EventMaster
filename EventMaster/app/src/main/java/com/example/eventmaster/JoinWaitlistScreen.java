@@ -60,7 +60,6 @@ public class JoinWaitlistScreen extends AppCompatActivity {
         eventDescription = findViewById(R.id.event_decription);
         eventFinalDate = findViewById(R.id.event_decription);
         eventPoster = findViewById(R.id.event_poster);
-        ImageButton backButton = findViewById(R.id.back_button);
 
         db = FirebaseFirestore.getInstance();
 
