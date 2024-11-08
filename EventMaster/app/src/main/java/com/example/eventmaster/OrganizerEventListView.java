@@ -60,6 +60,7 @@ public class OrganizerEventListView extends AppCompatActivity{
     private ActivityResultLauncher<Intent> settingsResultLauncher;
     private ActivityResultLauncher<Intent> MainActivityResultLauncher;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
