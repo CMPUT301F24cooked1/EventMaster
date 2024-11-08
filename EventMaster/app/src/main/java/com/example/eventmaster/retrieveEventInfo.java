@@ -252,7 +252,6 @@ public class retrieveEventInfo extends AppCompatActivity {
      * @param deviceID the device ID of the entrant that is needed to access data in the firebase
      * @param event the event name that is needed to access data in the firebase
      */
-    // INNAS PART
     // check if the hash data matches any of the hash data in the firebase when the qr code is scanned
     private void retrieveEventInfo(String hashedData, String deviceID, String event) {
         db.collection("facilities")
