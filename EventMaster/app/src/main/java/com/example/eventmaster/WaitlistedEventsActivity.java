@@ -50,6 +50,12 @@ public class WaitlistedEventsActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> settingsResultLauncher;
     private ActivityResultLauncher<Intent> homeActivityResultLauncher;
 
+    private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
+    private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
+    private ActivityResultLauncher<Intent> settingsResultLauncher;
+    private ActivityResultLauncher<Intent> MainActivityResultLauncher;
+    private Profile user;
+
     //  private ActivityResultLauncher<Intent> QRScanScreenResultLauncher;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,19 +94,57 @@ public class WaitlistedEventsActivity extends AppCompatActivity {
         // Set result launchers to set up navigation buttons on the bottom of the screen
         settingsResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
-                result -> {});
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
 
-        homeActivityResultLauncher = registerForActivityResult(
+                });
+
+        MainActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
-                result -> {});
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+
+                });
 
         notificationActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
-                result -> {});
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+
+                });
 
         ProfileActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
-                result -> {});
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+
+                });
+
+                
 
         // Set click listeners for navigation buttons on the bottom of the screen
         // sends you to profile screen
@@ -119,9 +163,9 @@ public class WaitlistedEventsActivity extends AppCompatActivity {
 
         // sends you to a list of invited events that you accepted
         homeButton.setOnClickListener(v -> {
-            Intent newIntent = new Intent(WaitlistedEventsActivity.this, MainActivity.class);
+            Intent newIntent = new Intent(WaitlistedEventsActivity.this, JoinedEventsActivity.class);
             newIntent.putExtra("User", user);
-            homeActivityResultLauncher.launch(newIntent);
+            MainActivityResultLauncher.launch(newIntent);
         });
         notificationButton.setOnClickListener(v -> {
             Intent newIntent = new Intent(WaitlistedEventsActivity.this, Notifications.class);
@@ -129,9 +173,12 @@ public class WaitlistedEventsActivity extends AppCompatActivity {
             notificationActivityResultLauncher.launch(newIntent);
         });
 
-        // Set click listener for the back button
+
         backButton.setOnClickListener(v -> {
-            finish(); // Close the current activity and return to the previous one
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("User", user);
+            setResult(RESULT_OK, resultIntent);
+            finish();
         });
 
     }

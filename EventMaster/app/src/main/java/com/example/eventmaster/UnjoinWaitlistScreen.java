@@ -11,7 +11,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
+
 import androidx.activity.result.contract.ActivityResultContracts;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
@@ -33,6 +35,7 @@ public class UnjoinWaitlistScreen extends AppCompatActivity {
     private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
     private ActivityResultLauncher<Intent> settingsResultLauncher;
     private ActivityResultLauncher<Intent> listActivityResultLauncher;
+
 
     //TODO: Update event name and description with corresponding details, update firestore when entrant unjoins waitlist
     @Override
@@ -101,6 +104,7 @@ public class UnjoinWaitlistScreen extends AppCompatActivity {
         ProfileActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {});
+
 
         // Set click listeners for navigation buttons on the bottom of the screen
         // sends you to profile screen

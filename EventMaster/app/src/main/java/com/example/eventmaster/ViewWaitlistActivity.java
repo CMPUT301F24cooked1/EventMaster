@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
+
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -24,9 +26,16 @@ public class ViewWaitlistActivity extends AppCompatActivity {
     private String deviceId; // Replace with actual device ID
     private String eventName; // Define event name or ID
 
+    private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
+    private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
+    private ActivityResultLauncher<Intent> settingsResultLauncher;
+    private ActivityResultLauncher<Intent> MainActivityResultLauncher;
+
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_waitlist);
 
@@ -47,6 +56,9 @@ public class ViewWaitlistActivity extends AppCompatActivity {
 
         // Fetch the waitlist from Firebase
         fetchWaitlist();
+
+
+
     }
 
     private void fetchWaitlist() {

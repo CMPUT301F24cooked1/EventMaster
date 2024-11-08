@@ -59,6 +59,10 @@ public class AdminActivity extends AppCompatActivity {
         goBack();
         goToSettings();
         goToProfile();
+
+
+
+
     }
 
     /**
