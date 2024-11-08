@@ -59,7 +59,7 @@ public class OrganizerEventListView extends AppCompatActivity{
     private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
     private ActivityResultLauncher<Intent> settingsResultLauncher;
     private ActivityResultLauncher<Intent> MainActivityResultLauncher;
-    private Profile user;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

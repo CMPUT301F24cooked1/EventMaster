@@ -41,9 +41,6 @@ public class JoinedEventsActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> settingsResultLauncher;
     private ActivityResultLauncher<Intent> MainActivityResultLauncher;
 
-    private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
-    private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
-    private ActivityResultLauncher<Intent> settingsResultLauncher;
     private ActivityResultLauncher<Intent> homeActivityResultLauncher;
 
     //  private ActivityResultLauncher<Intent> QRScanScreenResultLauncher;
@@ -96,7 +93,6 @@ public class JoinedEventsActivity extends AppCompatActivity {
         ImageButton settingsButton = findViewById(R.id.settings);
         ImageButton profileButton = findViewById(R.id.profile);
         ImageButton homeButton = findViewById(R.id.home_icon);
-        ImageButton backButton = findViewById(R.id.back_button); // Initialize back button
 
         // Set result launchers to set up navigation buttons on the bottom of the screen
         settingsResultLauncher = registerForActivityResult(
