@@ -43,9 +43,9 @@ public class EditFacilityTest {
      */
     @Test
     public void testCorrectTextDisplayed() {
-        onView(withId(R.id.edit_facility_name)).check(matches(withText("UITestingFacility")));
-        onView(withId(R.id.edit_facility_address)).check(matches(withText("UIAddress")));
-        onView(withId(R.id.edit_facility_desc)).check(matches(withText("This is a test.")));
+        onView(withId(R.id.edit_facility_name)).check(matches(withText("Tinseltown")));
+        onView(withId(R.id.edit_facility_address)).check(matches(withText("In the Rain")));
+        onView(withId(R.id.edit_facility_desc)).check(matches(withText("Easy come and easy go.")));
     }
 
 }

@@ -71,7 +71,7 @@ public class WaitlistedEventsActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         eventList = new ArrayList<>();
 
-        WaitlistedEventsAdapter = new WaitlistedEventsAdapter(eventList, this);
+        WaitlistedEventsAdapter = new WaitlistedEventsAdapter(eventList, this, user);
         WaitlistedEventsAdapter.notifyDataSetChanged();
         recyclerView.setAdapter(WaitlistedEventsAdapter);
 
@@ -86,7 +86,6 @@ public class WaitlistedEventsActivity extends AppCompatActivity {
         ImageButton homeButton = findViewById(R.id.home_icon);
         ImageButton backButton = findViewById(R.id.back_button); // Initialize back button
 
-        // Set result launchers to set up navigation buttons on the bottom of the screen
         settingsResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -139,7 +138,6 @@ public class WaitlistedEventsActivity extends AppCompatActivity {
 
                 });
 
-                
 
         // Set click listeners for navigation buttons on the bottom of the screen
         // sends you to profile screen

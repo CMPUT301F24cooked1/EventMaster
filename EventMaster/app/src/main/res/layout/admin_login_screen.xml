@@ -31,6 +31,7 @@
         android:gravity="center"
         android:hint="Enter a 6 digit numerical code"
         android:inputType="number"
+        android:textColor="@color/black"
         android:maxLength="6"
         app:layout_constraintBottom_toTopOf="@+id/done_button"
         app:layout_constraintEnd_toEndOf="parent"

@@ -26,7 +26,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-// https://www.c-sharpcorner.com/article/android-qr-code-bar-code-scanner/
 public class JoinEventScreen extends AppCompatActivity {
     /**
      * Initializes the Join Event Screen
@@ -56,7 +55,9 @@ public class JoinEventScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         ModeActivity.applyTheme(this);
         setContentView(R.layout.view_events_screen);
+
         user = (Profile) getIntent().getSerializableExtra("User"); // user from MainActivity
+
 
         // Initialize Firebase Firestore
         firestore = FirebaseFirestore.getInstance();

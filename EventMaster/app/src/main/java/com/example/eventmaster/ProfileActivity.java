@@ -128,7 +128,9 @@ public class ProfileActivity extends AppCompatActivity {
         displayName.setText(user.getName());
         displayEmail.setText(user.getEmail());
         displayPhoneNumber.setText(user.getPhone_number());
-        ProfilePicture.loadProfilePicture(user, profilePicture, ProfileActivity.this);
+        if (user.getName() != null){
+            ProfilePicture.loadProfilePicture(user, profilePicture, ProfileActivity.this);
+        }
     }
 
 

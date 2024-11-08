@@ -9,12 +9,12 @@
     android:layout_marginBottom="8dp">
 
     <ImageView
-        android:id="@+id/imageView4"
-        android:layout_width="31dp"
-        android:layout_height="31dp"
+        android:id="@+id/profile_picture"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_marginTop="5dp"
-        android:layout_marginEnd="16dp"
-        android:background="@drawable/calendar_image"/>
+        android:layout_marginEnd="15dp"
+        app:srcCompat="@drawable/profile_picture" />
 
     <LinearLayout
         android:layout_width="260dp"
@@ -23,21 +23,21 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/eventNameTextView"
+            android:id="@+id/profile_name"
             android:layout_width="238dp"
             android:layout_height="wrap_content"
             android:textSize="18sp"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/eventDescriptionTextView"
+            android:id="@+id/profile_device_id"
             android:layout_width="240dp"
             android:layout_height="20dp"
             android:textSize="14sp" />
     </LinearLayout>
 
     <ImageView
-        android:id="@+id/event_details_arrow"
+        android:id="@+id/profile_details_arrow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/arrow"
@@ -46,7 +46,7 @@
         />
 
     <CheckBox
-        android:id="@+id/removeEventCheckBox"
+        android:id="@+id/remove_profile_checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:buttonTint="#000000"

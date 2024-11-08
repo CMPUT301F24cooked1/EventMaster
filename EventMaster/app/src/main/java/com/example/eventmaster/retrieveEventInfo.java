@@ -252,7 +252,6 @@ public class retrieveEventInfo extends AppCompatActivity {
      * @param deviceID the device ID of the entrant that is needed to access data in the firebase
      * @param event the event name that is needed to access data in the firebase
      */
-    // INNAS PART
     // check if the hash data matches any of the hash data in the firebase when the qr code is scanned
     private void retrieveEventInfo(String hashedData, String deviceID, String event) {
         db.collection("facilities")
@@ -449,9 +448,13 @@ public class retrieveEventInfo extends AppCompatActivity {
                         } else if (count < targetCount) {
                             Intent intent = new Intent(retrieveEventInfo.this, JoinWaitlistScreen.class);
                             intent.putExtra("User", user);
+                            intent.putExtra("hashed_data", hashedData);
+                            intent.putExtra("deviceID", deviceID);
+                            intent.putExtra("event", event);
                             fetchEventData(hashedData, deviceID, event, posterUrl);
                             joinWaitlistEntrant(userDeviceId, hashedData, deviceID, posterUrl);
                             joinWaitlistOrganizer(userDeviceId, deviceID);
+                            startActivity(intent);
                         }
                     } else {
                         FirebaseFirestoreException e = (FirebaseFirestoreException) task.getException();

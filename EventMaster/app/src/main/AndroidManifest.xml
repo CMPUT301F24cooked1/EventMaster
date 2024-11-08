@@ -2,11 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-
-
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -18,23 +16,21 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EventMaster"
         tools:targetApi="31">
+        <activity
+            android:name=".ViewInvitedListActivity"
+            android:exported="false" />
         <activity android:name=".AdminEventActivity" />
         <activity android:name=".AdminProfileActivity" />
         <activity android:name=".AdminFacilitiesActivity" />
         <activity android:name=".AdminImagesActivity" />
         <activity android:name=".AdminQRActivity" />
-
         <activity android:name=".AdminActivity" />
-
         <activity android:name=".AdminLoginActivity" />
-
         <activity
             android:name=".SettingsScreen"
             android:configChanges="uiMode|screenSize|orientation" />
-        <activity
-            android:name=".ProfileActivity" />
-        <activity
-            android:name=".Notifications" />
+        <activity android:name=".ProfileActivity" />
+        <activity android:name=".Notifications" />
         <activity
             android:name=".EditFacilityScreen"
             android:exported="false" />
@@ -44,46 +40,21 @@
         <activity
             android:name=".CreateEventActivity"
             android:exported="false" />
-        <activity
-            android:name=".ViewCreatedEventsActivity" />
-        <activity
-            android:name=".EventDetailsActivity" />
-        <activity
-            android:name=".ViewWaitlistActivity" />
-        <activity
-            android:name=".JoinEventScreen" />
-        <activity
-
-            android:name=".QRScanFragment" />
-        <activity
-            android:name=".ViewEventsAdapter" />
-        <activity
-            android:name=".OrganizerEventListView" />
-        <activity
-            android:name=".retrieveEventInfo" />
-
-        <activity
-            android:name=".InputUserInformation"/>
-        <activity
-            android:name=".JoinWaitlistScreen"/>
-        <activity
-            android:name=".JoinedEventsActivity"/>
-        <activity
-            android:name=".WaitlistedEventsActivity"/>
-        <activity
-            android:name=".UnjoinWaitlistScreen"/>
-        <activity
-            android:name=".AppInfoActivity" />
-
-        <activity
-            android:name=".QrCaptureActivity" />
-
-
-
-
-
-
-
+        <activity android:name=".ViewCreatedEventsActivity" />
+        <activity android:name=".EventDetailsActivity" />
+        <activity android:name=".ViewWaitlistActivity" />
+        <activity android:name=".JoinEventScreen" />
+        <activity android:name=".QRScanFragment" />
+        <activity android:name=".ViewEventsAdapter" />
+        <activity android:name=".OrganizerEventListView" />
+        <activity android:name=".retrieveEventInfo" />
+        <activity android:name=".InputUserInformation" />
+        <activity android:name=".JoinWaitlistScreen" />
+        <activity android:name=".JoinedEventsActivity" />
+        <activity android:name=".WaitlistedEventsActivity" />
+        <activity android:name=".UnjoinWaitlistScreen" />
+        <activity android:name=".AppInfoActivity" />
+        <activity android:name=".QrCaptureActivity" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -93,7 +64,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
     </application>
 
 </manifest>

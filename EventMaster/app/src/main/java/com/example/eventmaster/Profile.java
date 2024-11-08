@@ -17,6 +17,10 @@ public class Profile implements Serializable {
     private String phone_number;
     private String password;
 
+    public Profile() {
+        //Default constructor
+    }
+
     /**
      * Constructs a new Profile object with all the details
      *

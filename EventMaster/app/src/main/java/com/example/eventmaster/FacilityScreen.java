@@ -33,11 +33,9 @@ public class FacilityScreen extends AppCompatActivity {
 
     private String deviceId;
     private ActivityResultLauncher<Intent> editFacilityResultLauncher;
-    private ActivityResultLauncher<Intent> createEventResultLauncher;
     private FirebaseFirestore db;
 
     private Profile user;
-    //private Organizer userOrganizer;
     private Facility updatedUserFacility;
     private Facility userFacility;
 
@@ -57,6 +55,11 @@ public class FacilityScreen extends AppCompatActivity {
     private ActivityResultLauncher<Intent> settingsResultLauncher;
     private ActivityResultLauncher<Intent> MainActivityResultLauncher;
 
+    /**
+     * Displays the name, address and description for the user's facility
+     * Allows navigation to creation of an event, viewing events, and editing facility
+     * @param savedInstanceState If the activity is restarted this Bundle contains the data it most recently supplied.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -179,8 +182,6 @@ public class FacilityScreen extends AppCompatActivity {
                 editFacilityResultLauncher.launch(intent);
             }
         });
-
-        //userOrganizer = new Organizer();
 
         //Move to Events Page
         createEventButton = findViewById(R.id.create_event_button);

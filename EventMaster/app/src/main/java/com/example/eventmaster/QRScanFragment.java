@@ -180,8 +180,9 @@ public class QRScanFragment extends AppCompatActivity{
 
     }
 
-    // Set the Scanner
+    // ScanCode is referenced by https://www.c-sharpcorner.com/article/android-qr-code-bar-code-scanner/
     private void ScanCode() {
+        // Set the scanner
         ScanOptions options = new ScanOptions();
         options.setBeepEnabled(false);
         options.setOrientationLocked(false);
