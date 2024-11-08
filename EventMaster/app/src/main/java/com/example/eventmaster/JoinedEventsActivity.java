@@ -39,11 +39,6 @@ public class JoinedEventsActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
     private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
     private ActivityResultLauncher<Intent> settingsResultLauncher;
-    private ActivityResultLauncher<Intent> MainActivityResultLauncher;
-
-    private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
-    private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
-    private ActivityResultLauncher<Intent> settingsResultLauncher;
     private ActivityResultLauncher<Intent> homeActivityResultLauncher;
 
     //  private ActivityResultLauncher<Intent> QRScanScreenResultLauncher;
@@ -53,7 +48,6 @@ public class JoinedEventsActivity extends AppCompatActivity {
         setContentView(R.layout.joined_events_screen);
         ModeActivity.applyTheme(this);
         user = (Profile) getIntent().getSerializableExtra("User"); // user from MainActivity
-        ImageButton backButton = findViewById(R.id.back_button);
 
 
 

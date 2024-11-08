@@ -48,13 +48,8 @@ public class WaitlistedEventsActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
     private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
     private ActivityResultLauncher<Intent> settingsResultLauncher;
-    private ActivityResultLauncher<Intent> homeActivityResultLauncher;
-
-    private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
-    private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
-    private ActivityResultLauncher<Intent> settingsResultLauncher;
     private ActivityResultLauncher<Intent> MainActivityResultLauncher;
-    private Profile user;
+
 
     //  private ActivityResultLauncher<Intent> QRScanScreenResultLauncher;
     @Override

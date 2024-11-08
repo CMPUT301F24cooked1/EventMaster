@@ -59,7 +59,6 @@ public class OrganizerEventListView extends AppCompatActivity{
     private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
     private ActivityResultLauncher<Intent> settingsResultLauncher;
     private ActivityResultLauncher<Intent> MainActivityResultLauncher;
-    private Profile user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +88,6 @@ public class OrganizerEventListView extends AppCompatActivity{
         ImageButton backButton = findViewById(R.id.back_button); // Initialize back button
 
         deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-        user = user = (Profile) getIntent().getSerializableExtra("User");
 
 
         AppCompatButton waitingListButton = findViewById(R.id.waiting_list_button);
