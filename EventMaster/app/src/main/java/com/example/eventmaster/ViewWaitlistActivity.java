@@ -5,10 +5,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
+import android.widget.ImageButton;
 
-import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -25,20 +26,15 @@ public class ViewWaitlistActivity extends AppCompatActivity {
     private FirebaseFirestore firestore;
     private String deviceId; // Replace with actual device ID
     private String eventName; // Define event name or ID
-
-    private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
-    private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
-    private ActivityResultLauncher<Intent> settingsResultLauncher;
-    private ActivityResultLauncher<Intent> MainActivityResultLauncher;
-
+    private Profile user;
 
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_waitlist);
-
+        Intent intentMain = getIntent();
+        user =  (Profile) intentMain.getSerializableExtra("User");
         // Retrieve eventName from the Intent
         eventName = getIntent().getStringExtra("eventName");
 
@@ -56,9 +52,38 @@ public class ViewWaitlistActivity extends AppCompatActivity {
 
         // Fetch the waitlist from Firebase
         fetchWaitlist();
+        // Initialize navigation buttons
+        ImageButton notificationButton = findViewById(R.id.notifications);
+        ImageButton settingsButton = findViewById(R.id.settings);
+        ImageButton profileButton = findViewById(R.id.profile);
+        ImageButton homeButton = findViewById(R.id.home_icon);
+        ImageButton backButton = findViewById(R.id.back_button); // Initialize back button
 
+        // Set click listeners for navigation
+        notificationButton.setOnClickListener(v -> {
+            Intent intent = new Intent(ViewWaitlistActivity.this, Notifications.class);
+            startActivity(intent);
+        });
 
+        settingsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(ViewWaitlistActivity.this, SettingsScreen.class);
+            startActivity(intent);
+        });
 
+        profileButton.setOnClickListener(v -> {
+            Intent intent = new Intent(ViewWaitlistActivity.this, ProfileActivity.class);
+            intent.putExtra("User", user);
+            startActivity(intent);
+        });
+
+        homeButton.setOnClickListener(v -> {
+            Intent intent = new Intent(ViewWaitlistActivity.this, MainActivity.class);
+            startActivity(intent);
+        });
+        // Set click listener for the back button
+        backButton.setOnClickListener(v -> {
+            finish(); // Close the current activity and return to the previous one
+        });
     }
 
     private void fetchWaitlist() {

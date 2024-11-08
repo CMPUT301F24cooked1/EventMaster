@@ -19,8 +19,6 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -35,10 +33,6 @@ public class EventDetailsActivity extends AppCompatActivity {
     private String eventId;
     private static Bitmap cachedPosterBitmap; // Static variable to cache the poster image
     private String deviceId; // Replace with actual device ID
-    private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
-    private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
-    private ActivityResultLauncher<Intent> settingsResultLauncher;
-    private ActivityResultLauncher<Intent> MainActivityResultLauncher;
     private Profile user;
 
     @Override
@@ -55,6 +49,8 @@ public class EventDetailsActivity extends AppCompatActivity {
 
         // Retrieve the event ID from the intent
         eventId = getIntent().getStringExtra("eventId");
+        Intent intentMain = getIntent();
+        user =  (Profile) intentMain.getSerializableExtra("user");
 
         // Load event details from Firestore
         loadEventDetails();
@@ -65,91 +61,32 @@ public class EventDetailsActivity extends AppCompatActivity {
         ImageButton homeButton = findViewById(R.id.home_icon);
         ImageButton backButton = findViewById(R.id.back_button); // Initialize back button
         deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-        user = (Profile) getIntent().getSerializableExtra("User");
 
         // Set click listeners for navigation
         notificationButton.setOnClickListener(v -> {
-            Intent newIntent = new Intent(EventDetailsActivity.this, Notifications.class);
-            newIntent.putExtra("User", user);
-            notificationActivityResultLauncher.launch(newIntent);
+            Intent intent = new Intent(EventDetailsActivity.this, Notifications.class);
+            startActivity(intent);
         });
 
         settingsButton.setOnClickListener(v -> {
-            Intent newIntent = new Intent(EventDetailsActivity.this, SettingsScreen.class);
-            newIntent.putExtra("User", user);
-            settingsResultLauncher.launch(newIntent);
+            Intent intent = new Intent(EventDetailsActivity.this, SettingsScreen.class);
+            startActivity(intent);
         });
 
         profileButton.setOnClickListener(v -> {
-            Intent newIntent = new Intent(EventDetailsActivity.this, ProfileActivity.class);
-            newIntent.putExtra("User", user);
-            ProfileActivityResultLauncher.launch(newIntent);
+            Intent intent = new Intent(EventDetailsActivity.this, ProfileActivity.class);
+            intent.putExtra("User", user);
+            startActivity(intent);
         });
 
         homeButton.setOnClickListener(v -> {
             Intent intent = new Intent(EventDetailsActivity.this, MainActivity.class);
-            intent.putExtra("User", user);
             startActivity(intent);
         });
         // Set click listener for the back button
         backButton.setOnClickListener(v -> {
-            Intent resultIntent = new Intent();
-            resultIntent.putExtra("User", user);
-            setResult(RESULT_OK, resultIntent);
-            finish();
+            finish(); // Close the current activity and return to the previous one
         });
-
-        settingsResultLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
-                        if (updatedUser != null) {
-                            user = updatedUser; // Apply the updated Profile to MainActivity's user
-                            Log.d("MainActivity", "User profile updated: " + user.getName());
-                        }
-                    }
-
-                });
-
-        MainActivityResultLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
-                        if (updatedUser != null) {
-                            user = updatedUser; // Apply the updated Profile to MainActivity's user
-                            Log.d("MainActivity", "User profile updated: " + user.getName());
-                        }
-                    }
-
-                });
-
-        notificationActivityResultLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
-                        if (updatedUser != null) {
-                            user = updatedUser; // Apply the updated Profile to MainActivity's user
-                            Log.d("MainActivity", "User profile updated: " + user.getName());
-                        }
-                    }
-
-                });
-
-        ProfileActivityResultLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
-                        if (updatedUser != null) {
-                            user = updatedUser; // Apply the updated Profile to MainActivity's user
-                            Log.d("MainActivity", "User profile updated: " + user.getName());
-                        }
-                    }
-
-                });
 
     }
 
@@ -167,7 +104,7 @@ public class EventDetailsActivity extends AppCompatActivity {
             if (documentSnapshot.exists()) {
                 String eventName = documentSnapshot.getString("eventName");
                 String eventDescription = documentSnapshot.getString("eventDescription");
-                String qrCodeHash = documentSnapshot.getString("hash"); // Assuming you store this
+                String qrCodeHash = documentSnapshot.getString("hash");
 
                 eventNameTextView.setText(eventName);
                 eventDescriptionTextView.setText(eventDescription);

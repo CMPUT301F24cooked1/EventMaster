@@ -16,8 +16,6 @@ import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
@@ -33,7 +31,14 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
+
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
+import android.widget.TextView;
+import java.util.Calendar;
+
 public class CreateEventActivity extends AppCompatActivity {
 
     private FirebaseFirestore db;
@@ -49,17 +54,14 @@ public class CreateEventActivity extends AppCompatActivity {
     private AppCompatButton createEventButton;
     private TextView uploadPosterButton;
     private Switch geolocationSwitch;
-    private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
-    private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
-    private ActivityResultLauncher<Intent> settingsResultLauncher;
-    private ActivityResultLauncher<Intent> MainActivityResultLauncher;
-
-
+    private Profile user;
     private Uri posterUri; // To hold the URI of the selected poster
     private String posterDownloadUrl = null; // To hold the download URL of the uploaded poster
 
+    private TextView waitlistCountdownText;
+    private Calendar waitlistCalendar;
+
     private static final int PICK_IMAGE_REQUEST = 1; // Request code for image selection
-    private Profile user;
 
     @SuppressLint("WrongViewCast")
     @Override
@@ -72,8 +74,10 @@ public class CreateEventActivity extends AppCompatActivity {
         Intent intentMain = getIntent();
         user =  (Profile) intentMain.getSerializableExtra("User");
         deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-        //Checks if user was grabbed
+
+        // Check if user was grabbed
         assert user != null;
+
         storage = FirebaseStorage.getInstance();
         storageRef = storage.getReference();
 
@@ -94,97 +98,74 @@ public class CreateEventActivity extends AppCompatActivity {
         ImageButton backButton = findViewById(R.id.back_button); // Initialize back button
 
         geolocationSwitch = findViewById(R.id.geolocation_switch);
+
+        waitlistCountdownText = findViewById(R.id.waitlistCountdown);
+        waitlistCalendar = Calendar.getInstance();
+
+        // Open date picker on TextView click
+        waitlistCountdownText.setOnClickListener(v -> showDateTimePicker());
+
         // Set click listeners for navigation
         notificationButton.setOnClickListener(v -> {
-            Intent newIntent = new Intent(CreateEventActivity.this, Notifications.class);
-            newIntent.putExtra("User", user);
-            notificationActivityResultLauncher.launch(newIntent);
+            Intent intent = new Intent(CreateEventActivity.this, Notifications.class);
+            startActivity(intent);
         });
 
         settingsButton.setOnClickListener(v -> {
-            Intent newIntent = new Intent(CreateEventActivity.this, SettingsScreen.class);
-            newIntent.putExtra("User", user);
-            settingsResultLauncher.launch(newIntent);
+            Intent intent = new Intent(CreateEventActivity.this, SettingsScreen.class);
+            startActivity(intent);
         });
 
         profileButton.setOnClickListener(v -> {
-            Intent newIntent = new Intent(CreateEventActivity.this, ProfileActivity.class);
-            newIntent.putExtra("User", user);
-            ProfileActivityResultLauncher.launch(newIntent);
-
+            Intent intent = new Intent(CreateEventActivity.this, ProfileActivity.class);
+            intent.putExtra("User", user);
+            startActivity(intent);
         });
 
         viewEventsButton.setOnClickListener(v -> {
             Intent intent = new Intent(CreateEventActivity.this, ViewCreatedEventsActivity.class);
-            intent.putExtra("User", user);
             startActivity(intent);
         });
 
         // Set click listener for the back button
         backButton.setOnClickListener(v -> {
-            Intent resultIntent = new Intent();
-            resultIntent.putExtra("User", user);
-            setResult(RESULT_OK, resultIntent);
-            finish();
+            finish(); // Close the current activity and return to the previous one
         });
-
-        settingsResultLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
-                        if (updatedUser != null) {
-                            user = updatedUser; // Apply the updated Profile to MainActivity's user
-                            Log.d("MainActivity", "User profile updated: " + user.getName());
-                        }
-                    }
-
-                });
-
-        MainActivityResultLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
-                        if (updatedUser != null) {
-                            user = updatedUser; // Apply the updated Profile to MainActivity's user
-                            Log.d("MainActivity", "User profile updated: " + user.getName());
-                        }
-                    }
-
-                });
-
-        notificationActivityResultLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
-                        if (updatedUser != null) {
-                            user = updatedUser; // Apply the updated Profile to MainActivity's user
-                            Log.d("MainActivity", "User profile updated: " + user.getName());
-                        }
-                    }
-
-                });
-
-        ProfileActivityResultLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
-                        if (updatedUser != null) {
-                            user = updatedUser; // Apply the updated Profile to MainActivity's user
-                            Log.d("MainActivity", "User profile updated: " + user.getName());
-                        }
-                    }
-
-                });
 
         // Set up the upload poster button
         uploadPosterButton.setOnClickListener(v -> openFileChooser()); // Open the image chooser
 
         // Set up the create event button
-        createEventButton.setOnClickListener(v -> createEvent()); // Handle event creation
+        createEventButton.setOnClickListener(v -> {
+            // Call createEvent before proceeding to the next activity
+            createEvent();
+        });
+    }
+
+    private void showDateTimePicker() {
+        // Open the DatePickerDialog
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
+            waitlistCalendar.set(Calendar.YEAR, year);
+            waitlistCalendar.set(Calendar.MONTH, month);
+            waitlistCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+            // Open the TimePickerDialog after selecting date
+            new TimePickerDialog(this, (timeView, hourOfDay, minute) -> {
+                waitlistCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                waitlistCalendar.set(Calendar.MINUTE, minute);
+
+                // Format date and time to display in TextView
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+                String formattedDate = dateFormat.format(waitlistCalendar.getTime());
+                waitlistCountdownText.setText(formattedDate);
+
+            }, waitlistCalendar.get(Calendar.HOUR_OF_DAY), waitlistCalendar.get(Calendar.MINUTE), true).show();
+
+        }, waitlistCalendar.get(Calendar.YEAR), waitlistCalendar.get(Calendar.MONTH), waitlistCalendar.get(Calendar.DAY_OF_MONTH));
+
+        // Disable all past dates by setting the minimum date to today
+        datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+        datePickerDialog.show();
     }
 
     // Open the file chooser to select an image for the poster
@@ -213,7 +194,7 @@ public class CreateEventActivity extends AppCompatActivity {
         String eventDescription = eventDescriptionInput.getText().toString();
         String eventCapacity = eventCapacityInput.getText().toString();
         String waitlistCapacity = waitlistCapacityInput.getText().toString();
-        String waitlistCountdown = waitlistCountdownInput.getText().toString();
+        String waitlistCountdown = waitlistCountdownText.getText().toString();
 
         // Input validation
         if (eventName.isEmpty() || eventDescription.isEmpty() || eventCapacity.isEmpty() || waitlistCountdown.isEmpty()) {
@@ -327,19 +308,15 @@ public class CreateEventActivity extends AppCompatActivity {
                                 .document(eventName)
                                 .set(eventData)
                                 .addOnSuccessListener(aVoid -> {
-                                    Log.d("CreateEvent 1", "1" + eventName);
                                     Toast.makeText(CreateEventActivity.this, "Event created successfully", Toast.LENGTH_SHORT).show();
                                     // Generate and store QR code
                                     generateQRCode(eventName, facilityId);
-                                    Log.d("CreateEvent 2 ", "2 " + eventName);
                                     // Navigate directly to EventDetailsActivity
                                     Intent intent = new Intent(CreateEventActivity.this, EventDetailsActivity.class);
-                                    Log.d("CreateEvent 3", "3 " + eventName);
                                     intent.putExtra("eventId", eventName); // Pass the event ID or name as needed
-                                    Log.d("CreateEvent 4", "4 " + eventName);
+                                    intent.putExtra("user", user);
                                     startActivity(intent);
-                                    Log.d("CreateEvent 5", "5 " + eventName);
-                                    finish(); // Optional: finish CreateEventActivity if no back navigation needed
+                                    finish();
                                 })
                                 .addOnFailureListener(e -> Toast.makeText(CreateEventActivity.this, "Error creating event", Toast.LENGTH_SHORT).show());
                     } else {
