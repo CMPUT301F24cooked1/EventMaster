@@ -55,7 +55,9 @@ public class JoinEventScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         ModeActivity.applyTheme(this);
         setContentView(R.layout.view_events_screen);
+
         user = (Profile) getIntent().getSerializableExtra("User"); // user from MainActivity
+
 
         // Initialize Firebase Firestore
         firestore = FirebaseFirestore.getInstance();

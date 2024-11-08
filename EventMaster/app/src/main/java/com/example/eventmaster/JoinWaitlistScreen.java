@@ -31,6 +31,7 @@ public class JoinWaitlistScreen extends AppCompatActivity {
     TextView eventDescription;
     TextView eventFinalDate;
     ImageView eventPoster;
+    private Profile user;
 
     ImageButton notificationButton;
     ImageButton settingsButton;
