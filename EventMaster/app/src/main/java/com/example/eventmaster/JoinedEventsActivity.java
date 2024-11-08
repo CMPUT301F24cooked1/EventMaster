@@ -138,10 +138,10 @@ public class JoinedEventsActivity extends AppCompatActivity {
             notificationActivityResultLauncher.launch(newIntent);
         });
 
-        // Set click listener for the back button
-        backButton.setOnClickListener(v -> {
-            finish(); // Close the current activity and return to the previous one
-        });
+//        // Set click listener for the back button
+//        backButton.setOnClickListener(v -> {
+//            finish(); // Close the current activity and return to the previous one
+//        });
     }
 
     private void retrieveEvents() {
