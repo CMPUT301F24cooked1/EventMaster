@@ -21,13 +21,25 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Adapter class for displaying waitlisted users in a RecyclerView.
+ * This adapter fetches user details (name and profile picture) from Firestore and binds them to the view.
+ */
 public class WaitlistUsersAdapter extends RecyclerView.Adapter<WaitlistUsersAdapter.UserViewHolder> {
 
-    // Define a User class to hold both name and profile picture URL
+    /**
+     * User class to hold the details of a user including name and profile picture URL.
+     */
     public static class User {
         String name;
         String profilePictureUrl;
 
+        /**
+         * Constructs a new User with the specified name and profile picture URL.
+         *
+         * @param name The name of the user.
+         * @param profilePictureUrl The URL of the user's profile picture.
+         */
         public User(String name, String profilePictureUrl) {
             this.name = name;
             this.profilePictureUrl = profilePictureUrl;
@@ -40,6 +52,13 @@ public class WaitlistUsersAdapter extends RecyclerView.Adapter<WaitlistUsersAdap
     private String eventId;
     private String deviceId;
 
+    /**
+     * Constructs a new WaitlistUsersAdapter with the specified parameters.
+     *
+     * @param userList A list of users to display.
+     * @param context The context in which the adapter operates.
+     * @param eventId The ID of the event for which users are waitlisted.
+     */
     public WaitlistUsersAdapter(List<User> userList, Context context, String eventId) {
         this.userList = userList;
         this.context = context;
@@ -67,16 +86,30 @@ public class WaitlistUsersAdapter extends RecyclerView.Adapter<WaitlistUsersAdap
         return userList.size();
     }
 
+    /**
+     * ViewHolder class for binding a user to a RecyclerView item.
+     */
     public class UserViewHolder extends RecyclerView.ViewHolder {
         TextView userTextView;
         ImageView profileImageView;
 
+
+        /**
+         * Constructs a new UserViewHolder.
+         *
+         * @param itemView The view of the item being displayed.
+         */
         public UserViewHolder(@NonNull View itemView) {
             super(itemView);
             userTextView = itemView.findViewById(R.id.userTextView);
             profileImageView = itemView.findViewById(R.id.profile_picture);
         }
 
+        /**
+         * Binds the user data to the view components.
+         *
+         * @param user The user object containing the data to bind.
+         */
         public void bind(User user) {
             userTextView.setText(user.name);
 
@@ -94,7 +127,9 @@ public class WaitlistUsersAdapter extends RecyclerView.Adapter<WaitlistUsersAdap
         }
     }
 
-    // Fetch waitlist users from Firestore and get both name and profile picture URL
+    /**
+     * Fetches the list of waitlisted users from Firestore and adds them to the user list.
+     */
     public void fetchWaitlistedUsers() {
         DocumentReference eventRef = db.collection("facilities")
                 .document(deviceId)
@@ -118,7 +153,12 @@ public class WaitlistUsersAdapter extends RecyclerView.Adapter<WaitlistUsersAdap
                 });
     }
 
-    // Fetch user name and profile picture URL based on userDeviceId
+    /**
+     * Fetches the name and profile picture URL of a user based on their device ID.
+     *
+     * @param userDeviceId The device ID of the user.
+     * @param users The list to store fetched users.
+     */
     private void fetchUserDetails(String userDeviceId, List<User> users) {
         db.collection("profiles").document(userDeviceId)
                 .get()

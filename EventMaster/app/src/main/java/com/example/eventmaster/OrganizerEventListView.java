@@ -37,6 +37,10 @@ import com.google.firebase.storage.StorageReference;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * OrganizerEventListView class handles the event details screen for event organizers.
+ * It allows them to view, update the event poster, and navigate to other related screens like notifications, settings, and user profile.
+ */
 public class OrganizerEventListView extends AppCompatActivity{
 
 
@@ -332,6 +336,9 @@ public class OrganizerEventListView extends AppCompatActivity{
         }
     }
 
+    /**
+     * Clears cache for the event poster.
+     */
     @Override
     protected void onDestroy() {
         super.onDestroy();

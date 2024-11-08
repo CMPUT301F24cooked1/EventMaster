@@ -39,6 +39,13 @@ import android.app.TimePickerDialog;
 import android.widget.TextView;
 import java.util.Calendar;
 
+/**
+ * CreateEventActivity.java
+ * This activity allows users to create an event by filling in details such as event name, description, capacity, waitlist options,
+ * and a countdown timer. Users can also upload a poster and enable geolocation for the event.
+ * The event is saved to Firebase Firestore and Firebase Storage, and a unique QR code is generated for each event.
+ * Users are navigated to the event details screen upon successful event creation.
+ */
 public class CreateEventActivity extends AppCompatActivity {
 
     private FirebaseFirestore db;
@@ -62,7 +69,11 @@ public class CreateEventActivity extends AppCompatActivity {
     private Calendar waitlistCalendar;
 
     private static final int PICK_IMAGE_REQUEST = 1; // Request code for image selection
-
+    /**
+     * Initializes the activity, including UI elements and Firebase references.
+     * Sets up button listeners for creating events, uploading posters, and navigating to other activities.
+     * @param savedInstanceState State of the app if being restored after being closed.
+     */
     @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,6 +153,9 @@ public class CreateEventActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Displays a date and time picker for the waitlist countdown. Ensures the selected date is in the future.
+     */
     private void showDateTimePicker() {
         // Open the DatePickerDialog
         DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
@@ -168,7 +182,9 @@ public class CreateEventActivity extends AppCompatActivity {
         datePickerDialog.show();
     }
 
-    // Open the file chooser to select an image for the poster
+    /**
+     * Opens a file chooser to select an image for the event poster.
+     */
     private void openFileChooser() {
         Intent intent = new Intent();
         intent.setType("image/*");
@@ -176,7 +192,12 @@ public class CreateEventActivity extends AppCompatActivity {
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
 
-    // Handle the result of image selection
+    /**
+     * Handles the result of the image selection for the poster.
+     * @param requestCode Request code used to identify the activity result.
+     * @param resultCode Result code to determine if the result is successful.
+     * @param data Data containing the URI of the selected image.
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -188,7 +209,10 @@ public class CreateEventActivity extends AppCompatActivity {
         }
     }
 
-    // Method to create an event and send it to Firebase Firestore and Firebase Storage
+    /**
+     * Validates event inputs and initiates the creation of an event in Firebase.
+     * If a poster is selected, it is uploaded first, and the event is saved afterwards.
+     */
     private void createEvent() {
         String eventName = eventNameInput.getText().toString();
         String eventDescription = eventDescriptionInput.getText().toString();
@@ -276,7 +300,14 @@ public class CreateEventActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> Toast.makeText(CreateEventActivity.this, "Error checking event name uniqueness", Toast.LENGTH_SHORT).show());
     }
 
-    // Method to save event details to Firestore
+    /**
+     * Saves event details to Firestore, including poster URL and geolocation information if provided.
+     * @param eventName The name of the event.
+     * @param eventDescription Description of the event.
+     * @param eventCapacity The maximum capacity for the event.
+     * @param waitlistCapacity Capacity for the waitlist.
+     * @param waitlistCountdown Date and time for the waitlist countdown.
+     */
     private void saveEventToFirestore(String eventName, String eventDescription, String eventCapacity, String waitlistCapacity, String waitlistCountdown) {
         // Create a map for event data
         Map<String, Object> eventData = new HashMap<>();
@@ -326,7 +357,11 @@ public class CreateEventActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> Toast.makeText(CreateEventActivity.this, "Error querying facilities", Toast.LENGTH_SHORT).show());
     }
 
-    // Method to generate the QR code
+    /**
+     * Generates a QR code for the event's link and stores its hash in Firestore.
+     * @param eventName The name of the event for generating the QR code.
+     * @param facilityId The facility ID associated with the event.
+     */
     private void generateQRCode(String eventName, String facilityId) {
         // Link to the event's details (description and poster URL)
         String eventLink = "https://yourapp.com/event/" + facilityId + "/" + eventName;
@@ -344,7 +379,11 @@ public class CreateEventActivity extends AppCompatActivity {
         }
     }
 
-    // Method to generate a hash of the event link
+    /**
+     * Generates a hash for the input string using SHA-256.
+     * @param input The input string to hash.
+     * @return The hashed string in hexadecimal format.
+     */
     private String generateHash(String input) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
@@ -361,7 +400,12 @@ public class CreateEventActivity extends AppCompatActivity {
         }
     }
 
-    // Store the hash in Firestore
+    /**
+     * Stores the hash of the event's QR code in Firestore.
+     * @param eventName The name of the event for which the QR code hash is stored.
+     * @param facilityId The facility ID associated with the event.
+     * @param hash The hash string to store.
+     */
     private void storeHashInFirestore(String eventName, String facilityId, String hash) {
         Map<String, Object> qrCodeData = new HashMap<>();
         qrCodeData.put("hash", hash);

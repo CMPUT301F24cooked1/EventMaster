@@ -18,6 +18,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Activity that allows the user to view and manage events they have created.
+ */
 public class ViewCreatedEventsActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
@@ -31,13 +34,21 @@ public class ViewCreatedEventsActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
     private ActivityResultLauncher<Intent> settingsResultLauncher;
     private ActivityResultLauncher<Intent> MainActivityResultLauncher;
+    private android.content.Intent Intent;
 
-
+    /**
+     * Called when the activity is resumed. Refreshes the event list.
+     */
     @Override
     protected void onResume() {
         super.onResume();
         retrieveEvents(); // Refresh events every time the activity is resumed
     }
+
+    /**
+     * Initializes the activity, sets up the UI, and retrieves events from Firebase.
+     * @param savedInstanceState The saved instance state.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -144,6 +155,11 @@ public class ViewCreatedEventsActivity extends AppCompatActivity {
             Intent newIntent = new Intent(ViewCreatedEventsActivity.this, Notifications.class);
             newIntent.putExtra("User", user);
             notificationActivityResultLauncher.launch(newIntent);
+        });
+        addButton.setOnClickListener(v -> {
+            Intent newIntent = new Intent(ViewCreatedEventsActivity.this, CreateEventActivity.class);
+            newIntent.putExtra("User", user);
+            startActivity(newIntent);
         });
 
         // Set click listener for the back button
