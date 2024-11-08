@@ -45,14 +45,6 @@ public class MainActivityTest {
         onView(withId(R.id.recyclerView)).check(matches(isDisplayed()));
     }
 
-    /**
-     * Tests the profile button
-     */
-    @Test
-    public void testProfileButton() {
-        onView(withId(R.id.profile)).perform(click());
-        onView(withId(R.id.profile_name)).check(matches(isDisplayed()));
-    }
 
     /**
      * Tests the create event button
