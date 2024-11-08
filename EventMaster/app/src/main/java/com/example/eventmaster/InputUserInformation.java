@@ -30,6 +30,9 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Class for user to enter all their personal information, name, email, phone number(optional), profile picture
+ */
 public class InputUserInformation extends AppCompatActivity {
     private EditText name_edit;
     private EditText email_edit;

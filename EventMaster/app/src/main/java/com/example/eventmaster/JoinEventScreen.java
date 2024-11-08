@@ -26,6 +26,11 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Displays a recycler view of all the events that are created in EventMaster
+ * Allows the entrant to click on any event
+ */
+
 public class JoinEventScreen extends AppCompatActivity {
     /**
      * Initializes the Join Event Screen

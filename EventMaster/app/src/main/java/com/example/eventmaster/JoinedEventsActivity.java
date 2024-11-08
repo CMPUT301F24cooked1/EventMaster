@@ -19,6 +19,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Initializes the Joined Events Screen
+ * Shows a list of the events that an entrant has been accepted to
+ */
 public class JoinedEventsActivity extends AppCompatActivity {
     /**
      * Initializes the Joined Events Screen
