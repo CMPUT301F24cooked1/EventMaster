@@ -44,6 +44,11 @@ public class WaitlistedEventsActivity extends AppCompatActivity {
     private String entrantId; // Replace with actual device ID
     private FirebaseFirestore db; // Firestore instance
 
+    private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
+    private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
+    private ActivityResultLauncher<Intent> settingsResultLauncher;
+    private ActivityResultLauncher<Intent> homeActivityResultLauncher;
+
     //  private ActivityResultLauncher<Intent> QRScanScreenResultLauncher;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,10 +70,68 @@ public class WaitlistedEventsActivity extends AppCompatActivity {
         eventList = new ArrayList<>();
 
         WaitlistedEventsAdapter = new WaitlistedEventsAdapter(eventList, this);
+        WaitlistedEventsAdapter.notifyDataSetChanged();
         recyclerView.setAdapter(WaitlistedEventsAdapter);
 
         // Retrieve events from Firestore
         retrieveWaitlistedEvents(entrantId);
+
+
+        // Initialize navigation buttons
+        ImageButton notificationButton = findViewById(R.id.notifications);
+        ImageButton settingsButton = findViewById(R.id.settings);
+        ImageButton profileButton = findViewById(R.id.profile);
+        ImageButton homeButton = findViewById(R.id.home_icon);
+        ImageButton backButton = findViewById(R.id.back_button); // Initialize back button
+
+        // Set result launchers to set up navigation buttons on the bottom of the screen
+        settingsResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {});
+
+        homeActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {});
+
+        notificationActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {});
+
+        ProfileActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {});
+
+        // Set click listeners for navigation buttons on the bottom of the screen
+        // sends you to profile screen
+        profileButton.setOnClickListener(v -> {
+            Intent newIntent = new Intent(WaitlistedEventsActivity.this, ProfileActivity.class);
+            newIntent.putExtra("User", user);
+            ProfileActivityResultLauncher.launch(newIntent);
+        });
+
+        // sends you to settings screen
+        settingsButton.setOnClickListener(v -> {
+            Intent newIntent = new Intent(WaitlistedEventsActivity.this, SettingsScreen.class);
+            newIntent.putExtra("User", user);
+            settingsResultLauncher.launch(newIntent);
+        });
+
+        // sends you to a list of invited events that you accepted
+        homeButton.setOnClickListener(v -> {
+            Intent newIntent = new Intent(WaitlistedEventsActivity.this, MainActivity.class);
+            newIntent.putExtra("User", user);
+            homeActivityResultLauncher.launch(newIntent);
+        });
+        notificationButton.setOnClickListener(v -> {
+            Intent newIntent = new Intent(WaitlistedEventsActivity.this, Notifications.class);
+            newIntent.putExtra("User", user);
+            notificationActivityResultLauncher.launch(newIntent);
+        });
+
+        // Set click listener for the back button
+        backButton.setOnClickListener(v -> {
+            finish(); // Close the current activity and return to the previous one
+        });
 
     }
 

@@ -48,6 +48,14 @@ public class InputUserInformation extends AppCompatActivity {
     private FirebaseStorage storage;
     private FirebaseFirestore db;
 
+
+    /**
+     * Initialize the profile entry screen where user can enter their personal information
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -126,6 +134,9 @@ public class InputUserInformation extends AppCompatActivity {
         // User can click "remove pfp" to remove their uploaded photo
         remove_pfp = findViewById(R.id.remove_profile_picture);
         remove_pfp.setOnClickListener(v -> removeProfilePicture());
+
+
+
     }
 
 

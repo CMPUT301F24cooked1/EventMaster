@@ -31,10 +31,12 @@ public class JoinWaitlistScreen extends AppCompatActivity {
     TextView eventDescription;
     TextView eventFinalDate;
     ImageView eventPoster;
-    ImageButton notificationButton;
-    ImageButton settingsButton;
-    ImageButton profileButton;
-    ImageButton listButton;
+
+
+    private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
+    private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
+    private ActivityResultLauncher<Intent> settingsResultLauncher;
+    private ActivityResultLauncher<Intent> listActivityResultLauncher;
 
     /**
      * Initializes screen telling user they have joined the waitlist
@@ -77,32 +79,61 @@ public class JoinWaitlistScreen extends AppCompatActivity {
 
 
 
+        // Initialize navigation buttons
+        ImageButton notificationButton = findViewById(R.id.notification_icon);
+        ImageButton settingsButton = findViewById(R.id.settings);
+        ImageButton profileButton = findViewById(R.id.profile);
+        ImageButton listButton = findViewById(R.id.list_icon);
+        ImageButton backButton = findViewById(R.id.back_button); // Initialize back button
 
-        // Bottom Bar TODO: Complete for this class and the settings screen and the join events screen
-//        notificationButton = findViewById(R.id.notification_icon);
-//        notificationButton.setOnClickListener(v -> {
-//            Intent intent1 = new Intent(retrieveEventInfo.this, Notifications.class);
-//            startActivity(intent1);
-//        });
-//
-//        settingsButton = findViewById(R.id.settings);
-//        settingsButton.setOnClickListener(v -> {
-//            Intent intent2 = new Intent(retrieveEventInfo.this, SettingsScreen.class);
-//            startActivity(intent2);
-//        });
-//
-//        profileButton = findViewById(R.id.profile);
-//        profileButton.setOnClickListener(v -> {
-//            Intent intent3 = new Intent(retrieveEventInfo.this, ProfileActivity.class);
-//            startActivity(intent3);
-//        });
-//
-//        listButton = findViewById(R.id.list_icon);
-//        listButton.setOnClickListener(v -> {
-//            Intent intent4 = new Intent(retrieveEventInfo.this, ViewCreatedEventsActivity.class);
-//            startActivity(intent4);
-//        });
+        // Set result launchers to set up navigation buttons on the bottom of the screen
+        settingsResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {});
 
+        listActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {});
+
+        notificationActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {});
+
+        ProfileActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {});
+
+        // Set click listeners for navigation buttons on the bottom of the screen
+        // sends you to profile screen
+        profileButton.setOnClickListener(v -> {
+            Intent newIntent = new Intent(JoinWaitlistScreen.this, ProfileActivity.class);
+            newIntent.putExtra("User", user);
+            ProfileActivityResultLauncher.launch(newIntent);
+        });
+
+        // sends you to settings screen
+        settingsButton.setOnClickListener(v -> {
+            Intent newIntent = new Intent(JoinWaitlistScreen.this, SettingsScreen.class);
+            newIntent.putExtra("User", user);
+            settingsResultLauncher.launch(newIntent);
+        });
+
+        // sends you to a list of invited events that you accepted
+        listButton.setOnClickListener(v -> {
+            Intent newIntent = new Intent(JoinWaitlistScreen.this, JoinedEventsActivity.class);
+            newIntent.putExtra("User", user);
+            listActivityResultLauncher.launch(newIntent);
+        });
+        notificationButton.setOnClickListener(v -> {
+            Intent newIntent = new Intent(JoinWaitlistScreen.this, Notifications.class);
+            newIntent.putExtra("User", user);
+            notificationActivityResultLauncher.launch(newIntent);
+        });
+
+        // Set click listener for the back button
+        backButton.setOnClickListener(v -> {
+            finish(); // Close the current activity and return to the previous one
+        });
 
     }
 
@@ -129,10 +160,9 @@ public class JoinWaitlistScreen extends AppCompatActivity {
                                 String eventName = document.getString("eventName");
                                 String eventDescription = document.getString("eventDescription");
                                 String eventPosterUrl = document.getString("posterUrl");
-                                String waitlistCountdown = document.getString("waitlist_countdown");
 
                                 // Call the display method with the retrieved data
-                                displayEventInfo(eventName, eventDescription, eventPosterUrl, waitlistCountdown);//eventPosterUrl);
+                                displayEventInfo(eventName, eventDescription, eventPosterUrl);//eventPosterUrl);
                             }
                         } else {
                             Toast.makeText(JoinWaitlistScreen.this, "Event does not exist", Toast.LENGTH_SHORT).show();
@@ -150,15 +180,13 @@ public class JoinWaitlistScreen extends AppCompatActivity {
      * @param eventPosterUrl
      */
 
-    private void displayEventInfo(String eventName, String eventDescription, String eventPosterUrl, String waitlistCountdown) {
+    private void displayEventInfo(String eventName, String eventDescription, String eventPosterUrl) {
         TextView eventNameTextView = findViewById(R.id.event_name);
         TextView eventDescriptionTextView = findViewById(R.id.event_decription);
-        TextView countdownTextView = findViewById(R.id.event_open_time);
 
         // Set the text for the TextViews
         eventNameTextView.setText(eventName);
         eventDescriptionTextView.setText(eventDescription);
-        countdownTextView.setText(waitlistCountdown);
 
         if (eventPosterUrl == null){
             eventPoster.setImageResource(R.drawable.default_poster);  // set default poster

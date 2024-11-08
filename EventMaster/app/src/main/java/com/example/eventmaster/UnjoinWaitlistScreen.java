@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
@@ -25,12 +27,12 @@ public class UnjoinWaitlistScreen extends AppCompatActivity {
     TextView eventDescription;
     TextView eventFinalDate;
     ImageView eventPoster;
-    ImageButton notificationButton;
-    ImageButton settingsButton;
-    ImageButton profileButton;
-    ImageButton listButton;
-    ImageButton backButton;
     AppCompatButton unjoinWaitlistButton;
+
+    private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
+    private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
+    private ActivityResultLauncher<Intent> settingsResultLauncher;
+    private ActivityResultLauncher<Intent> listActivityResultLauncher;
 
     //TODO: Update event name and description with corresponding details, update firestore when entrant unjoins waitlist
     @Override
@@ -71,39 +73,66 @@ public class UnjoinWaitlistScreen extends AppCompatActivity {
             public void onClick(View v) {
                 unjoinWaitlistEntrant(userDeviceId, hashedData);
                 unjoinWaitlistOrganizer(userDeviceId, deviceID);
+                Intent intent = new Intent(UnjoinWaitlistScreen.this, JoinedEventsActivity.class);
+                startActivity(intent);
             }
         });
 
+        // Initialize navigation buttons
         ImageButton notificationButton = findViewById(R.id.notification_icon);
         ImageButton settingsButton = findViewById(R.id.settings);
         ImageButton profileButton = findViewById(R.id.profile);
         ImageButton listButton = findViewById(R.id.list_icon);
-        //ImageButton backButton = findViewById(R.id.back_button); // Initialize back button
+        ImageButton backButton = findViewById(R.id.back); // Initialize back button
+
+        // Set result launchers to set up navigation buttons on the bottom of the screen
+        settingsResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {});
+
+        listActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {});
+
+        notificationActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {});
+
+        ProfileActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {});
 
         // Set click listeners for navigation buttons on the bottom of the screen
-        // button for notification screen
-        notificationButton.setOnClickListener(v -> {
-            Intent newIntent = new Intent(UnjoinWaitlistScreen.this, Notifications.class);
-            startActivity(newIntent);
-        });
-
-        // button for settings screen
-        settingsButton.setOnClickListener(v -> {
-            Intent newIntent = new Intent(UnjoinWaitlistScreen.this, SettingsScreen.class);
-            startActivity(newIntent);
-        });
-
-        // button for profile screen
+        // sends you to profile screen
         profileButton.setOnClickListener(v -> {
             Intent newIntent = new Intent(UnjoinWaitlistScreen.this, ProfileActivity.class);
             newIntent.putExtra("User", user);
-            startActivity(newIntent);
+            ProfileActivityResultLauncher.launch(newIntent);
+        });
+
+        // sends you to settings screen
+        settingsButton.setOnClickListener(v -> {
+            Intent newIntent = new Intent(UnjoinWaitlistScreen.this, SettingsScreen.class);
+            newIntent.putExtra("User", user);
+            settingsResultLauncher.launch(newIntent);
+        });
+
+        // sends you to a list of invited events that you accepted
+        listButton.setOnClickListener(v -> {
+            Intent newIntent = new Intent(UnjoinWaitlistScreen.this, JoinedEventsActivity.class);
+            newIntent.putExtra("User", user);
+            listActivityResultLauncher.launch(newIntent);
+        });
+        notificationButton.setOnClickListener(v -> {
+            Intent newIntent = new Intent(UnjoinWaitlistScreen.this, Notifications.class);
+            newIntent.putExtra("User", user);
+            notificationActivityResultLauncher.launch(newIntent);
         });
 
         // Set click listener for the back button
-        /*backButton.setOnClickListener(v -> {
+        backButton.setOnClickListener(v -> {
             finish(); // Close the current activity and return to the previous one
-        });*/
+        });
     }
 
 
