@@ -28,6 +28,9 @@ import com.google.firebase.firestore.Source;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The activity represents the screen that displays a list of all the waitlisted events that belong to an entrant
+ */
 // https://www.c-sharpcorner.com/article/android-qr-code-bar-code-scanner/
 public class WaitlistedEventsActivity extends AppCompatActivity {
     /**

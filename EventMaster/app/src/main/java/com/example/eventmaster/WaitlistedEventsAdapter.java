@@ -22,6 +22,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
 
+/**
+ * Adapter class for displaying the waitlisted events of an entrant in a RecyclerView
+ */
+
 public class WaitlistedEventsAdapter extends RecyclerView.Adapter<WaitlistedEventsAdapter.EventViewHolder> {
 
 

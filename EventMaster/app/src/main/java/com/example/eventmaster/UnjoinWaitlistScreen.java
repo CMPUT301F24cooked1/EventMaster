@@ -22,6 +22,10 @@ import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+/**
+ * This class displays the event information and title and a button allowing the entrant to leave the waitlist
+ */
+
 public class UnjoinWaitlistScreen extends AppCompatActivity {
 
     private FirebaseFirestore db;

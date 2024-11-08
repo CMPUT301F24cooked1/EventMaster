@@ -25,6 +25,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Initializes the screen telling an entrant they have successfully joined the waitlist
+ */
+
 public class JoinWaitlistScreen extends AppCompatActivity {
     private FirebaseFirestore db;
     TextView eventName;

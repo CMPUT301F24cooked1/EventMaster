@@ -34,6 +34,12 @@ import org.w3c.dom.Text;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Initializes the Event Information Screen
+ * Allows entrant to join waitlist notifying firebase
+ * Notifies Event's 'waitlist list' of the user that joined specific event
+ */
+
 public class retrieveEventInfo extends AppCompatActivity {
     /**
      * Initializes the Event Information Screen
