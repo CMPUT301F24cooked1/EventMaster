@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
@@ -31,6 +32,7 @@ public class UnjoinWaitlistScreen extends AppCompatActivity {
     ImageButton listButton;
     ImageButton backButton;
     AppCompatButton unjoinWaitlistButton;
+
 
     //TODO: Update event name and description with corresponding details, update firestore when entrant unjoins waitlist
     @Override
@@ -79,6 +81,7 @@ public class UnjoinWaitlistScreen extends AppCompatActivity {
         ImageButton profileButton = findViewById(R.id.profile);
         ImageButton listButton = findViewById(R.id.list_icon);
         //ImageButton backButton = findViewById(R.id.back_button); // Initialize back button
+
 
         // Set click listeners for navigation buttons on the bottom of the screen
         // button for notification screen
