@@ -6,6 +6,12 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
+/**
+ * The ModeActivity class manages the app's theme settings (light or dark mode) based on user preferences.
+ * <p>
+ * It checks saved preferences to determine if dark mode is enabled and applies the theme accordingly.
+ * </p>
+ */
 public class ModeActivity {
     private static final String PREF_NAME = "themePrefs";
     private static final String DARK_MODE_KEY = "darkMode";

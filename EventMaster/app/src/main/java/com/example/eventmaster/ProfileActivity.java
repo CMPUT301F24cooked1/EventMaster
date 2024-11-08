@@ -15,6 +15,13 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
+/**
+ * The ProfileActivity class represents the user's profile screen in the app.
+ * <p>
+ * This activity displays the user's profile information, such as name, email, and phone number.
+ * It allows navigation to edit profile details, settings, and a list of joined events.
+ * </p>
+ */
 public class ProfileActivity extends AppCompatActivity {
     private static final String PREFS_NAME = "ProfilePrefs";
     private TextView displayName;
