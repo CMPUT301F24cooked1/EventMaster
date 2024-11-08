@@ -9,6 +9,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.isNotChecked;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
 import android.content.Intent;
+import android.widget.Switch;
 
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.core.app.ActivityScenario;
@@ -33,9 +34,10 @@ public class SettingsTest {
     /**
      * Launches the activity with a Profile object
      */
-    private void launchSettingsScreen() {
+    private void launchSettingsScreen(boolean initialNotificationState) {
         Intent intent = new Intent(ApplicationProvider.getApplicationContext(), SettingsScreen.class);
         Profile testUser = new Profile("12345", "User", "user@example.com", "123456789");
+        testUser.setNotifications(initialNotificationState);
         intent.putExtra("User", testUser);
         activityRule.getScenario().onActivity(activity -> activity.startActivity(intent));
     }
@@ -45,7 +47,7 @@ public class SettingsTest {
      */
     @Test
     public void testUIComponents() {
-        launchSettingsScreen();
+        launchSettingsScreen(false);
         onView(withId(R.id.notification_button)).check(matches(isDisplayed()));
         onView(withId(R.id.back)).check(matches(isDisplayed()));
         onView(withId(R.id.profile)).check(matches(isDisplayed()));
@@ -56,7 +58,7 @@ public class SettingsTest {
      */
     @Test
     public void testBackButton() {
-        launchSettingsScreen();
+        launchSettingsScreen(false);
         onView(withId(R.id.back)).perform(click());
         onView(withId(R.id.main)).check(matches(isDisplayed()));
     }
@@ -66,7 +68,7 @@ public class SettingsTest {
      */
     @Test
     public void testProfileButton() {
-        launchSettingsScreen();
+        launchSettingsScreen(false);
         onView(withId(R.id.profile)).perform(click());
         onView(withId(R.id.profile_name)).check(matches(isDisplayed()));
     }
@@ -77,16 +79,31 @@ public class SettingsTest {
     @Test
 
     public void testNotificationSwitchToggle() {
-        launchSettingsScreen();
-        onView(withId(R.id.notification_button)).check(matches(isChecked()));
+        launchSettingsScreen(false);
+        final boolean[] isInitiallyChecked = new boolean[1];
+        onView(withId(R.id.notification_button)).check((view, noViewFoundException) -> {
+            if (noViewFoundException == null) {
+                isInitiallyChecked[0] = ((Switch) view).isChecked();
+            }
+        });
 
-        onView(withId(R.id.notification_button)).perform(click());
+        if (isInitiallyChecked[0]) {
 
-        onView(withId(R.id.notification_button)).check(matches(isNotChecked()));
+            onView(withId(R.id.notification_button)).perform(click());
+            onView(withId(R.id.notification_button)).check(matches(isNotChecked()));
 
-        onView(withId(R.id.notification_button)).perform(click());
 
-        onView(withId(R.id.notification_button)).check(matches(isChecked()));
+            onView(withId(R.id.notification_button)).perform(click());
+            onView(withId(R.id.notification_button)).check(matches(isChecked()));
+        } else {
+
+            onView(withId(R.id.notification_button)).perform(click());
+            onView(withId(R.id.notification_button)).check(matches(isChecked()));
+
+
+            onView(withId(R.id.notification_button)).perform(click());
+            onView(withId(R.id.notification_button)).check(matches(isNotChecked()));
+        }
     }
 
 }

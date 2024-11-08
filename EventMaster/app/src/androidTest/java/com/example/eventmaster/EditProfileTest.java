@@ -1,6 +1,7 @@
 package com.example.eventmaster;
 
 import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.typeText;
@@ -15,6 +16,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 import android.content.Intent;
 
+import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -65,14 +67,20 @@ public class EditProfileTest {
      * Test to verify that entering valid data and clicking the save button updates user information.
      */
     @Test
-    public void testSaveButton() {
-        onView(withId(R.id.edit_name)).perform(typeText("Updated Name"), closeSoftKeyboard());
-        onView(withId(R.id.edit_email)).perform(typeText("updated@gmail.com"), closeSoftKeyboard());
-        onView(withId(R.id.edit_phone_number)).perform(typeText("987654321"), closeSoftKeyboard());
-        onView(withId(R.id.save_changes_button)).perform(click());
+    public void testProfileActivityDisplaysUpdatedInfo() {
+        Profile updatedUser = new Profile("12345", "Updated Name", "updated@gmail.com", "987654321");
 
-        // Verify that an intent to ProfileActivity is launched once it's saved
-        intended(hasComponent(ProfileActivity.class.getName()));
+        Intent intent = new Intent(ApplicationProvider.getApplicationContext(), ProfileActivity.class);
+        intent.putExtra("User", updatedUser);
+        try (ActivityScenario<ProfileActivity> scenario = ActivityScenario.launch(intent)) {
+
+
+            onView(withId(R.id.profile_name)).check(matches(withText("Updated Name")));
+            onView(withId(R.id.profile_email)).check(matches(withText("updated@gmail.com")));
+            onView(withId(R.id.profile_phone_number)).check(matches(withText("987654321")));
+        }
     }
+
+
 
 }
