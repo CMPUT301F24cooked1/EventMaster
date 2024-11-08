@@ -74,18 +74,11 @@ public class ProfileActivity extends AppCompatActivity {
 
         mainActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(), result -> {
-                    if (result.getResultCode() == RESULT_OK) {
-
-                    }
-                }
-        );
+                    if (result.getResultCode() == RESULT_OK) {}});
 
         settingsResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-
-                }
-        );
+                result -> {});
 
         listActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -102,14 +95,15 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
         // sends you back to previous screen
+        // Set click listener for the back button
         backButton.setOnClickListener(v -> {
-
             Intent resultIntent = new Intent();
             resultIntent.putExtra("User", user);
             setResult(RESULT_OK, resultIntent);
             finish();
 
         });
+
 
         // sends you to settings screen
         settingsButton.setOnClickListener(v -> {

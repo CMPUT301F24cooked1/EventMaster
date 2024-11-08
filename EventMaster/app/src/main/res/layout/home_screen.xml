@@ -14,10 +14,9 @@
         android:layout_marginStart="88dp"
         android:layout_marginTop="155dp"
         android:layout_marginEnd="88dp"
-        android:layout_marginBottom="326dp"
         android:contentDescription="App Logo"
         android:src="@drawable/app_logo"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/join_event_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.454"
         app:layout_constraintStart_toStartOf="parent"
@@ -30,11 +29,11 @@
         android:layout_height="70dp"
         android:layout_marginStart="70dp"
         android:layout_marginEnd="70dp"
-        android:layout_marginBottom="300dp"
+        android:layout_marginBottom="52dp"
         android:background="@drawable/rounded_button"
         android:text="Join Event"
         android:textSize="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/create_event_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
@@ -54,6 +53,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
 
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -68,8 +68,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.942" />
-
+        app:layout_constraintVertical_bias="0.72" />
 
     <ImageButton
         android:id="@+id/list_icon"

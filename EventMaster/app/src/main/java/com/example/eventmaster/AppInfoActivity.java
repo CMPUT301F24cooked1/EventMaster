@@ -35,6 +35,7 @@ public class AppInfoActivity extends AppCompatActivity {
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
 
+
                 }
         );
 
