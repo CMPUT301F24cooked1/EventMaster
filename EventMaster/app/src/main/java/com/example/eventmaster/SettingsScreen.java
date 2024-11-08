@@ -27,6 +27,7 @@ public class SettingsScreen extends AppCompatActivity {
 
     private Switch notificationSwitch;
     private ImageButton backButton;
+    private Profile user;
     private ActivityResultLauncher<Intent> settingResultLauncher;
     private ActivityResultLauncher<Intent> profileResultLauncher;
     private View adminPrivilegesButton;
@@ -34,6 +35,7 @@ public class SettingsScreen extends AppCompatActivity {
     private ActivityResultLauncher<Intent> appInfoResultLauncher;
     private View appInfoButton;
     private Switch modeSwitch;
+    private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
 
     /**
      * Initializes the Setting Screen
@@ -48,7 +50,7 @@ public class SettingsScreen extends AppCompatActivity {
         ModeActivity.applyTheme(SettingsScreen.this);
         setContentView(R.layout.setting_screen);
 
-        Profile user = (Profile) getIntent().getSerializableExtra("User"); // user from MainActivity
+        user = (Profile) getIntent().getSerializableExtra("User"); // user from MainActivity
 
         notificationSwitch = findViewById(R.id.notification_button);
 
@@ -112,6 +114,17 @@ public class SettingsScreen extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        ProfileActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),result ->{
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+                });
 
 
         //Links the Settings Screen to the Admin Login screen

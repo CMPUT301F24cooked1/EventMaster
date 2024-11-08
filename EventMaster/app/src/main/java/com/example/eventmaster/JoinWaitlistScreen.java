@@ -32,11 +32,16 @@ public class JoinWaitlistScreen extends AppCompatActivity {
     TextView eventFinalDate;
     ImageView eventPoster;
 
-
+    ImageButton notificationButton;
+    ImageButton settingsButton;
+    ImageButton profileButton;
+    ImageButton listButton;
+    private Profile user;
     private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
     private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
     private ActivityResultLauncher<Intent> settingsResultLauncher;
     private ActivityResultLauncher<Intent> listActivityResultLauncher;
+
 
     /**
      * Initializes screen telling user they have joined the waitlist
@@ -55,10 +60,11 @@ public class JoinWaitlistScreen extends AppCompatActivity {
         eventDescription = findViewById(R.id.event_decription);
         eventFinalDate = findViewById(R.id.event_decription);
         eventPoster = findViewById(R.id.event_poster);
+        ImageButton backButton = findViewById(R.id.back_button);
 
         db = FirebaseFirestore.getInstance();
 
-        Profile user = (Profile) getIntent().getSerializableExtra("User"); // user from MainActivity
+        user = (Profile) getIntent().getSerializableExtra("User"); // user from MainActivity
 
         // retrieve information after scanning
         Intent intent = getIntent();
@@ -76,6 +82,7 @@ public class JoinWaitlistScreen extends AppCompatActivity {
         } else {
             Toast.makeText(this, "Failed to retrieve event data.", Toast.LENGTH_SHORT).show();
         }
+
 
 
 
