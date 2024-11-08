@@ -110,11 +110,7 @@ public class ProfileActivity extends AppCompatActivity {
             finish();
 
         });
-//        backButton.setOnClickListener(v -> {
-//
-//            finish();
-//
-//        });
+
 
         // sends you to settings screen
         settingsButton.setOnClickListener(v -> {
