@@ -157,6 +157,11 @@ public class FacilityScreen extends AppCompatActivity {
                         facilityNameText.setText(updatedUserFacility.getFacilityName());
                         facilityAddressText.setText(updatedUserFacility.getFacilityAddress());
                         facilityDescText.setText(updatedUserFacility.getFacilityDesc());
+                        Profile updatedUser = (Profile) returnResult.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
                         userFacility = updatedUserFacility;
                     }
                 }

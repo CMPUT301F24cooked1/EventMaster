@@ -92,6 +92,7 @@ public class JoinedEventsActivity extends AppCompatActivity {
         ImageButton settingsButton = findViewById(R.id.settings);
         ImageButton profileButton = findViewById(R.id.profile);
         ImageButton homeButton = findViewById(R.id.home_icon);
+        ImageButton backButton = findViewById(R.id.back_button);
 
         // Set result launchers to set up navigation buttons on the bottom of the screen
         settingsResultLauncher = registerForActivityResult(
