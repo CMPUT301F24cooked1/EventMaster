@@ -58,11 +58,12 @@
         android:layout_width="66dp"
         android:layout_height="64dp"
         android:layout_marginStart="144dp"
-        android:layout_marginBottom="28dp"
+        android:layout_marginBottom="24dp"
         android:background="@drawable/settings"
         android:scaleType="centerInside"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/home_icon"
+        app:layout_constraintHorizontal_bias="0.291"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageButton
