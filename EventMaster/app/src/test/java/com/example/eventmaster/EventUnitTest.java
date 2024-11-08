@@ -12,7 +12,8 @@ public class EventUnitTest {
      */
     @Test
     void testGetEventName() {
-        Date testDate = new Date("2025-06-01T07:00:00");
+        long date = 1748761200;
+        Date testDate = new Date(date);
         Event userEvent = new Event("Hanatarash Live Show", "Fun time at a music live show. Nothing to worry about. Have a good time.", "TestIDUnitTest", 100, 500, testDate, true);
         assertEquals("Hanatarash Live Show", userEvent.getEventName());
     }
@@ -22,7 +23,8 @@ public class EventUnitTest {
      */
     @Test
     void testSetEventName() {
-        Date testDate = new Date("2025-06-01T07:00:00");
+        long date = 1748761200;
+        Date testDate = new Date(date);
         Event userEvent = new Event("Hanatarash Live Show", "Fun time at a music live show. Nothing to worry about. Have a good time.", "TestIDUnitTest", 100, 500, testDate, true);
         userEvent.setEventName("Boredoms Live Show");
         assertEquals("Boredoms Live Show", userEvent.getEventName());
@@ -33,7 +35,8 @@ public class EventUnitTest {
      */
     @Test
     void testGetEventCapacity() {
-        Date testDate = new Date("2025-06-01T07:00:00");
+        long date = 1748761200;
+        Date testDate = new Date(date);
         Event userEvent = new Event("Hanatarash Live Show", "Fun time at a music live show. Nothing to worry about. Have a good time.", "TestIDUnitTest", 100, 500, testDate, true);
         assertEquals(100, userEvent.getEventCapacity());
     }
@@ -43,7 +46,8 @@ public class EventUnitTest {
      */
     @Test
     void testSetEventCapacity() {
-        Date testDate = new Date("2025-06-01T07:00:00");
+        long date = 1748761200;
+        Date testDate = new Date(date);
         Event userEvent = new Event("Hanatarash Live Show", "Fun time at a music live show. Nothing to worry about. Have a good time.", "TestIDUnitTest", 100, 500, testDate, true);
         userEvent.setEventCapacity(0);
         assertEquals(0, userEvent.getEventCapacity());
@@ -54,7 +58,8 @@ public class EventUnitTest {
      */
     @Test
     void testGetDate() {
-        Date testDate = new Date("2025-06-01T07:00:00");
+        long date = 1748761200;
+        Date testDate = new Date(date);
         Event userEvent = new Event("Hanatarash Live Show", "Fun time at a music live show. Nothing to worry about. Have a good time.", "TestIDUnitTest", 100, 500, testDate, true);
         assertEquals(testDate, userEvent.getEventFinalDate());
     }
@@ -64,8 +69,10 @@ public class EventUnitTest {
      */
     @Test
     void testSetDate() {
-        Date testDate = new Date("2025-06-01T07:00:00");
-        Date testDate2 = new Date("2005-06-01T07:00:00");
+        long date = 1748761200;
+        Date testDate = new Date(date);
+        long date2 = 1748764800;
+        Date testDate2 = new Date(date2);
         Event userEvent = new Event("Hanatarash Live Show", "Fun time at a music live show. Nothing to worry about. Have a good time.", "TestIDUnitTest", 100, 500, testDate, true);
         userEvent.setEventFinalDate(testDate2);
         assertEquals(testDate2, userEvent.getEventFinalDate());
