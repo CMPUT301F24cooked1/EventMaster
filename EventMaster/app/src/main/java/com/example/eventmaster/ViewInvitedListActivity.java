@@ -20,6 +20,9 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Activity for viewing a sampled list of entrants who have been invited to an event.
+ */
 public class ViewInvitedListActivity extends AppCompatActivity {
 
     private RecyclerView invitedRecyclerView;
