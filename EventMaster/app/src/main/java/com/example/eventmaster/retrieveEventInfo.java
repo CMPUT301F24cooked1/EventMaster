@@ -448,9 +448,13 @@ public class retrieveEventInfo extends AppCompatActivity {
                         } else if (count < targetCount) {
                             Intent intent = new Intent(retrieveEventInfo.this, JoinWaitlistScreen.class);
                             intent.putExtra("User", user);
+                            intent.putExtra("hashed_data", hashedData);
+                            intent.putExtra("deviceID", deviceID);
+                            intent.putExtra("event", event);
                             fetchEventData(hashedData, deviceID, event, posterUrl);
                             joinWaitlistEntrant(userDeviceId, hashedData, deviceID, posterUrl);
                             joinWaitlistOrganizer(userDeviceId, deviceID);
+                            startActivity(intent);
                         }
                     } else {
                         FirebaseFirestoreException e = (FirebaseFirestoreException) task.getException();

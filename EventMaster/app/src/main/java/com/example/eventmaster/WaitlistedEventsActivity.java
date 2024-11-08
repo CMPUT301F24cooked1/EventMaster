@@ -71,7 +71,7 @@ public class WaitlistedEventsActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         eventList = new ArrayList<>();
 
-        WaitlistedEventsAdapter = new WaitlistedEventsAdapter(eventList, this);
+        WaitlistedEventsAdapter = new WaitlistedEventsAdapter(eventList, this, user);
         WaitlistedEventsAdapter.notifyDataSetChanged();
         recyclerView.setAdapter(WaitlistedEventsAdapter);
 
