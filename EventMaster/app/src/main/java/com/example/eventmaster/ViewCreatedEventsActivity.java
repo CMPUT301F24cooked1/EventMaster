@@ -31,6 +31,7 @@ public class ViewCreatedEventsActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
     private ActivityResultLauncher<Intent> settingsResultLauncher;
     private ActivityResultLauncher<Intent> MainActivityResultLauncher;
+    private android.content.Intent Intent;
 
 
     @Override
@@ -144,6 +145,11 @@ public class ViewCreatedEventsActivity extends AppCompatActivity {
             Intent newIntent = new Intent(ViewCreatedEventsActivity.this, Notifications.class);
             newIntent.putExtra("User", user);
             notificationActivityResultLauncher.launch(newIntent);
+        });
+        addButton.setOnClickListener(v -> {
+            Intent newIntent = new Intent(ViewCreatedEventsActivity.this, CreateEventActivity.class);
+            newIntent.putExtra("User", user);
+            startActivity(newIntent);
         });
 
         // Set click listener for the back button
