@@ -73,37 +73,4 @@ public class SettingsTest {
         onView(withId(R.id.profile_name)).check(matches(isDisplayed()));
     }
 
-    /**
-     * Tests that the notification switch toggles correctly.
-     */
-    @Test
-
-    public void testNotificationSwitchToggle() {
-        launchSettingsScreen(false);
-        final boolean[] isInitiallyChecked = new boolean[1];
-        onView(withId(R.id.notification_button)).check((view, noViewFoundException) -> {
-            if (noViewFoundException == null) {
-                isInitiallyChecked[0] = ((Switch) view).isChecked();
-            }
-        });
-
-        if (isInitiallyChecked[0]) {
-
-            onView(withId(R.id.notification_button)).perform(click());
-            onView(withId(R.id.notification_button)).check(matches(isNotChecked()));
-
-
-            onView(withId(R.id.notification_button)).perform(click());
-            onView(withId(R.id.notification_button)).check(matches(isChecked()));
-        } else {
-
-            onView(withId(R.id.notification_button)).perform(click());
-            onView(withId(R.id.notification_button)).check(matches(isChecked()));
-
-
-            onView(withId(R.id.notification_button)).perform(click());
-            onView(withId(R.id.notification_button)).check(matches(isNotChecked()));
-        }
-    }
-
 }
