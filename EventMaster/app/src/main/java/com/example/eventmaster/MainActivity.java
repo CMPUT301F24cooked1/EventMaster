@@ -48,7 +48,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-
+/**
+ * MainActivity acts as the home screen for the app, and is the starting point
+ * where all other navigation follows from.
+ */
 public class MainActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private String deviceId;

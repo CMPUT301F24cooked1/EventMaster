@@ -9,6 +9,9 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+/**
+ * Displays various pieces of information about the EventMaster app.
+ */
 public class AppInfoActivity extends AppCompatActivity {
     private ImageButton backButton;
     private ImageButton settingsButton;
