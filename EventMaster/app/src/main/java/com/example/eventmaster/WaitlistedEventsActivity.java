@@ -43,6 +43,7 @@ public class WaitlistedEventsActivity extends AppCompatActivity {
     private FirebaseFirestore firestore;
     private String entrantId; // Replace with actual device ID
     private FirebaseFirestore db; // Firestore instance
+    private Profile user;
 
     //  private ActivityResultLauncher<Intent> QRScanScreenResultLauncher;
     @Override
@@ -50,7 +51,7 @@ public class WaitlistedEventsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         ModeActivity.applyTheme(this);
         setContentView(R.layout.waitlisted_events_screen);
-        Profile user = (Profile) getIntent().getSerializableExtra("User"); // user from MainActivity
+        user = (Profile) getIntent().getSerializableExtra("User"); // user from MainActivity
 
 
 
