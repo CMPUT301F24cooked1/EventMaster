@@ -34,6 +34,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * ViewWaitlistActivity is responsible for displaying the waitlist for a specific event in a Firebase-backed application.
+ * It provides functionality to fetch the list of users on the waitlist, sample a subset of these users,
+ * and then add them to the invited list for the event. The activity also allows the user to navigate to
+ * different sections of the app like notifications, settings, profile, and home.
+ */
+
 public class ViewWaitlistActivity extends AppCompatActivity {
 
     private RecyclerView waitlistRecyclerView;
@@ -47,6 +54,13 @@ public class ViewWaitlistActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> chooseSampleResultLauncher;
     private AppCompatButton chooseSampleButton;
 
+
+    /**
+     * Called when the activity is first created. Initializes the view, sets up the RecyclerView,
+     * fetches the waitlist data, and sets the click listeners for the UI components.
+     *
+     * @param savedInstanceState The saved instance state of the activity.
+     */
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,6 +178,11 @@ public class ViewWaitlistActivity extends AppCompatActivity {
         });
     }
 
+
+    /**
+     * Fetches the list of users from Firestore who are on the waitlist for the current event.
+     * This method retrieves the user data and updates the waitlist RecyclerView adapter.
+     */
     private void fetchWaitlist() {
         firestore.collection("facilities")
                 .document(deviceId)
@@ -183,7 +202,12 @@ public class ViewWaitlistActivity extends AppCompatActivity {
                 });
     }
 
-    // Fetch the user's name and profile picture URL based on the device ID
+    /**
+     * Fetches the name and profile picture URL of a user from Firestore given their device ID.
+     * Adds the user to the waitlist displayed in the UI.
+     *
+     * @param userDeviceId The device ID of the user whose information is being fetched.
+     */
     private void fetchUserName(String userDeviceId) {
         firestore.collection("profiles")
                 .document(userDeviceId)

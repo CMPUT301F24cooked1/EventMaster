@@ -27,6 +27,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+/**
+ * Activity to display detailed information about a specific event, including event name,
+ * description, QR code, and event poster image.
+ * This activity retrieves event data from Firestore and displays it.
+ */
 public class EventDetailsActivity extends AppCompatActivity {
     private TextView eventNameTextView, eventDescriptionTextView;
     private ImageView qrCodeImageView, eventPosterImageView;
@@ -35,6 +40,12 @@ public class EventDetailsActivity extends AppCompatActivity {
     private String deviceId; // Replace with actual device ID
     private Profile user;
 
+    /**
+            * Called when the activity is created. Initializes the UI components and retrieves
+     * event details from Firestore.
+            *
+            * @param savedInstanceState If the activity is being reinitialized, this is the previously saved state.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,7 +101,9 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     }
 
-
+    /**
+     * Loads event details from Firestore, including event name, description, and QR code.
+     */
     private void loadEventDetails() {
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
         String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -123,7 +136,11 @@ public class EventDetailsActivity extends AppCompatActivity {
             }
         });
     }
-
+    /**
+     * Generates and displays a QR code based on the provided hash.
+     *
+     * @param qrCodeHash The hash value used to generate the QR code.
+     */
     private void loadQRCode(String qrCodeHash) {
         try {
             BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
@@ -134,6 +151,12 @@ public class EventDetailsActivity extends AppCompatActivity {
             Toast.makeText(this, "Error generating QR code", Toast.LENGTH_SHORT).show();
         }
     }
+    /**
+     * Loads the event poster image from Firebase Storage.
+     * If the poster is already cached, it uses the cached version.
+     *
+     * @param eventName The name of the event used to locate the poster image.
+     */
 
     private void loadEventPoster(String eventName) {
         if (cachedPosterBitmap != null) {
@@ -171,6 +194,9 @@ public class EventDetailsActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Clears the cached poster image when the activity is destroyed.
+     */
     @Override
     protected void onDestroy() {
         super.onDestroy();
