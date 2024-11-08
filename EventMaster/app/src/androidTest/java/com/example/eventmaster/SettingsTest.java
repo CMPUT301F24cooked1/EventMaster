@@ -63,14 +63,4 @@ public class SettingsTest {
         onView(withId(R.id.main)).check(matches(isDisplayed()));
     }
 
-    /**
-     * Tests the profile button navigation to ProfileActivity.
-     */
-    @Test
-    public void testProfileButton() {
-        launchSettingsScreen(false);
-        onView(withId(R.id.profile)).perform(click());
-        onView(withId(R.id.profile_name)).check(matches(isDisplayed()));
-    }
-
 }

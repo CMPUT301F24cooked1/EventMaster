@@ -24,8 +24,13 @@ import com.journeyapps.barcodescanner.CaptureActivity;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
-
-
+/**
+ * The QRScanFragment class handles QR code scanning functionality and related user interactions.
+ * <p>
+ * This activity allows users to scan a QR code, which retrieves data for a specific event.
+ * The class also includes navigation to other screens with the icons located on the bottom of the screen.
+ * </p>
+ */
 public class QRScanFragment extends AppCompatActivity{
     /**
      * Initializes the QR scanning
