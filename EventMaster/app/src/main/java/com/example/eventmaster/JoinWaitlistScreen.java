@@ -90,6 +90,7 @@ public class JoinWaitlistScreen extends AppCompatActivity {
         ImageButton settingsButton = findViewById(R.id.settings);
         ImageButton profileButton = findViewById(R.id.profile);
         ImageButton listButton = findViewById(R.id.list_icon);
+        ImageButton backButton = findViewById(R.id.back_button);
 
 
         // Set result launchers to set up navigation buttons on the bottom of the screen
@@ -136,9 +137,12 @@ public class JoinWaitlistScreen extends AppCompatActivity {
             notificationActivityResultLauncher.launch(newIntent);
         });
 
-        // Set click listener for the back button
+//        // Set click listener for the back button
         backButton.setOnClickListener(v -> {
-            finish(); // Close the current activity and return to the previous one
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("User", user);
+            setResult(RESULT_OK, resultIntent);
+            finish();
         });
 
     }

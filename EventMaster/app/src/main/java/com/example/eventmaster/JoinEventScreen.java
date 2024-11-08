@@ -26,7 +26,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-// https://www.c-sharpcorner.com/article/android-qr-code-bar-code-scanner/
 public class JoinEventScreen extends AppCompatActivity {
     /**
      * Initializes the Join Event Screen
