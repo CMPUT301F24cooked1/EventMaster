@@ -113,6 +113,7 @@ public class ViewWaitlistActivity extends AppCompatActivity {
                                         if ((boolean) data.get("Sampled")) {
                                             Intent intent = new Intent(ViewWaitlistActivity.this, ViewInvitedListActivity.class);
                                             intent.putExtra("myEventName", eventName);
+                                            intent.putExtra("userProfile", user);
                                             chooseSampleResultLauncher.launch(intent);
                                         } else {
                                             //First must find how large the sample should be.
@@ -340,6 +341,7 @@ public class ViewWaitlistActivity extends AppCompatActivity {
                         markEventAsSampled(deviceId, eventName);
                         Intent intent = new Intent(ViewWaitlistActivity.this, ViewInvitedListActivity.class);
                         intent.putExtra("myEventName", eventName);
+                        intent.putExtra("userProfile", user);
                         chooseSampleResultLauncher.launch(intent);
                     } else {
                         Log.e("WaitlistActivity", "Failed to find invited list", task.getException());
