@@ -67,7 +67,7 @@ public class ViewEventsAdapter extends RecyclerView.Adapter<ViewEventsAdapter.Ev
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
         Event event = eventList.get(position);
         holder.bind(event, context, user);
-        holder.itemView.setClickable(isClickable);
+        holder.itemView.setClickable(false);
 
 
         // Checkbox stuff ------------------------------------
