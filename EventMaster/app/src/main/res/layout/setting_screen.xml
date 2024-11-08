@@ -7,6 +7,7 @@
     tools:context=".MainActivity"
     android:background="@drawable/app_background">
 
+
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
@@ -17,11 +18,12 @@
         android:text="Settings"
         android:textSize="32dp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/view2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.504"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.169" />
 
     <View
         android:id="@+id/view2"
@@ -30,15 +32,17 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="140dp"
         android:background="@drawable/rounded_corners"
+        app:layout_constraintBottom_toTopOf="@+id/lightdarkMode"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.111" />
 
     <View
         android:id="@+id/app_info"
         android:layout_width="382dp"
         android:layout_height="81dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="472dp"
+        android:layout_marginTop="468dp"
         android:background="@drawable/rounded_corners"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -47,36 +51,38 @@
         android:id="@+id/app_info_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="92dp"
-        android:layout_marginTop="500dp"
         android:layout_marginEnd="93dp"
         android:text="App Info"
         android:textSize="22dp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.085"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toBottomOf="@+id/app_info"
+        app:layout_constraintEnd_toEndOf="@+id/app_info"
+        app:layout_constraintHorizontal_bias="0.431"
+        app:layout_constraintStart_toStartOf="@+id/app_info"
+        app:layout_constraintTop_toTopOf="@+id/app_info"
+        app:layout_constraintVertical_bias="0.549" />
 
     <ImageButton
         android:id="@+id/imageButton2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="368dp"
-        android:layout_marginTop="500dp"
         android:background="@null"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/app_info"
+        app:layout_constraintEnd_toEndOf="@+id/app_info"
+        app:layout_constraintHorizontal_bias="0.903"
+        app:layout_constraintStart_toEndOf="@+id/app_info_text"
+        app:layout_constraintTop_toTopOf="@+id/app_info"
+        app:layout_constraintVertical_bias="0.459"
         app:srcCompat="@drawable/arrow" />
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="496dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/app_info"
+        app:layout_constraintEnd_toStartOf="@+id/app_info_text"
+        app:layout_constraintStart_toStartOf="@+id/app_info"
+        app:layout_constraintTop_toTopOf="@+id/app_info"
         app:srcCompat="@drawable/calendar_image" />
 
 
@@ -94,49 +100,53 @@
         android:id="@+id/imageButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="368dp"
-        android:layout_marginTop="388dp"
         android:background="@null"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/admin_privileges_view"
+        app:layout_constraintEnd_toEndOf="@+id/admin_privileges_view"
+        app:layout_constraintHorizontal_bias="0.859"
+        app:layout_constraintStart_toEndOf="@+id/admin_privileges_text"
+        app:layout_constraintTop_toTopOf="@+id/admin_privileges_view"
+        app:layout_constraintVertical_bias="0.459"
         app:srcCompat="@drawable/arrow" />
 
     <ImageView
         android:id="@+id/imageView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="384dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/admin_privileges_view"
+        app:layout_constraintEnd_toStartOf="@+id/admin_privileges_text"
+        app:layout_constraintStart_toStartOf="@+id/admin_privileges_view"
+        app:layout_constraintTop_toTopOf="@+id/admin_privileges_view"
         app:srcCompat="@drawable/calendar_image" />
 
     <TextView
         android:id="@+id/admin_privileges_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="92dp"
-        android:layout_marginTop="388dp"
         android:layout_marginEnd="93dp"
         android:text="Admin Privileges"
         android:textSize="22dp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.068"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toBottomOf="@+id/admin_privileges_view"
+        app:layout_constraintEnd_toEndOf="@+id/admin_privileges_view"
+        app:layout_constraintHorizontal_bias="0.727"
+        app:layout_constraintStart_toStartOf="@+id/admin_privileges_view"
+        app:layout_constraintTop_toTopOf="@+id/admin_privileges_view"
+        app:layout_constraintVertical_bias="0.549" />
 
     <Switch
         android:id="@+id/notification_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="332dp"
-        android:layout_marginTop="168dp"
         android:thumbTint="@color/white"
         android:trackTint="#9E8A4D"
         android:trackTintMode="src_over"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toBottomOf="@+id/view2"
+        app:layout_constraintEnd_toEndOf="@+id/view2"
+        app:layout_constraintHorizontal_bias="0.711"
+        app:layout_constraintStart_toEndOf="@+id/notification_text"
+        app:layout_constraintTop_toTopOf="@+id/view2"
+        app:layout_constraintVertical_bias="0.518" />
 
     <View
         android:id="@+id/lightdarkMode"
@@ -152,63 +162,63 @@
         android:id="@+id/lightdarkModeText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="92dp"
-        android:layout_marginTop="272dp"
         android:layout_marginEnd="93dp"
         android:text="Light/Dark Mode"
         android:textSize="22dp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.133"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toBottomOf="@+id/lightdarkMode"
+        app:layout_constraintEnd_toEndOf="@+id/lightdarkMode"
+        app:layout_constraintHorizontal_bias="0.65"
+        app:layout_constraintStart_toStartOf="@+id/lightdarkMode"
+        app:layout_constraintTop_toTopOf="@+id/lightdarkMode" />
 
     <ImageView
         android:id="@+id/imageView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="272dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/lightdarkMode"
+        app:layout_constraintEnd_toStartOf="@+id/lightdarkModeText"
+        app:layout_constraintStart_toStartOf="@+id/lightdarkMode"
+        app:layout_constraintTop_toTopOf="@+id/lightdarkMode"
         app:srcCompat="@drawable/calendar_image" />
 
     <Switch
         android:id="@+id/mode_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="332dp"
-        android:layout_marginTop="272dp"
         android:thumbTint="@color/white"
         android:trackTint="#9E8A4D"
         android:trackTintMode="src_over"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toBottomOf="@+id/lightdarkMode"
+        app:layout_constraintEnd_toEndOf="@+id/lightdarkMode"
+        app:layout_constraintHorizontal_bias="0.802"
+        app:layout_constraintStart_toEndOf="@+id/lightdarkModeText"
+        app:layout_constraintTop_toTopOf="@+id/lightdarkMode" />
 
     <TextView
         android:id="@+id/notification_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="92dp"
-        android:layout_marginTop="168dp"
         android:layout_marginEnd="93dp"
         android:text="Toggle Notifications"
         android:textSize="22dp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toBottomOf="@+id/view2"
+        app:layout_constraintEnd_toEndOf="@+id/view2"
+        app:layout_constraintHorizontal_bias="0.829"
+        app:layout_constraintStart_toStartOf="@+id/view2"
+        app:layout_constraintTop_toTopOf="@+id/view2"
+        app:layout_constraintVertical_bias="0.549" />
 
     <ImageView
         android:id="@+id/imageView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="164dp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/view2"
 
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/notification_text"
+        app:layout_constraintStart_toStartOf="@+id/view2"
+        app:layout_constraintTop_toTopOf="@+id/view2"
         app:srcCompat="@drawable/calendar_image" />
 
 

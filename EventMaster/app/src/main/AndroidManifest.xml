@@ -49,6 +49,8 @@
         <activity
             android:name=".EventDetailsActivity" />
         <activity
+            android:name=".ViewWaitlistActivity" />
+        <activity
             android:name=".JoinEventScreen" />
         <activity
 

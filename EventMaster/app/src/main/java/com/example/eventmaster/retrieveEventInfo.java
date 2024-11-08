@@ -25,6 +25,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 
 import org.w3c.dom.Text;
@@ -48,16 +50,13 @@ public class retrieveEventInfo extends AppCompatActivity {
     TextView eventDescription;
     TextView eventFinalDate;
     ImageView eventPoster;
-    ImageButton notificationButton;
-    ImageButton settingsButton;
-    ImageButton profileButton;
-    ImageButton listButton;
     AppCompatButton joinWaitlistButton;
     ActivityResultLauncher<Intent> joinWaitlistResultLauncher;
     private Profile user;
     private String name;
     private String email;
     private String phone_number;
+    private Long waitlistCapacity;
 
     private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
     private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
@@ -85,6 +84,7 @@ public class retrieveEventInfo extends AppCompatActivity {
         joinWaitlistButton = findViewById(R.id.join_waitlist_button);
 
         db = FirebaseFirestore.getInstance();
+
 
         Intent intentMain = getIntent();
         user =  (Profile) intentMain.getSerializableExtra("User");
@@ -139,11 +139,7 @@ public class retrieveEventInfo extends AppCompatActivity {
         joinWaitlistButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(retrieveEventInfo.this, JoinWaitlistScreen.class);
-                intent.putExtra("User", user);
-                fetchEventData(hashedData, deviceID, event, posterUrl);
-                joinWaitlistEntrant(userDeviceId, hashedData, deviceID, posterUrl);
-                joinWaitlistOrganizer(userDeviceId, deviceID);
+                getAndCompareDocumentCount(deviceID, userDeviceId, hashedData, deviceID, posterUrl); //checks if waitlist is full
             }
         });
 
@@ -157,22 +153,64 @@ public class retrieveEventInfo extends AppCompatActivity {
         // Set result launchers to set up navigation buttons on the bottom of the screen
         settingsResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
-                result -> {});
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+
+                });
 
         listActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
-                result -> {});
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+
+                });
 
         notificationActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
-                result -> {});
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+
+                });
 
         ProfileActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
-                result -> {});
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+                });
 
         // Set click listeners for navigation buttons on the bottom of the screen
         // sends you to profile screen
+        profileButton.setOnClickListener(v -> {
+            Intent newIntent = new Intent(retrieveEventInfo.this, ProfileActivity.class);
+            newIntent.putExtra("User", user);
+            ProfileActivityResultLauncher.launch(newIntent);
+        });
+
+        // sends you to settings screen
         profileButton.setOnClickListener(v -> {
             Intent newIntent = new Intent(retrieveEventInfo.this, ProfileActivity.class);
             newIntent.putExtra("User", user);
@@ -200,8 +238,12 @@ public class retrieveEventInfo extends AppCompatActivity {
 
         // Set click listener for the back button
         backButton.setOnClickListener(v -> {
-            finish(); // Close the current activity and return to the previous one
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("User", user);
+            setResult(RESULT_OK, resultIntent);
+            finish();
         });
+
     }
 
     /**
@@ -230,6 +272,7 @@ public class retrieveEventInfo extends AppCompatActivity {
                                 String eventDescription = document.getString("eventDescription");
                                 String eventPosterUrl = document.getString("posterUrl");
                                 String waitlistCountdown = document.getString("waitlistCountdown");
+                                waitlistCapacity = document.getLong("waitlistCapacity");
 
                                 // Call the display method with the retrieved data
                                 displayEventInfo(eventName, eventDescription, eventPosterUrl, waitlistCountdown);
@@ -257,7 +300,7 @@ public class retrieveEventInfo extends AppCompatActivity {
         // Set the text for the TextViews
         eventNameTextView.setText(eventName);
         eventDescriptionTextView.setText(eventDescription);
-        countdownTextView.setText(waitlistCountdown);
+        countdownTextView.setText("Event is Open until: " + waitlistCountdown);
 
         if (eventPosterUrl == null){
             eventPoster.setImageResource(R.drawable.default_poster); // set default poster
@@ -372,6 +415,52 @@ public class retrieveEventInfo extends AppCompatActivity {
                 })
                 .addOnFailureListener(e -> Toast.makeText(retrieveEventInfo.this, "Error querying entrant", Toast.LENGTH_SHORT).show());
     }
+
+
+    /**
+     * Checks if waitlist is full
+     * If true, entrant is unable to join
+     * If false, entrant will successfully join waitlist
+     * @param deviceId
+     * @param userDeviceId
+     * @param hashedData
+     * @param deviceID
+     * @param posterUrl
+     */
+    private void getAndCompareDocumentCount(String deviceId, String userDeviceId, String hashedData, String deviceID, String posterUrl) {
+        int targetCount = Math.toIntExact(waitlistCapacity);
+        String event = eventName.getText().toString();
+
+        db.collection("facilities")
+                .document(deviceId)
+                .collection("My Events")
+                .document(event)
+                .collection("waitlist list")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        QuerySnapshot documents = task.getResult();
+                        int count = (documents != null) ? documents.size() : 0;
+
+                        // Implement comparison logic
+                        if (count >= targetCount) {
+                            Toast.makeText(retrieveEventInfo.this, "Waitlist is full, unable to join", Toast.LENGTH_SHORT).show();
+                            // Additional action when count is greater
+                        } else if (count < targetCount) {
+                            Intent intent = new Intent(retrieveEventInfo.this, JoinWaitlistScreen.class);
+                            intent.putExtra("User", user);
+                            fetchEventData(hashedData, deviceID, event, posterUrl);
+                            joinWaitlistEntrant(userDeviceId, hashedData, deviceID, posterUrl);
+                            joinWaitlistOrganizer(userDeviceId, deviceID);
+                        }
+                    } else {
+                        FirebaseFirestoreException e = (FirebaseFirestoreException) task.getException();
+                        System.err.println("Error getting documents: " + e);
+                    }
+                });
+    }
+
+
 
 
 }

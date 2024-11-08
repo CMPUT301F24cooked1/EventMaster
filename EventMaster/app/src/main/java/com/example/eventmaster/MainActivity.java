@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d("DeviceID", "Android ID: " + deviceId);
 
         user = new Profile(deviceId, "", "", ""); // create a new user
-        //storeDeviceID(deviceId, "profiles"); // store device id, skip if already stored
+
         storeDeviceID(deviceId, "profiles");
         storeDeviceID(deviceId, "facilities");
         storeDeviceID(deviceId, "entrants");
@@ -104,8 +104,12 @@ public class MainActivity extends AppCompatActivity {
         // Connecting the home screen to the SettingsScreen
         settingResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(), result -> {
-                    if (result.getResultCode() == RESULT_OK) {
-
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
                     }
                 }
         );
@@ -113,8 +117,12 @@ public class MainActivity extends AppCompatActivity {
         // Connecting the home screen to the profile
         profileResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),result ->{
-                    if (result.getResultCode() == RESULT_OK){
-
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
                     }
                 }
         );
@@ -122,8 +130,12 @@ public class MainActivity extends AppCompatActivity {
         // Connecting home screen to list of joined events screen
         joinedEventsActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(), result ->{
-                    if (result.getResultCode() == RESULT_OK){
-
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
                     }
                 }
         );
@@ -131,8 +143,12 @@ public class MainActivity extends AppCompatActivity {
         // Connecting the home screen to the join event screen
         joinEventScreenResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),result ->{
-                    if (result.getResultCode() == RESULT_OK){
-
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
                     }
                 }
         );
@@ -147,6 +163,11 @@ public class MainActivity extends AppCompatActivity {
                     if (returnResult.getData() != null && returnResult.getData().getSerializableExtra("updatedUserFacility") != null) {
 
                         userFacility = (Facility) returnResult.getData().getSerializableExtra("updatedUserFacility");
+                        Profile updatedUser = (Profile) returnResult.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
 
                     }
                 }

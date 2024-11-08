@@ -29,11 +29,10 @@
         android:text="Confirm"
         android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintVertical_bias="0.83" />
+        app:layout_constraintTop_toBottomOf="@+id/edit_facility_desc"
+        app:layout_constraintVertical_bias="0.207" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -47,19 +46,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.22" />
-
-    <TextView
-        android:id="@+id/facility_name_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Facility Name"
-        android:textSize="25dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintVertical_bias="0.3" />
 
     <!-- https://stackoverflow.com/questions/59246328/android-add-a-padding-with-size-that-looks-equal-on-all-devices, 2024-10-21 -->
     <!--
@@ -86,6 +72,19 @@
     </com.google.android.material.textfield.TextInputLayout>
     -->
 
+    <TextView
+        android:id="@+id/facility_name_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Facility Name"
+        android:textSize="25dp"
+        app:layout_constraintBottom_toTopOf="@+id/edit_facility_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/facility_icon"
+        app:layout_constraintVertical_bias="0.714" />
+
     <EditText
         android:id="@+id/edit_facility_name"
         android:layout_width="271dp"
@@ -94,9 +93,9 @@
         android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintVertical_bias="0.37" />
 
     <TextView
@@ -105,25 +104,23 @@
         android:layout_height="wrap_content"
         android:text="Facility Address"
         android:textSize="25dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/edit_facility_address"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintVertical_bias="0.44" />
+        app:layout_constraintTop_toBottomOf="@+id/edit_facility_name"
+        app:layout_constraintVertical_bias="0.577" />
 
     <EditText
         android:id="@+id/edit_facility_address"
         android:layout_width="271dp"
         android:layout_height="wrap_content"
-        android:textColor="@color/black"
         android:background="@drawable/edittext_border"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toTopOf="@+id/facility_desc_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintVertical_bias="0.51" />
+        app:layout_constraintVertical_bias="0.945" />
 
     <TextView
         android:id="@+id/facility_desc_text"
@@ -133,23 +130,22 @@
         android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintVertical_bias="0.58" />
+        app:layout_constraintVertical_bias="0.584" />
 
     <EditText
         android:id="@+id/edit_facility_desc"
         android:layout_width="271dp"
         android:layout_height="60dp"
-        android:textColor="@color/black"
         android:background="@drawable/edittext_border"
+        android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintVertical_bias="0.66" />
+        app:layout_constraintTop_toBottomOf="@+id/facility_desc_text"
+        app:layout_constraintVertical_bias="0.073" />
 
     <ImageButton
         android:id="@+id/back_button"

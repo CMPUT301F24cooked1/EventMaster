@@ -35,7 +35,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="376dp"
-            android:layout_height="650dp"
+            android:layout_height="512dp"
             android:nestedScrollingEnabled="false"
             android:padding="16dp" />
     </LinearLayout>

@@ -10,11 +10,11 @@
 
     <ImageView
         android:id="@+id/imageView4"
-        android:layout_width="wrap_content"
+        android:layout_width="31dp"
+        android:layout_height="31dp"
         android:layout_marginTop="5dp"
-        android:layout_height="29dp"
         android:layout_marginEnd="16dp"
-        app:srcCompat="@drawable/calendar_image" />
+        android:background="@drawable/calendar_image"/>
 
     <LinearLayout
         android:layout_width="260dp"

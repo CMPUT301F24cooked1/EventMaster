@@ -2,12 +2,15 @@ package com.example.eventmaster;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.graphics.Insets;
@@ -25,6 +28,11 @@ public class EditFacilityScreen extends AppCompatActivity {
     private ImageButton settingsButton;
     private ImageButton notificationButton;
     private ImageButton listButton;
+    private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
+    private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
+    private ActivityResultLauncher<Intent> settingsResultLauncher;
+    private ActivityResultLauncher<Intent> MainActivityResultLauncher;
+    private Profile user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +46,7 @@ public class EditFacilityScreen extends AppCompatActivity {
         editFacilityDesc = findViewById(R.id.edit_facility_desc);
 
         Intent intentMain = getIntent();
-        Profile user =  (Profile) intentMain.getSerializableExtra("FacilityEditUser");
+        user =  (Profile) intentMain.getSerializableExtra("FacilityEditUser");
 
         Facility userFacility = (Facility) getIntent().getSerializableExtra("FacilityEdit");
 
@@ -87,6 +95,8 @@ public class EditFacilityScreen extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Returns to previous screen
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("User", user);
                 setResult(RESULT_CANCELED);
                 finish();
             }
@@ -95,23 +105,25 @@ public class EditFacilityScreen extends AppCompatActivity {
         notificationButton = findViewById(R.id.notification_icon);
 
         notificationButton.setOnClickListener(v -> {
-            Intent intent = new Intent(EditFacilityScreen.this, Notifications.class);
-            startActivity(intent);
+            Intent newIntent = new Intent(EditFacilityScreen.this, Notifications.class);
+            newIntent.putExtra("User", user);
+            notificationActivityResultLauncher.launch(newIntent);
         });
 
         settingsButton = findViewById(R.id.settings);
 
         settingsButton.setOnClickListener(v -> {
-            Intent intent = new Intent(EditFacilityScreen.this, SettingsScreen.class);
-            startActivity(intent);
+            Intent newIntent = new Intent(EditFacilityScreen.this, SettingsScreen.class);
+            newIntent.putExtra("User", user);
+            settingsResultLauncher.launch(newIntent);
         });
 
         profileButton = findViewById(R.id.profile);
 
         profileButton.setOnClickListener(v -> {
-            Intent intent = new Intent(EditFacilityScreen.this, ProfileActivity.class);
-            intent.putExtra("User", user);
-            startActivity(intent);
+            Intent newIntent = new Intent(EditFacilityScreen.this, ProfileActivity.class);
+            newIntent.putExtra("User", user);
+            ProfileActivityResultLauncher.launch(newIntent);
         });
 
         listButton = findViewById(R.id.list_icon);
@@ -126,6 +138,58 @@ public class EditFacilityScreen extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        settingsResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+
+                });
+
+        MainActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+
+                });
+
+        notificationActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+
+                });
+
+        ProfileActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+
+                });
     }
 
     /**

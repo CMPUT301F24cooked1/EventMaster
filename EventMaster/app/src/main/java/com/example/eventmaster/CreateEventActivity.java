@@ -31,7 +31,14 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
+
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
+import android.widget.TextView;
+import java.util.Calendar;
+
 public class CreateEventActivity extends AppCompatActivity {
 
     private FirebaseFirestore db;
@@ -47,9 +54,12 @@ public class CreateEventActivity extends AppCompatActivity {
     private AppCompatButton createEventButton;
     private TextView uploadPosterButton;
     private Switch geolocationSwitch;
-
+    private Profile user;
     private Uri posterUri; // To hold the URI of the selected poster
     private String posterDownloadUrl = null; // To hold the download URL of the uploaded poster
+
+    private TextView waitlistCountdownText;
+    private Calendar waitlistCalendar;
 
     private static final int PICK_IMAGE_REQUEST = 1; // Request code for image selection
 
@@ -60,11 +70,16 @@ public class CreateEventActivity extends AppCompatActivity {
         ModeActivity.applyTheme(this);
         setContentView(R.layout.activity_create_event);
 
-        // Initialize Firebase instances
         db = FirebaseFirestore.getInstance();
+        Intent intentMain = getIntent();
+        user =  (Profile) intentMain.getSerializableExtra("User");
+        deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        // Check if user was grabbed
+        assert user != null;
+
         storage = FirebaseStorage.getInstance();
         storageRef = storage.getReference();
-        deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         // Initialize UI elements
         eventNameInput = findViewById(R.id.eventName);
@@ -74,7 +89,6 @@ public class CreateEventActivity extends AppCompatActivity {
         waitlistCountdownInput = findViewById(R.id.waitlistCountdown);
         createEventButton = findViewById(R.id.createEventButton);
         uploadPosterButton = findViewById(R.id.Upload_poster_button);
-        Profile user = new Profile(deviceId, "Vansh", " ", " ");
 
         // Initialize navigation buttons
         ImageButton notificationButton = findViewById(R.id.notification);
@@ -84,6 +98,13 @@ public class CreateEventActivity extends AppCompatActivity {
         ImageButton backButton = findViewById(R.id.back_button); // Initialize back button
 
         geolocationSwitch = findViewById(R.id.geolocation_switch);
+
+        waitlistCountdownText = findViewById(R.id.waitlistCountdown);
+        waitlistCalendar = Calendar.getInstance();
+
+        // Open date picker on TextView click
+        waitlistCountdownText.setOnClickListener(v -> showDateTimePicker());
+
         // Set click listeners for navigation
         notificationButton.setOnClickListener(v -> {
             Intent intent = new Intent(CreateEventActivity.this, Notifications.class);
@@ -115,7 +136,36 @@ public class CreateEventActivity extends AppCompatActivity {
         uploadPosterButton.setOnClickListener(v -> openFileChooser()); // Open the image chooser
 
         // Set up the create event button
-        createEventButton.setOnClickListener(v -> createEvent()); // Handle event creation
+        createEventButton.setOnClickListener(v -> {
+            // Call createEvent before proceeding to the next activity
+            createEvent();
+        });
+    }
+
+    private void showDateTimePicker() {
+        // Open the DatePickerDialog
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
+            waitlistCalendar.set(Calendar.YEAR, year);
+            waitlistCalendar.set(Calendar.MONTH, month);
+            waitlistCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+            // Open the TimePickerDialog after selecting date
+            new TimePickerDialog(this, (timeView, hourOfDay, minute) -> {
+                waitlistCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                waitlistCalendar.set(Calendar.MINUTE, minute);
+
+                // Format date and time to display in TextView
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+                String formattedDate = dateFormat.format(waitlistCalendar.getTime());
+                waitlistCountdownText.setText(formattedDate);
+
+            }, waitlistCalendar.get(Calendar.HOUR_OF_DAY), waitlistCalendar.get(Calendar.MINUTE), true).show();
+
+        }, waitlistCalendar.get(Calendar.YEAR), waitlistCalendar.get(Calendar.MONTH), waitlistCalendar.get(Calendar.DAY_OF_MONTH));
+
+        // Disable all past dates by setting the minimum date to today
+        datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+        datePickerDialog.show();
     }
 
     // Open the file chooser to select an image for the poster
@@ -144,7 +194,7 @@ public class CreateEventActivity extends AppCompatActivity {
         String eventDescription = eventDescriptionInput.getText().toString();
         String eventCapacity = eventCapacityInput.getText().toString();
         String waitlistCapacity = waitlistCapacityInput.getText().toString();
-        String waitlistCountdown = waitlistCountdownInput.getText().toString();
+        String waitlistCountdown = waitlistCountdownText.getText().toString();
 
         // Input validation
         if (eventName.isEmpty() || eventDescription.isEmpty() || eventCapacity.isEmpty() || waitlistCountdown.isEmpty()) {
@@ -258,19 +308,15 @@ public class CreateEventActivity extends AppCompatActivity {
                                 .document(eventName)
                                 .set(eventData)
                                 .addOnSuccessListener(aVoid -> {
-                                    Log.d("CreateEvent 1", "1" + eventName);
                                     Toast.makeText(CreateEventActivity.this, "Event created successfully", Toast.LENGTH_SHORT).show();
                                     // Generate and store QR code
                                     generateQRCode(eventName, facilityId);
-                                    Log.d("CreateEvent 2 ", "2 " + eventName);
                                     // Navigate directly to EventDetailsActivity
                                     Intent intent = new Intent(CreateEventActivity.this, EventDetailsActivity.class);
-                                    Log.d("CreateEvent 3", "3 " + eventName);
                                     intent.putExtra("eventId", eventName); // Pass the event ID or name as needed
-                                    Log.d("CreateEvent 4", "4 " + eventName);
+                                    intent.putExtra("user", user);
                                     startActivity(intent);
-                                    Log.d("CreateEvent 5", "5 " + eventName);
-                                    finish(); // Optional: finish CreateEventActivity if no back navigation needed
+                                    finish();
                                 })
                                 .addOnFailureListener(e -> Toast.makeText(CreateEventActivity.this, "Error creating event", Toast.LENGTH_SHORT).show());
                     } else {
