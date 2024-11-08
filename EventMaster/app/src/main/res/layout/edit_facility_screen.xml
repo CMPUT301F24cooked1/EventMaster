@@ -63,8 +63,10 @@
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="@+id/editTextInput"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/facilityNameText" />
+        app:layout_constraintTop_toBottomOf="@+id/facilityNameText"
+        app:layout_constraintVertical_bias="1.0" />
 
     <EditText
         android:id="@+id/editTextInput2"
@@ -78,7 +80,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="428dp" />
+        app:layout_constraintTop_toBottomOf="@+id/facilityAddressText" />
 
     <EditText
         android:id="@+id/editTextInput4"
@@ -89,10 +91,12 @@
         android:hint="Enter your Facility Description  here"
         android:inputType="text"
         android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@+id/edit_facility_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="560dp" />
+        app:layout_constraintTop_toBottomOf="@+id/facilityDescText"
+        app:layout_constraintVertical_bias="0.0" />
 
     <ImageView
         android:id="@+id/appLogo"
@@ -117,8 +121,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.811" />
+        app:layout_constraintTop_toBottomOf="@+id/facilityDescText"
+        app:layout_constraintVertical_bias="0.4" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -141,10 +145,11 @@
         android:textSize="25dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintHorizontal_bias="0.509"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.344" />
+        app:layout_constraintTop_toBottomOf="@+id/appLogo"
+        app:layout_constraintVertical_bias="0.051" />
+
 
     <TextView
         android:id="@+id/facilityAddressText"
@@ -156,7 +161,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.46" />
+        app:layout_constraintVertical_bias="0.473" />
 
     <TextView
         android:id="@+id/facilityDescText"
@@ -166,11 +171,10 @@
         android:textSize="25dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.541"
+        app:layout_constraintHorizontal_bias="0.537"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.614" />
-
+        app:layout_constraintTop_toBottomOf="@+id/editTextInput2"
+        app:layout_constraintVertical_bias="0.07" />
 
     <EditText
         android:id="@+id/editTextInput"
@@ -187,7 +191,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/facilityNameText"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.0" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

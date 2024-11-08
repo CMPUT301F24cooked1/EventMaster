@@ -6,6 +6,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
+/**
+ * The Event class represents a single event on the app. It contains all of the information needed for a single event.
+ *
+ * <p>The class implements Serializable to allow event data to be passed between activities</p>
+ *
+ */
 @IgnoreExtraProperties
 public class Event implements Serializable {
     private String eventName;
@@ -15,12 +21,26 @@ public class Event implements Serializable {
     private int waitlistCapacity;
     private Date eventFinalDate;
     private boolean geolocation;
-    private ArrayList<Entrant> waitlist;
 
-    //private QRCode eventQR;
+    /**
+     * Default constructor required for calls to DataSnapshot.getValue(Event.class)
+     */
     public Event() {
-        // Default constructor required for calls to DataSnapshot.getValue(Event.class)
+
     }
+
+    /**
+     * Constructs a new Event object with all the details
+     * This constructor initializes the event with the given name, description, device ID, capacity for the event,
+     * capacity for the waitlist, the date the event closes, and whether it has geolocation enabled.
+     * @param eventName The name of the Event.
+     * @param eventDescription The description of the Event.
+     * @param deviceID Device ID of the user who made the Event.
+     * @param eventCapacity The final capacity for the Event (the number that will be sampled)
+     * @param waitlistCapacity The capacity of entrants allowed to join the waitlist.
+     * @param eventFinalDate Final date the event closes.
+     * @param geolocation The final capacity for the Event (the number that will be sampled)
+     */
     public Event(String eventName, String eventDescription, String deviceID, int eventCapacity, int waitlistCapacity, Date eventFinalDate, boolean geolocation) {
         this.eventName = eventName;
         this.eventDescription = eventDescription;
@@ -29,9 +49,6 @@ public class Event implements Serializable {
         this.waitlistCapacity = waitlistCapacity;
         this.eventFinalDate = eventFinalDate;
         this.geolocation = geolocation;
-
-
-        //this.eventQR = new QRCode(eventName);
     }
 
     /**
@@ -158,4 +175,22 @@ public class Event implements Serializable {
         this.geolocation = geolocation;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Event event = (Event) o;
+        return deviceID != null && deviceID.equals(event.deviceID);
+    }
+
+    @Override
+    public int hashCode() {
+        return deviceID!= null ? deviceID.hashCode() : 0;
+    }
+    @Override
+    public String toString() {
+        return "Event{id='" + deviceID + "', name='" + eventName + "'}";
+    }
 }
+
+

@@ -8,6 +8,15 @@ public class Facility implements Serializable {
     private String facilityAddress;
     private String facilityDesc;
 
+    /**
+     * Constructs a new Facility object with all the details
+     * This constructor initializes the facility with its given name, address, and description
+     * as well as the deviceID of the user it's tied to
+     * @param deviceID Device ID of the user whose Facility it is.
+     * @param facilityName The name of the Facility.
+     * @param facilityAddress The address of the Facility.
+     * @param facilityDesc The description of the Facility.
+     */
     public Facility(String deviceID, String facilityName, String facilityAddress, String facilityDesc) {
         this.facilityName = facilityName;
         this.facilityAddress = facilityAddress;

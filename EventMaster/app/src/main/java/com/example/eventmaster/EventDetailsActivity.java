@@ -33,6 +33,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     private String eventId;
     private static Bitmap cachedPosterBitmap; // Static variable to cache the poster image
     private String deviceId; // Replace with actual device ID
+    private Profile user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +49,8 @@ public class EventDetailsActivity extends AppCompatActivity {
 
         // Retrieve the event ID from the intent
         eventId = getIntent().getStringExtra("eventId");
+        Intent intentMain = getIntent();
+        user =  (Profile) intentMain.getSerializableExtra("user");
 
         // Load event details from Firestore
         loadEventDetails();
@@ -58,7 +61,6 @@ public class EventDetailsActivity extends AppCompatActivity {
         ImageButton homeButton = findViewById(R.id.home_icon);
         ImageButton backButton = findViewById(R.id.back_button); // Initialize back button
         deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-        Profile user = new Profile(deviceId,"Vansh", " ", " ");
 
         // Set click listeners for navigation
         notificationButton.setOnClickListener(v -> {
@@ -102,7 +104,7 @@ public class EventDetailsActivity extends AppCompatActivity {
             if (documentSnapshot.exists()) {
                 String eventName = documentSnapshot.getString("eventName");
                 String eventDescription = documentSnapshot.getString("eventDescription");
-                String qrCodeHash = documentSnapshot.getString("hash"); // Assuming you store this
+                String qrCodeHash = documentSnapshot.getString("hash");
 
                 eventNameTextView.setText(eventName);
                 eventDescriptionTextView.setText(eventDescription);

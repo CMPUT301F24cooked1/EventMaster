@@ -153,22 +153,64 @@ public class retrieveEventInfo extends AppCompatActivity {
         // Set result launchers to set up navigation buttons on the bottom of the screen
         settingsResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
-                result -> {});
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+
+                });
 
         listActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
-                result -> {});
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+
+                });
 
         notificationActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
-                result -> {});
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+
+                });
 
         ProfileActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
-                result -> {});
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+                });
 
         // Set click listeners for navigation buttons on the bottom of the screen
         // sends you to profile screen
+        profileButton.setOnClickListener(v -> {
+            Intent newIntent = new Intent(retrieveEventInfo.this, ProfileActivity.class);
+            newIntent.putExtra("User", user);
+            ProfileActivityResultLauncher.launch(newIntent);
+        });
+
+        // sends you to settings screen
         profileButton.setOnClickListener(v -> {
             Intent newIntent = new Intent(retrieveEventInfo.this, ProfileActivity.class);
             newIntent.putExtra("User", user);
@@ -196,8 +238,12 @@ public class retrieveEventInfo extends AppCompatActivity {
 
         // Set click listener for the back button
         backButton.setOnClickListener(v -> {
-            finish(); // Close the current activity and return to the previous one
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("User", user);
+            setResult(RESULT_OK, resultIntent);
+            finish();
         });
+
     }
 
     /**
@@ -206,7 +252,6 @@ public class retrieveEventInfo extends AppCompatActivity {
      * @param deviceID the device ID of the entrant that is needed to access data in the firebase
      * @param event the event name that is needed to access data in the firebase
      */
-    // INNAS PART
     // check if the hash data matches any of the hash data in the firebase when the qr code is scanned
     private void retrieveEventInfo(String hashedData, String deviceID, String event) {
         db.collection("facilities")

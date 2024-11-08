@@ -22,6 +22,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
     <TextView
         android:id="@+id/event_name"
         android:layout_width="wrap_content"
@@ -29,11 +30,11 @@
         android:text="Event Name"
         android:textColor="#757575"
         android:textSize="24dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/event_description"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.159" />
+        app:layout_constraintTop_toBottomOf="@+id/title"
+        app:layout_constraintVertical_bias="0.075" />
 
     <TextView
         android:id="@+id/event_description"
@@ -42,36 +43,34 @@
         android:text="Event Description"
         android:textColor="#757575"
         android:textSize="24dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/textview"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.271" />
-
+        app:layout_constraintTop_toBottomOf="@+id/title"
+        app:layout_constraintVertical_bias="0.492" />
 
     <TextView
         android:id="@+id/textview"
-        android:layout_width="299dp"
-        android:layout_height="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="         You have been selected \n to join the event from the waitlist."
         android:textColor="#757575"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/accept_invite"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.857"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.621" />
+        app:layout_constraintVertical_bias="0.882" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/decline_invite"
         android:layout_width="271dp"
         android:layout_height="70dp"
         android:layout_marginStart="70dp"
+        android:layout_marginTop="30dp"
         android:layout_marginEnd="70dp"
         android:layout_marginBottom="148dp"
-        android:background="@drawable/gray_rounded_button"
 
+        android:background="@drawable/gray_rounded_button"
         android:drawableLeft="@drawable/remove_circle_outline"
         android:padding="22dp"
         android:text="Decline Invite"
@@ -79,7 +78,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/accept_invite" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/accept_invite"
@@ -96,7 +96,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textview" />
 
     <ImageButton
         android:id="@+id/list_icon"

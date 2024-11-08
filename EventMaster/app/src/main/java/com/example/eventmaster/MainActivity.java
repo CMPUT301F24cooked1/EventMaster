@@ -105,7 +105,11 @@ public class MainActivity extends AppCompatActivity {
         settingResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(), result -> {
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
                     }
                 }
         );
@@ -127,7 +131,11 @@ public class MainActivity extends AppCompatActivity {
         joinedEventsActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(), result ->{
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
                     }
                 }
         );
@@ -136,7 +144,11 @@ public class MainActivity extends AppCompatActivity {
         joinEventScreenResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),result ->{
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
                     }
                 }
         );
@@ -151,6 +163,11 @@ public class MainActivity extends AppCompatActivity {
                     if (returnResult.getData() != null && returnResult.getData().getSerializableExtra("updatedUserFacility") != null) {
 
                         userFacility = (Facility) returnResult.getData().getSerializableExtra("updatedUserFacility");
+                        Profile updatedUser = (Profile) returnResult.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
 
                     }
                 }

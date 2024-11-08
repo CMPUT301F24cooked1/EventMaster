@@ -33,11 +33,9 @@ public class FacilityScreen extends AppCompatActivity {
 
     private String deviceId;
     private ActivityResultLauncher<Intent> editFacilityResultLauncher;
-    private ActivityResultLauncher<Intent> createEventResultLauncher;
     private FirebaseFirestore db;
 
     private Profile user;
-    //private Organizer userOrganizer;
     private Facility updatedUserFacility;
     private Facility userFacility;
 
@@ -52,7 +50,16 @@ public class FacilityScreen extends AppCompatActivity {
     private ImageButton settingsButton;
     private ImageButton notificationButton;
     private ImageButton listButton;
+    private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
+    private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
+    private ActivityResultLauncher<Intent> settingsResultLauncher;
+    private ActivityResultLauncher<Intent> MainActivityResultLauncher;
 
+    /**
+     * Displays the name, address and description for the user's facility
+     * Allows navigation to creation of an event, viewing events, and editing facility
+     * @param savedInstanceState If the activity is restarted this Bundle contains the data it most recently supplied.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,30 +100,44 @@ public class FacilityScreen extends AppCompatActivity {
 
         notificationButton = findViewById(R.id.notification_icon);
 
-        notificationButton.setOnClickListener(v -> {
-            Intent intent = new Intent(FacilityScreen.this, Notifications.class);
-            startActivity(intent);
+        notificationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Send user to ProfileActivity class
+                Intent intent = new Intent(FacilityScreen.this, Notifications.class);
+                intent.putExtra("User", user);
+                notificationActivityResultLauncher.launch(intent);
+            }
         });
 
         settingsButton = findViewById(R.id.settings);
 
-        settingsButton.setOnClickListener(v -> {
-            Intent intent = new Intent(FacilityScreen.this, SettingsScreen.class);
-            startActivity(intent);
+        settingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(FacilityScreen.this, SettingsScreen.class);
+                intent.putExtra("User", user);
+                settingsResultLauncher.launch(intent);
+            }
         });
 
         profileButton = findViewById(R.id.profile);
 
-        profileButton.setOnClickListener(v -> {
-            Intent intent = new Intent(FacilityScreen.this, ProfileActivity.class);
-            intent.putExtra("User", user);
-            startActivity(intent);
+        profileButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Send user to ProfileActivity class
+                Intent intent = new Intent(FacilityScreen.this, ProfileActivity.class);
+                intent.putExtra("User", user);
+                ProfileActivityResultLauncher.launch(intent);
+            }
         });
 
         listButton = findViewById(R.id.list_icon);
 
         listButton.setOnClickListener(v -> {
             Intent intent = new Intent(FacilityScreen.this, ViewCreatedEventsActivity.class);
+            intent.putExtra("User", user);
             startActivity(intent);
         });
 
@@ -139,6 +160,11 @@ public class FacilityScreen extends AppCompatActivity {
                         facilityNameText.setText(updatedUserFacility.getFacilityName());
                         facilityAddressText.setText(updatedUserFacility.getFacilityAddress());
                         facilityDescText.setText(updatedUserFacility.getFacilityDesc());
+                        Profile updatedUser = (Profile) returnResult.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
                         userFacility = updatedUserFacility;
                     }
                 }
@@ -156,8 +182,6 @@ public class FacilityScreen extends AppCompatActivity {
                 editFacilityResultLauncher.launch(intent);
             }
         });
-
-        //userOrganizer = new Organizer();
 
         //Move to Events Page
         createEventButton = findViewById(R.id.create_event_button);
@@ -179,10 +203,62 @@ public class FacilityScreen extends AppCompatActivity {
                 // Returns to previous screen
                 Intent newIntent = new Intent(FacilityScreen.this, MainActivity.class);
                 newIntent.putExtra("updatedUserFacility", userFacility);
+                newIntent.putExtra("User", user);
                 setResult(RESULT_OK, newIntent);
                 finish();
             }
         });
+        settingsResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+
+                });
+
+        MainActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+
+                });
+
+        notificationActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+
+                });
+
+        ProfileActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+
+                });
     }
 
     /**

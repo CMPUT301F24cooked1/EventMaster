@@ -33,11 +33,16 @@ public class JoinWaitlistScreen extends AppCompatActivity {
     ImageView eventPoster;
     private Profile user;
 
-
+    ImageButton notificationButton;
+    ImageButton settingsButton;
+    ImageButton profileButton;
+    ImageButton listButton;
+    private Profile user;
     private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
     private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
     private ActivityResultLauncher<Intent> settingsResultLauncher;
     private ActivityResultLauncher<Intent> listActivityResultLauncher;
+
 
     /**
      * Initializes screen telling user they have joined the waitlist
@@ -80,12 +85,14 @@ public class JoinWaitlistScreen extends AppCompatActivity {
 
 
 
+
         // Initialize navigation buttons
         ImageButton notificationButton = findViewById(R.id.notification_icon);
         ImageButton settingsButton = findViewById(R.id.settings);
         ImageButton profileButton = findViewById(R.id.profile);
         ImageButton listButton = findViewById(R.id.list_icon);
-        ImageButton backButton = findViewById(R.id.back_button); // Initialize back button
+        ImageButton backButton = findViewById(R.id.back_button);
+
 
         // Set result launchers to set up navigation buttons on the bottom of the screen
         settingsResultLauncher = registerForActivityResult(
@@ -131,9 +138,12 @@ public class JoinWaitlistScreen extends AppCompatActivity {
             notificationActivityResultLauncher.launch(newIntent);
         });
 
-        // Set click listener for the back button
+//        // Set click listener for the back button
         backButton.setOnClickListener(v -> {
-            finish(); // Close the current activity and return to the previous one
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("User", user);
+            setResult(RESULT_OK, resultIntent);
+            finish();
         });
 
     }

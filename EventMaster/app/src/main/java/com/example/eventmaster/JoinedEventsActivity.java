@@ -3,6 +3,7 @@ package com.example.eventmaster;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 
@@ -34,10 +35,12 @@ public class JoinedEventsActivity extends AppCompatActivity {
     private String deviceId; // Replace with actual device ID
     private FirebaseFirestore db; // Firestore instance
     private ActivityResultLauncher<Intent> waitlistedEventsActivityResultLauncher;
-
+    private Profile user;
     private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
     private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
     private ActivityResultLauncher<Intent> settingsResultLauncher;
+    private ActivityResultLauncher<Intent> MainActivityResultLauncher;
+
     private ActivityResultLauncher<Intent> homeActivityResultLauncher;
 
     //  private ActivityResultLauncher<Intent> QRScanScreenResultLauncher;
@@ -46,7 +49,7 @@ public class JoinedEventsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.joined_events_screen);
         ModeActivity.applyTheme(this);
-        Profile user = (Profile) getIntent().getSerializableExtra("User"); // user from MainActivity
+        user = (Profile) getIntent().getSerializableExtra("User"); // user from MainActivity
 
 
 
@@ -89,7 +92,7 @@ public class JoinedEventsActivity extends AppCompatActivity {
         ImageButton settingsButton = findViewById(R.id.settings);
         ImageButton profileButton = findViewById(R.id.profile);
         ImageButton homeButton = findViewById(R.id.home_icon);
-        ImageButton backButton = findViewById(R.id.back_button); // Initialize back button
+        ImageButton backButton = findViewById(R.id.back_button);
 
         // Set result launchers to set up navigation buttons on the bottom of the screen
         settingsResultLauncher = registerForActivityResult(
@@ -135,10 +138,10 @@ public class JoinedEventsActivity extends AppCompatActivity {
             notificationActivityResultLauncher.launch(newIntent);
         });
 
-        // Set click listener for the back button
-        backButton.setOnClickListener(v -> {
-            finish(); // Close the current activity and return to the previous one
-        });
+//        // Set click listener for the back button
+//        backButton.setOnClickListener(v -> {
+//            finish(); // Close the current activity and return to the previous one
+//        });
     }
 
     private void retrieveEvents() {

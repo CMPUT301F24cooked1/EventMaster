@@ -50,6 +50,7 @@ public class WaitlistedEventsActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> settingsResultLauncher;
     private ActivityResultLauncher<Intent> MainActivityResultLauncher;
 
+
     //  private ActivityResultLauncher<Intent> QRScanScreenResultLauncher;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,6 +138,7 @@ public class WaitlistedEventsActivity extends AppCompatActivity {
 
                 });
 
+
         // Set click listeners for navigation buttons on the bottom of the screen
         // sends you to profile screen
         profileButton.setOnClickListener(v -> {
@@ -154,7 +156,7 @@ public class WaitlistedEventsActivity extends AppCompatActivity {
 
         // sends you to a list of invited events that you accepted
         homeButton.setOnClickListener(v -> {
-            Intent newIntent = new Intent(WaitlistedEventsActivity.this, MainActivity.class);
+            Intent newIntent = new Intent(WaitlistedEventsActivity.this, JoinedEventsActivity.class);
             newIntent.putExtra("User", user);
             MainActivityResultLauncher.launch(newIntent);
         });
@@ -164,9 +166,12 @@ public class WaitlistedEventsActivity extends AppCompatActivity {
             notificationActivityResultLauncher.launch(newIntent);
         });
 
-        // Set click listener for the back button
+
         backButton.setOnClickListener(v -> {
-            finish(); // Close the current activity and return to the previous one
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("User", user);
+            setResult(RESULT_OK, resultIntent);
+            finish();
         });
 
     }

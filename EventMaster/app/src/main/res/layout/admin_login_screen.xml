@@ -8,17 +8,20 @@
     tools:context=".MainActivity"
     android:background="@drawable/app_background">
 
+
     <TextView
         android:id="@+id/admin_code_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="696dp"
         android:text="Code"
         android:textColor="@color/grey"
         android:textSize="25dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.518"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.13" />
 
     <EditText
         android:id="@+id/edit_admin_code"
@@ -26,13 +29,15 @@
         android:layout_height="wrap_content"
         android:background="@drawable/edittext_border"
         android:gravity="center"
-        android:inputType="number"
-        android:maxLength="6"
         android:hint="Enter a 6 digit numerical code"
+        android:inputType="number"
+        android:textColor="@color/black"
+        android:maxLength="6"
+        app:layout_constraintBottom_toTopOf="@+id/done_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/admin_code_text" />
-
+        app:layout_constraintTop_toBottomOf="@+id/admin_code_text"
+        app:layout_constraintVertical_bias="0.02" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/done_button"
