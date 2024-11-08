@@ -47,7 +47,7 @@ public class CreateEventActivity extends AppCompatActivity {
     private AppCompatButton createEventButton;
     private TextView uploadPosterButton;
     private Switch geolocationSwitch;
-
+    private Profile user;
     private Uri posterUri; // To hold the URI of the selected poster
     private String posterDownloadUrl = null; // To hold the download URL of the uploaded poster
 
@@ -60,11 +60,14 @@ public class CreateEventActivity extends AppCompatActivity {
         ModeActivity.applyTheme(this);
         setContentView(R.layout.activity_create_event);
 
-        // Initialize Firebase instances
         db = FirebaseFirestore.getInstance();
+        Intent intentMain = getIntent();
+        user =  (Profile) intentMain.getSerializableExtra("User");
+        deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        //Checks if user was grabbed
+        assert user != null;
         storage = FirebaseStorage.getInstance();
         storageRef = storage.getReference();
-        deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         // Initialize UI elements
         eventNameInput = findViewById(R.id.eventName);
@@ -74,7 +77,7 @@ public class CreateEventActivity extends AppCompatActivity {
         waitlistCountdownInput = findViewById(R.id.waitlistCountdown);
         createEventButton = findViewById(R.id.createEventButton);
         uploadPosterButton = findViewById(R.id.Upload_poster_button);
-        Profile user = new Profile(deviceId, "Vansh", " ", " ");
+
 
         // Initialize navigation buttons
         ImageButton notificationButton = findViewById(R.id.notification);
@@ -96,9 +99,10 @@ public class CreateEventActivity extends AppCompatActivity {
         });
 
         profileButton.setOnClickListener(v -> {
-            Intent intent = new Intent(CreateEventActivity.this, ProfileActivity.class);
-            intent.putExtra("User", user);
-            startActivity(intent);
+                Intent intent = new Intent(CreateEventActivity.this, ProfileActivity.class);
+                intent.putExtra("User", user);
+                startActivity(intent);
+
         });
 
         viewEventsButton.setOnClickListener(v -> {

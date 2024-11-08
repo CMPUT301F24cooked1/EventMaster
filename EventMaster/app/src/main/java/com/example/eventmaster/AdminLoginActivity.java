@@ -73,7 +73,7 @@ public class AdminLoginActivity extends AppCompatActivity {
         );
 
 
-        backButton = findViewById(R.id.back);
+        backButton = findViewById(R.id.back_button);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

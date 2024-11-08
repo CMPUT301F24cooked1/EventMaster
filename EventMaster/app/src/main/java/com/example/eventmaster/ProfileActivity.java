@@ -97,8 +97,13 @@ public class ProfileActivity extends AppCompatActivity {
         // sends you back to previous screen
         // Set click listener for the back button
         backButton.setOnClickListener(v -> {
-            finish(); // Close the current activity and return to the previous one
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("User", user);
+            setResult(RESULT_OK, resultIntent);
+            finish();
+
         });
+
 
         // sends you to settings screen
         settingsButton.setOnClickListener(v -> {

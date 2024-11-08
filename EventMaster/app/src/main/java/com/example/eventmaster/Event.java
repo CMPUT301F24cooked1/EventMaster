@@ -1,9 +1,12 @@
 package com.example.eventmaster;
 
+import com.google.firebase.firestore.IgnoreExtraProperties;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
+@IgnoreExtraProperties
 public class Event implements Serializable {
     private String eventName;
     private String eventDescription;
@@ -68,7 +71,7 @@ public class Event implements Serializable {
     }
 
     /**
-     * Gets the ID of the event
+     * Gets the ID of the event (deviceID acts as the eventID)
      * @return the event's string identifier
      */
     public String getDeviceID(){

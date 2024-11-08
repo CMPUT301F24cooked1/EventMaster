@@ -96,14 +96,9 @@ public class SettingsScreen extends AppCompatActivity {
         });
 
         backButton = findViewById(R.id.back);
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Send user to MainActivity class
-                Intent intent = new Intent(SettingsScreen.this, MainActivity.class);
-                intent.putExtra("User", user);
-                startActivity(intent);
-            }
+        // Set click listener for the back button
+        backButton.setOnClickListener(v -> {
+            finish(); // Close the current activity and return to the previous one
         });
 
         ImageButton profileButton = findViewById(R.id.profile);
