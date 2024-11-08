@@ -91,7 +91,7 @@ public class JoinWaitlistScreen extends AppCompatActivity {
         ImageButton settingsButton = findViewById(R.id.settings);
         ImageButton profileButton = findViewById(R.id.profile);
         ImageButton listButton = findViewById(R.id.list_icon);
-        ImageButton backButton = findViewById(R.id.back_button); // Initialize back button
+
 
         // Set result launchers to set up navigation buttons on the bottom of the screen
         settingsResultLauncher = registerForActivityResult(
