@@ -38,9 +38,21 @@
 
     <ImageView
         android:id="@+id/event_details_arrow"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/arrow"
         android:layout_marginTop="12dp"
-        android:layout_marginEnd="16dp"
-        app:srcCompat="@drawable/arrow" />
+        android:layout_marginEnd="16dp"/>
+
+    <CheckBox
+        android:id="@+id/removeEventCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:visibility = "gone"
+        />
+
+
 </LinearLayout>
