@@ -34,6 +34,10 @@ public class EditFacilityScreen extends AppCompatActivity {
     private ActivityResultLauncher<Intent> MainActivityResultLauncher;
     private Profile user;
 
+    /**
+     * Gives the user EditText views to edit their personal Facility.
+     * @param savedInstanceState If the activity is restarted this Bundle contains the data it most recently supplied.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -201,9 +205,9 @@ public class EditFacilityScreen extends AppCompatActivity {
      */
     public boolean[] checkDataEntryFacility(String facilityName, String facilityAddress, String facilityDesc) {
         boolean[] entriesValid = {false, false, false};
-        if (facilityName.length() <= 30 && !facilityName.isEmpty()) entriesValid[0] = true;
-        if (facilityAddress.length() <= 50 && !facilityAddress.isEmpty()) entriesValid[1] = true;
-        if (facilityDesc.length() <= 100 && !facilityDesc.isEmpty()) entriesValid[2] = true;
+        if (facilityName.length() <= 50 && !facilityName.isEmpty()) entriesValid[0] = true;
+        if (facilityAddress.length() <= 60 && !facilityAddress.isEmpty()) entriesValid[1] = true;
+        if (facilityDesc.length() <= 500 && !facilityDesc.isEmpty()) entriesValid[2] = true;
         return entriesValid;
     }
 }
