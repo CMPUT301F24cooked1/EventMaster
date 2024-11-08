@@ -50,9 +50,6 @@ public class ViewEventsAdapter extends RecyclerView.Adapter<ViewEventsAdapter.Ev
         this.context = context;
         this.user = user;
         this.isAdmin = isAdmin;
-        firestore = FirebaseFirestore.getInstance();
-
-
     }
 
     @NonNull
@@ -110,41 +107,58 @@ public class ViewEventsAdapter extends RecyclerView.Adapter<ViewEventsAdapter.Ev
     /**
      * Deletes all events that were marked by the checkbox
      */
-    public void deleteSelectedEvents(){
+    public void deleteSelectedEvents() {
+        firestore = FirebaseFirestore.getInstance();
         if (!selectedEvents.isEmpty()) {
             CollectionReference facilitiesRef = firestore.collection("facilities");
+            Log.d("Firestore Debug", "Attempting to fetch facilities");
 
             facilitiesRef.get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
-
+                    Log.d("Firestore Debug", "Facilities fetched successfully");
                     for (QueryDocumentSnapshot facilityDoc : task.getResult()) {
-                        // retrieve events for each facility
+                        // Retrieve events for each facility
                         CollectionReference eventsRef = facilityDoc.getReference().collection("My Events");
-
                         eventsRef.get().addOnCompleteListener(eventTask -> {
                             if (eventTask.isSuccessful()) {
+                                Log.d("Firestore success", "Fetched events successfully");
                                 for (QueryDocumentSnapshot eventDoc : eventTask.getResult()) {
                                     Event event = eventDoc.toObject(Event.class);
-                                    // checks if the event is in the list of events check boxed
-                                    if (selectedEvents.contains(event)){
-                                        DocumentReference eventRef = eventDoc.getReference();
-                                        eventRef.delete().addOnSuccessListener(aVoid-> {
-                                           Log.d("Event Deletion","Event deleted successfully");
+                                    String documentId = eventDoc.getId();
+                                    Log.d("Selected Events", "Selected Events: " + selectedEvents.toString());
+                                    Log.d("Current Event", "Current Event: " + event.toString());
+                                    if (selectedEvents.contains(event)) {
+                                        // Use the document ID to delete the event
+                                        DocumentReference eventRef = eventsRef.document(documentId);
+
+                                        eventRef.delete().addOnSuccessListener(aVoid -> {
+                                            Log.d("Event Deletion", "Event deleted successfully with ID: " + documentId);
                                         }).addOnFailureListener(e -> {
-                                            Log.e("Event Deletion", "Error deleting event");
+                                            Log.e("Event Deletion", "Error deleting event: " + e.getMessage());
                                         });
 
-                                        // locally removes the event
+                                        // Optionally remove the event from your local list
                                         eventList.remove(event);
                                     }
                                 }
+                            } else {
+                                Log.e("Firestore Error", "Error fetching events for facility: ", eventTask.getException());
                             }
+                        }).addOnFailureListener(e -> {
+                            Log.e("Firestore Failure", "Failed to fetch events", e);
                         });
-                    }} else {
-                    Log.e("JoinEventScreen", "Error getting documents: ", task.getException());
+                    }
+                } else {
+                    Log.e("Firestore Error", "Error fetching facilities: ", task.getException());
                 }
+            }).addOnFailureListener(e -> {
+                Log.e("Firestore Failure", "Failed to fetch facilities", e);
             });
+
+            // Move notifyDataSetChanged() inside the success block to ensure it only runs after events are deleted
             notifyDataSetChanged();
+        } else {
+            Log.d("Firestore Debug", "No selected events to delete");
         }
     }
 

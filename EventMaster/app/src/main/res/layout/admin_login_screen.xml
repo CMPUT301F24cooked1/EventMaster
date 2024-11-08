@@ -27,6 +27,7 @@
         android:background="@drawable/edittext_border"
         android:gravity="center"
         android:inputType="number"
+        android:textColor="@color/black"
         android:maxLength="6"
         android:hint="Enter a 6 digit numerical code"
         app:layout_constraintEnd_toEndOf="parent"

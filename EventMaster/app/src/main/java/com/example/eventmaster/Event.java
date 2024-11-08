@@ -158,4 +158,22 @@ public class Event implements Serializable {
         this.geolocation = geolocation;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Event event = (Event) o;
+        return deviceID != null && deviceID.equals(event.deviceID);
+    }
+
+    @Override
+    public int hashCode() {
+        return deviceID!= null ? deviceID.hashCode() : 0;
+    }
+    @Override
+    public String toString() {
+        return "Event{id='" + deviceID + "', name='" + eventName + "'}";
+    }
 }
+
+
