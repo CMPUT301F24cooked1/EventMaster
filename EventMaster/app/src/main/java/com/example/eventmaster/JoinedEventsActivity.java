@@ -3,7 +3,9 @@ package com.example.eventmaster;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -33,6 +35,16 @@ public class JoinedEventsActivity extends AppCompatActivity {
     private String deviceId; // Replace with actual device ID
     private FirebaseFirestore db; // Firestore instance
     private ActivityResultLauncher<Intent> waitlistedEventsActivityResultLauncher;
+    private Profile user;
+    private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
+    private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
+    private ActivityResultLauncher<Intent> settingsResultLauncher;
+    private ActivityResultLauncher<Intent> MainActivityResultLauncher;
+
+    private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
+    private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
+    private ActivityResultLauncher<Intent> settingsResultLauncher;
+    private ActivityResultLauncher<Intent> homeActivityResultLauncher;
 
     //  private ActivityResultLauncher<Intent> QRScanScreenResultLauncher;
     @Override
@@ -40,7 +52,8 @@ public class JoinedEventsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.joined_events_screen);
         ModeActivity.applyTheme(this);
-        Profile user = (Profile) getIntent().getSerializableExtra("User"); // user from MainActivity
+        user = (Profile) getIntent().getSerializableExtra("User"); // user from MainActivity
+        ImageButton backButton = findViewById(R.id.back_button);
 
 
 
@@ -76,6 +89,62 @@ public class JoinedEventsActivity extends AppCompatActivity {
                 intent.putExtra("User", user);
                 waitlistedEventsActivityResultLauncher.launch(intent);
             }
+        });
+
+        // Initialize navigation buttons
+        ImageButton notificationButton = findViewById(R.id.notifications);
+        ImageButton settingsButton = findViewById(R.id.settings);
+        ImageButton profileButton = findViewById(R.id.profile);
+        ImageButton homeButton = findViewById(R.id.home_icon);
+        ImageButton backButton = findViewById(R.id.back_button); // Initialize back button
+
+        // Set result launchers to set up navigation buttons on the bottom of the screen
+        settingsResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {});
+
+        homeActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {});
+
+        notificationActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {});
+
+        ProfileActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {});
+
+        // Set click listeners for navigation buttons on the bottom of the screen
+        // sends you to profile screen
+        profileButton.setOnClickListener(v -> {
+            Intent newIntent = new Intent(JoinedEventsActivity.this, ProfileActivity.class);
+            newIntent.putExtra("User", user);
+            ProfileActivityResultLauncher.launch(newIntent);
+        });
+
+        // sends you to settings screen
+        settingsButton.setOnClickListener(v -> {
+            Intent newIntent = new Intent(JoinedEventsActivity.this, SettingsScreen.class);
+            newIntent.putExtra("User", user);
+            settingsResultLauncher.launch(newIntent);
+        });
+
+        // sends you to a list of invited events that you accepted
+        homeButton.setOnClickListener(v -> {
+            Intent newIntent = new Intent(JoinedEventsActivity.this, MainActivity.class);
+            newIntent.putExtra("User", user);
+            homeActivityResultLauncher.launch(newIntent);
+        });
+        notificationButton.setOnClickListener(v -> {
+            Intent newIntent = new Intent(JoinedEventsActivity.this, Notifications.class);
+            newIntent.putExtra("User", user);
+            notificationActivityResultLauncher.launch(newIntent);
+        });
+
+        // Set click listener for the back button
+        backButton.setOnClickListener(v -> {
+            finish(); // Close the current activity and return to the previous one
         });
     }
 

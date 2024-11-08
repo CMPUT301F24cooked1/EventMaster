@@ -43,6 +43,12 @@ public class WaitlistedEventsActivity extends AppCompatActivity {
     private FirebaseFirestore firestore;
     private String entrantId; // Replace with actual device ID
     private FirebaseFirestore db; // Firestore instance
+    private Profile user;
+
+    private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
+    private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
+    private ActivityResultLauncher<Intent> settingsResultLauncher;
+    private ActivityResultLauncher<Intent> homeActivityResultLauncher;
 
     private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
     private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
@@ -71,10 +77,12 @@ public class WaitlistedEventsActivity extends AppCompatActivity {
         eventList = new ArrayList<>();
 
         WaitlistedEventsAdapter = new WaitlistedEventsAdapter(eventList, this);
+        WaitlistedEventsAdapter.notifyDataSetChanged();
         recyclerView.setAdapter(WaitlistedEventsAdapter);
 
         // Retrieve events from Firestore
         retrieveWaitlistedEvents(entrantId);
+
 
         // Initialize navigation buttons
         ImageButton notificationButton = findViewById(R.id.notifications);
@@ -136,6 +144,8 @@ public class WaitlistedEventsActivity extends AppCompatActivity {
 
                 });
 
+                
+
         // Set click listeners for navigation buttons on the bottom of the screen
         // sends you to profile screen
         profileButton.setOnClickListener(v -> {
@@ -162,6 +172,7 @@ public class WaitlistedEventsActivity extends AppCompatActivity {
             newIntent.putExtra("User", user);
             notificationActivityResultLauncher.launch(newIntent);
         });
+
 
         backButton.setOnClickListener(v -> {
             Intent resultIntent = new Intent();

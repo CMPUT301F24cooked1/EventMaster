@@ -35,6 +35,7 @@
         app:layout_constraintTop_toBottomOf="@+id/event_poster"
         app:layout_constraintVertical_bias="0.343" />
 
+
     <TextView
         android:id="@+id/event_decription"
         android:layout_width="wrap_content"
@@ -61,6 +62,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.47"
         app:layout_constraintStart_toStartOf="parent" />
+
 
     <TextView
         android:id="@+id/geolocation"
@@ -156,6 +158,29 @@
         android:scaleType="centerInside"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="25dp"
+        tools:layout_editor_absoluteY="437dp">
+
+        <TextView
+            android:id="@+id/event_decription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="416dp"
+            android:text="Event Description"
+            android:textColor="@color/grey"
+            android:textSize="24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.511"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

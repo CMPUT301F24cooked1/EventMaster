@@ -16,6 +16,8 @@ import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
@@ -47,11 +49,17 @@ public class CreateEventActivity extends AppCompatActivity {
     private AppCompatButton createEventButton;
     private TextView uploadPosterButton;
     private Switch geolocationSwitch;
-    private Profile user;
+    private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
+    private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
+    private ActivityResultLauncher<Intent> settingsResultLauncher;
+    private ActivityResultLauncher<Intent> MainActivityResultLauncher;
+
+
     private Uri posterUri; // To hold the URI of the selected poster
     private String posterDownloadUrl = null; // To hold the download URL of the uploaded poster
 
     private static final int PICK_IMAGE_REQUEST = 1; // Request code for image selection
+    private Profile user;
 
     @SuppressLint("WrongViewCast")
     @Override
@@ -78,7 +86,6 @@ public class CreateEventActivity extends AppCompatActivity {
         createEventButton = findViewById(R.id.createEventButton);
         uploadPosterButton = findViewById(R.id.Upload_poster_button);
 
-
         // Initialize navigation buttons
         ImageButton notificationButton = findViewById(R.id.notification);
         ImageButton settingsButton = findViewById(R.id.settings);
@@ -89,31 +96,89 @@ public class CreateEventActivity extends AppCompatActivity {
         geolocationSwitch = findViewById(R.id.geolocation_switch);
         // Set click listeners for navigation
         notificationButton.setOnClickListener(v -> {
-            Intent intent = new Intent(CreateEventActivity.this, Notifications.class);
-            startActivity(intent);
+            Intent newIntent = new Intent(CreateEventActivity.this, Notifications.class);
+            newIntent.putExtra("User", user);
+            notificationActivityResultLauncher.launch(newIntent);
         });
 
         settingsButton.setOnClickListener(v -> {
-            Intent intent = new Intent(CreateEventActivity.this, SettingsScreen.class);
-            startActivity(intent);
+            Intent newIntent = new Intent(CreateEventActivity.this, SettingsScreen.class);
+            newIntent.putExtra("User", user);
+            settingsResultLauncher.launch(newIntent);
         });
 
         profileButton.setOnClickListener(v -> {
-                Intent intent = new Intent(CreateEventActivity.this, ProfileActivity.class);
-                intent.putExtra("User", user);
-                startActivity(intent);
+            Intent newIntent = new Intent(CreateEventActivity.this, ProfileActivity.class);
+            newIntent.putExtra("User", user);
+            ProfileActivityResultLauncher.launch(newIntent);
 
         });
 
         viewEventsButton.setOnClickListener(v -> {
             Intent intent = new Intent(CreateEventActivity.this, ViewCreatedEventsActivity.class);
+            intent.putExtra("User", user);
             startActivity(intent);
         });
 
         // Set click listener for the back button
         backButton.setOnClickListener(v -> {
-            finish(); // Close the current activity and return to the previous one
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("User", user);
+            setResult(RESULT_OK, resultIntent);
+            finish();
         });
+
+        settingsResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+
+                });
+
+        MainActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+
+                });
+
+        notificationActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+
+                });
+
+        ProfileActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+
+                });
 
         // Set up the upload poster button
         uploadPosterButton.setOnClickListener(v -> openFileChooser()); // Open the image chooser

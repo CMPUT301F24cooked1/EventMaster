@@ -124,6 +124,7 @@ public class QRScanFragment extends AppCompatActivity{
         ProfileActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
+
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                         Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
                         if (updatedUser != null) {
@@ -131,6 +132,7 @@ public class QRScanFragment extends AppCompatActivity{
                             Log.d("MainActivity", "User profile updated: " + user.getName());
                         }
                     }
+
 
                 });
 

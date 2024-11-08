@@ -27,6 +27,7 @@ public class SettingsScreen extends AppCompatActivity {
 
     private Switch notificationSwitch;
     private ImageButton backButton;
+    private Profile user;
     private ActivityResultLauncher<Intent> settingResultLauncher;
     private ActivityResultLauncher<Intent> profileResultLauncher;
     private View adminPrivilegesButton;
@@ -34,6 +35,7 @@ public class SettingsScreen extends AppCompatActivity {
     private ActivityResultLauncher<Intent> appInfoResultLauncher;
     private View appInfoButton;
     private Switch modeSwitch;
+    private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
 
     private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
     private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
@@ -192,6 +194,17 @@ public class SettingsScreen extends AppCompatActivity {
             setResult(RESULT_OK, resultIntent);
             finish();
         });
+
+        ProfileActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),result ->{
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+                });
 
 
         //Links the Settings Screen to the Admin Login screen
