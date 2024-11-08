@@ -17,6 +17,9 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+/**
+ * Gives the user EditText views to edit their personal Facility.
+ */
 public class EditFacilityScreen extends AppCompatActivity {
 
     private EditText editFacilityName;
@@ -35,7 +38,6 @@ public class EditFacilityScreen extends AppCompatActivity {
     private Profile user;
 
     /**
-     * Gives the user EditText views to edit their personal Facility.
      * @param savedInstanceState If the activity is restarted this Bundle contains the data it most recently supplied.
      */
     @Override
