@@ -29,6 +29,10 @@ import com.google.firebase.firestore.SetOptions;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Displays the name, address and description for the user's facility
+ * Allows navigation to creation of an event, viewing events, and editing facility
+ */
 public class FacilityScreen extends AppCompatActivity {
 
     private String deviceId;
@@ -56,8 +60,6 @@ public class FacilityScreen extends AppCompatActivity {
     private ActivityResultLauncher<Intent> MainActivityResultLauncher;
 
     /**
-     * Displays the name, address and description for the user's facility
-     * Allows navigation to creation of an event, viewing events, and editing facility
      * @param savedInstanceState If the activity is restarted this Bundle contains the data it most recently supplied.
      */
     @Override

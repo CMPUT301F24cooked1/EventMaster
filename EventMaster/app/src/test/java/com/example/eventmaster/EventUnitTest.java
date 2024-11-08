@@ -6,6 +6,9 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Date;
 
+/**
+ * Runs unit tests for the Event Class.
+ */
 public class EventUnitTest {
     /**
      * Tests the getter for the Event name.
