@@ -22,6 +22,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ *  Adapter class for displaying the list of events in a RecyclerView
+ *  Each item in the list corresponds to a specific event with its details
+ */
 public class ViewEventsAdapter extends RecyclerView.Adapter<ViewEventsAdapter.EventViewHolder> {
     /**
      * Initializes the event adapter

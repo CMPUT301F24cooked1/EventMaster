@@ -19,6 +19,9 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+/**
+ * Tests the AdminActivityTest class
+ */
 public class AdminActivityTest {
 
     @Rule

@@ -21,6 +21,10 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *  Adapter class for displaying the list of profiles in a RecyclerView
+ *  Each item in the list corresponds to a profile with its profile details
+ */
 public class ViewProfilesAdapter extends RecyclerView.Adapter<ViewProfilesAdapter.ProfileViewHolder>{
     /**
      * Initializes the event adapter

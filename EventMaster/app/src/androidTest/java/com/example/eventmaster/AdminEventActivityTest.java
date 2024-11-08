@@ -18,6 +18,9 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+/**
+ * Runs tests on AdminEventActivity class
+ */
 public class AdminEventActivityTest {
 
     @Rule

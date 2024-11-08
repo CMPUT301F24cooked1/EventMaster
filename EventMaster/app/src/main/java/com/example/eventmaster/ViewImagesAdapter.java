@@ -23,6 +23,10 @@ import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *  Adapter class for displaying the list of images in a RecyclerView
+ *  Each item in the list corresponds to an image
+ */
 public class ViewImagesAdapter extends RecyclerView.Adapter<ViewImagesAdapter.ImageViewHolder>{
     /**
      * Initializes the event adapter

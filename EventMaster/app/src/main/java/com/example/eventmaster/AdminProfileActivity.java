@@ -23,6 +23,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Displays all of the profiles that have been created
+ */
 public class AdminProfileActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ViewProfilesAdapter viewProfilesAdapter;
