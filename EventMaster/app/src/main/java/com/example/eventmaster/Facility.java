@@ -2,6 +2,12 @@ package com.example.eventmaster;
 
 import java.io.Serializable;
 
+/**
+ * The Facility class represents a single event on the app. It contains all of the information needed for a user's facility.
+ *
+ * <p>The class implements Serializable to allow event data to be passed between activities</p>
+ *
+ */
 public class Facility implements Serializable {
     private String deviceID;
     private String facilityName;

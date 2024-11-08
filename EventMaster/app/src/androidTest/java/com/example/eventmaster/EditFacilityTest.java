@@ -19,6 +19,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+/**
+ * Runs UI tests on the EditFacilityScreen
+ */
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class EditFacilityTest {
