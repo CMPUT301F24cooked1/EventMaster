@@ -183,6 +183,7 @@ public class FacilityScreen extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(FacilityScreen.this, CreateEventActivity.class);
+                intent.putExtra("User", user);
                 startActivity(intent);
             }
         });

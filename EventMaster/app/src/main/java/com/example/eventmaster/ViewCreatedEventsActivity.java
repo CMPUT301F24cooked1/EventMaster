@@ -23,6 +23,7 @@ public class ViewCreatedEventsActivity extends AppCompatActivity {
     private List<Event> eventList;
     private FirebaseFirestore firestore;
     private String deviceId; // Replace with actual device ID
+    private Profile user;
 
     @Override
     protected void onResume() {
@@ -34,17 +35,17 @@ public class ViewCreatedEventsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         ModeActivity.applyTheme(this);
         setContentView(R.layout.activity_view_created_events);
-
+        Intent intentMain = getIntent();
+        user =  (Profile) intentMain.getSerializableExtra("User");
         // Initialize Firebase Firestore
         firestore = FirebaseFirestore.getInstance();
         deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-        Profile user = new Profile(deviceId,"Vansh", " ", " ");
 
         // Set up RecyclerView
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         eventList = new ArrayList<>();
-        eventAdapter = new EventAdapter(eventList, this);
+        eventAdapter = new EventAdapter(eventList, this, user);
         recyclerView.setAdapter(eventAdapter);
 
         // Retrieve events from Firestore
@@ -81,6 +82,7 @@ public class ViewCreatedEventsActivity extends AppCompatActivity {
         });
         addButton.setOnClickListener(v -> {
             Intent intent = new Intent(ViewCreatedEventsActivity.this, CreateEventActivity.class);
+            intent.putExtra("User", user);
             startActivity(intent);
         });
         // Set click listener for the back button
