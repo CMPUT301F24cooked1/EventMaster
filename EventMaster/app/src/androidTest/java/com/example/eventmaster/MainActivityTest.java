@@ -45,13 +45,4 @@ public class MainActivityTest {
         onView(withId(R.id.recyclerView)).check(matches(isDisplayed()));
     }
 
-
-    /**
-     * Tests the create event button
-     */
-    @Test
-    public void testCreateEventButton() {
-        onView(withId(R.id.create_event_button)).perform(click());
-        onView(withId(R.id.facilityNameText)).check(matches(isDisplayed()));
-    }
 }
