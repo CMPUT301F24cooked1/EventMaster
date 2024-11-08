@@ -13,13 +13,15 @@
         android:id="@+id/my_profile_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="52dp"
         android:text="@string/profile_screen"
         android:textSize="40dp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.029" />
 
     <ImageView
         android:id="@+id/profile_picture"
@@ -27,22 +29,22 @@
         android:layout_height="190dp"
         android:contentDescription="Profile picture"
         android:src="@drawable/profile_picture"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/profile_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/my_profile_text"
         app:layout_constraintVertical_bias="0.172" />
 
     <TextView
         android:id="@+id/profile_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="508dp"
+        android:layout_marginBottom="52dp"
         android:text="My Name"
         android:textColor="@color/grey"
         android:textSize="25dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/profile_email"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -50,11 +52,11 @@
         android:id="@+id/profile_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="416dp"
+        android:layout_marginBottom="52dp"
         android:text="My Email"
         android:textColor="@color/grey"
         android:textSize="25dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/profile_phone_number"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent" />
@@ -63,7 +65,7 @@
         android:id="@+id/profile_phone_number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="324dp"
+        android:layout_marginBottom="364dp"
         android:text="Phone Number"
         android:textColor="@color/grey"
         android:textSize="25dp"
@@ -86,7 +88,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/profile_phone_number"
+        app:layout_constraintVertical_bias="0.76" />
 
     <ImageButton
         android:id="@+id/back"

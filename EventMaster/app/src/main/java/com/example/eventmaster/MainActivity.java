@@ -121,6 +121,11 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 }
+//                new ActivityResultContracts.StartActivityForResult(),result ->{
+//                    if (result.getResultCode() == RESULT_OK){
+//
+//                    }
+//                }
         );
 
         // Connecting home screen to list of joined events screen
