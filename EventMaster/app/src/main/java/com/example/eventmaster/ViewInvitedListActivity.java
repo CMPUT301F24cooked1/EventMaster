@@ -1,8 +1,10 @@
 package com.example.eventmaster;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
+import android.widget.ImageButton;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,6 +28,7 @@ public class ViewInvitedListActivity extends AppCompatActivity {
     private String deviceId; // Replace with actual device ID
     private String eventName; // Define event name or ID
     private List<WaitlistUsersAdapter.User> invitedUsers;
+    private Profile user;
 
     /**
      * Displays the list of users who have been invited to come to an Event.
@@ -38,7 +41,9 @@ public class ViewInvitedListActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_view_invited_list);
 
-        eventName = getIntent().getStringExtra("myEventName");
+        Intent intentMain = getIntent();
+        eventName = intentMain.getStringExtra("myEventName");
+        user = (Profile) intentMain.getSerializableExtra("User");
 
         invitedUsers = new ArrayList<>();
 
@@ -55,14 +60,39 @@ public class ViewInvitedListActivity extends AppCompatActivity {
         // Fetch the waitlist from Firebase
         fetchInvitedList();
 
-        /*
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
+        // Initialize navigation buttons
+        ImageButton notificationButton = findViewById(R.id.notifications);
+        ImageButton settingsButton = findViewById(R.id.settings);
+        ImageButton profileButton = findViewById(R.id.profile);
+        ImageButton homeButton = findViewById(R.id.home_icon);
+        ImageButton backButton = findViewById(R.id.back_button); // Initialize back button
+        deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        // Set click listeners for navigation
+        notificationButton.setOnClickListener(v -> {
+            Intent intent = new Intent(ViewInvitedListActivity.this, Notifications.class);
+            startActivity(intent);
         });
 
-         */
+        settingsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(ViewInvitedListActivity.this, SettingsScreen.class);
+            startActivity(intent);
+        });
+
+        profileButton.setOnClickListener(v -> {
+            Intent intent = new Intent(ViewInvitedListActivity.this, ProfileActivity.class);
+            intent.putExtra("User", user);
+            startActivity(intent);
+        });
+
+        homeButton.setOnClickListener(v -> {
+            Intent intent = new Intent(ViewInvitedListActivity.this, MainActivity.class);
+            startActivity(intent);
+        });
+        // Set click listener for the back button
+        backButton.setOnClickListener(v -> {
+            finish(); // Close the current activity and return to the previous one
+        });
     }
 
     /**
