@@ -151,6 +151,13 @@ public class UnjoinWaitlistScreen extends AppCompatActivity {
         });
 
         // sends you to settings screen
+        profileButton.setOnClickListener(v -> {
+            Intent newIntent = new Intent(UnjoinWaitlistScreen.this, ProfileActivity.class);
+            newIntent.putExtra("User", user);
+            ProfileActivityResultLauncher.launch(newIntent);
+        });
+
+        // sends you to settings screen
         settingsButton.setOnClickListener(v -> {
             Intent newIntent = new Intent(UnjoinWaitlistScreen.this, SettingsScreen.class);
             newIntent.putExtra("User", user);

@@ -30,12 +30,14 @@ public class WaitlistedEventsAdapter extends RecyclerView.Adapter<WaitlistedEven
     private String deviceID;
     private FirebaseFirestore db;
     private String hashData;
+    private Profile user;
 
 
 
-    public WaitlistedEventsAdapter(List<Event> eventList, Context context) {
+    public WaitlistedEventsAdapter(List<Event> eventList, Context context, Profile user) {
         this.eventList = eventList;
         this.context = context;
+        this.user = user;
     }
 
     @NonNull
@@ -91,6 +93,7 @@ public class WaitlistedEventsAdapter extends RecyclerView.Adapter<WaitlistedEven
                         intent.putExtra("event", event.getEventName());
                         intent.putExtra("deviceID", event.getDeviceID());
                         intent.putExtra("hashed_data", getHashData());
+                        intent.putExtra("User", user);
                         Log.d("Waitlistedeventsadapter", "Event hash data " + getHashData());
                         //Toast.makeText(context, "facility id: "+ deviceID, Toast.LENGTH_SHORT).show();
                         context.startActivity(intent);
