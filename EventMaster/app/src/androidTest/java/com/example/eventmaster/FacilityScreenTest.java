@@ -85,7 +85,7 @@ public class FacilityScreenTest {
         intended(hasComponent(EditFacilityScreen.class.getName()));
 
         //Edit Facility name and press finish button.
-        onView(withId(R.id.edit_facility_name)).perform(typeText(" 51 Characters: ////////////////"), closeSoftKeyboard());
+        onView(withId(R.id.edit_facility_name)).perform(typeText(" 51 Characters: ////////////////////"), closeSoftKeyboard());
         onView(withId(R.id.finish_edit_facility_button)).perform(click());
 
         //Check if views in previous activity exist to see if the action was cancelled correctly
