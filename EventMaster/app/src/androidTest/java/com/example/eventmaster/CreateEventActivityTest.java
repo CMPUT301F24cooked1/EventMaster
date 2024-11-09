@@ -148,6 +148,7 @@ public class CreateEventActivityTest {
                 });
 
         latch.await();  // Wait for the entire process to complete
+
         return exists.get();
     }
 }
