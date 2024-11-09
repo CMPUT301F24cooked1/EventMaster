@@ -19,6 +19,7 @@ import androidx.test.filters.LargeTest;
 
 import com.example.eventmaster.CreateEventActivity;
 import com.example.eventmaster.ToastMatcher;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -30,6 +31,12 @@ import org.junit.runner.RunWith;
 
 import androidx.test.espresso.intent.Intents;  // Import Intents
 import androidx.test.espresso.action.ViewActions; // Import for pressBack()
+
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @RunWith(AndroidJUnit4.class)
 @LargeTest
@@ -70,8 +77,8 @@ public class CreateEventActivityTest {
      * Test to verify that entering valid data and clicking the create event button creates the event and shows success Toast
      */
     @Test
-    public void testCreateEventWithValidData() {
-        String eventName = "Sample Event12";
+    public void testCreateEventWithValidData() throws InterruptedException {
+        String eventName = "Sample Event121";
 
         // Query the database to check if the event name already exists.
         boolean eventExists = checkIfEventExists(eventName);
@@ -97,32 +104,50 @@ public class CreateEventActivityTest {
                 .check(matches(isDisplayed()));
     }
 
-    private boolean checkIfEventExists(String eventName) {
-        boolean[] exists = new boolean[1];  // Use an array to modify value in async callback
-        String deviceId = Settings.Secure.getString(ApplicationProvider.getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-
-        // Get the Firestore instance and query the correct path
+    private boolean checkIfEventExists(String eventName) throws InterruptedException {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+        AtomicBoolean exists = new AtomicBoolean(false);
+
+        // Initialize a CountDownLatch for the main query completion
+        CountDownLatch latch = new CountDownLatch(1);
+
+        // Query all documents in the "facilities" collection
         db.collection("facilities")
-                .document(deviceId)  // Target the specific facility document
-                .collection("My Events")       // Query under the "My Events" collection
-                .whereEqualTo("eventName", eventName)  // Check if eventName exists
                 .get()
                 .addOnCompleteListener(task -> {
-                    if (task.isSuccessful() && !task.getResult().isEmpty()) {
-                        exists[0] = true;  // Event exists, set to true
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        // Get the list of facility documents
+                        QuerySnapshot facilityDocs = task.getResult();
+
+                        // Track how many sub-queries are complete
+                        AtomicInteger completedFacilityChecks = new AtomicInteger(0);
+
+                        for (DocumentSnapshot facilityDoc : facilityDocs) {
+                            // Query each facility's "My Events" subcollection
+                            facilityDoc.getReference().collection("My Events")
+                                    .whereEqualTo("eventName", eventName)
+                                    .get()
+                                    .addOnCompleteListener(eventTask -> {
+                                        if (eventTask.isSuccessful() && !eventTask.getResult().isEmpty()) {
+                                            exists.set(true);  // Event exists, set flag
+                                            latch.countDown(); // Release the latch immediately
+                                        }
+
+                                        // Increment the count of completed checks
+                                        if (completedFacilityChecks.incrementAndGet() == facilityDocs.size()) {
+                                            // Only count down if all sub-queries are done and no event was found
+                                            if (!exists.get()) {
+                                                latch.countDown();
+                                            }
+                                        }
+                                    });
+                        }
                     } else {
-                        exists[0] = false;  // Event does not exist, set to false
+                        latch.countDown(); // If main query fails, release the latch
                     }
                 });
 
-        // Wait for async completion
-        try {
-            Thread.sleep(2000); // You can use CountDownLatch or other synchronization here
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        return exists[0];
+        latch.await();  // Wait for the entire process to complete
+        return exists.get();
     }
 }
