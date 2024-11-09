@@ -130,7 +130,7 @@ public class CreateEventActivityTest {
                                     .addOnCompleteListener(eventTask -> {
                                         if (eventTask.isSuccessful() && !eventTask.getResult().isEmpty()) {
                                             exists.set(true);  // Event exists, set flag
-                                            latch.countDown(); // Release the latch immediately
+                                            latch.countDown(); // Release the latch
                                         }
 
                                         // Increment the count of completed checks
