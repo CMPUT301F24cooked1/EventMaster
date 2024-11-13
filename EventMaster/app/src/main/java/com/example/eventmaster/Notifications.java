@@ -25,4 +25,8 @@ public class Notifications extends AppCompatActivity {
         // Connect the layout with the Java class
         setContentView(R.layout.notifications_screen); // Make sure the layout file is named correctly
     }
+
+    // check if user is invited in the firebase
+
+    // if user
 }
