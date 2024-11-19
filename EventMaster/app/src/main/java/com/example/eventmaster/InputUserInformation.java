@@ -88,6 +88,19 @@ public class InputUserInformation extends AppCompatActivity {
             String name = name_edit.getText().toString();
             String email = email_edit.getText().toString();
             String phone_number = phone_number_edit.getText().toString();
+
+            //ensures the name is not empty
+            if (name.isEmpty()) {
+                Toast.makeText(InputUserInformation.this, "Name cannot be empty", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            //ensures the email is not empty
+            if (email.isEmpty()) {
+                Toast.makeText(InputUserInformation.this, "Email cannot be empty", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             user.setName(name);
             user.setEmail(email);
             try {
