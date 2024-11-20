@@ -195,17 +195,27 @@ public class InputUserInformation extends AppCompatActivity {
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
         byte[] data = baos.toByteArray();
 
-        // Create a reference to the Firebase Storage location
+        // Create references for both file names
         StorageReference profilePicRef = storage.getReference().child("profile_pictures/" + user.getDeviceId() + "_profile_picture.png");
+        StorageReference uploadedPicRef = storage.getReference().child("profile_pictures/" + user.getDeviceId() + "_uploaded_profile_picture.png");
 
-        // Upload the image to Firebase Storage
-        UploadTask uploadTask = profilePicRef.putBytes(data);
-        uploadTask.addOnSuccessListener(taskSnapshot -> {
+        // Upload the image to the profile pic file name
+        UploadTask uploadTaskDefault = profilePicRef.putBytes(data);
+        uploadTaskDefault.addOnSuccessListener(taskSnapshot -> {
             profilePicRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                String downloadUrl = uri.toString();
-                saveProfilePictureUrlToFirestore(downloadUrl);
-            }).addOnFailureListener(e -> Log.e("FirebaseStorage", "Failed to get download URL", e));
-        }).addOnFailureListener(e -> Log.e("FirebaseStorage", "Failed to upload image", e));
+                String defaultDownloadUrl = uri.toString();
+                saveProfilePictureUrlToFirestore(FIREBASE_PROFILE_PIC_KEY, defaultDownloadUrl);
+            }).addOnFailureListener(e -> Log.e("FirebaseStorage", "Failed to get default download URL", e));
+        }).addOnFailureListener(e -> Log.e("FirebaseStorage", "Failed to upload default image", e));
+
+        // Upload the image to the uploaded pfp file name
+        UploadTask uploadTaskAdditional = uploadedPicRef.putBytes(data);
+        uploadTaskAdditional.addOnSuccessListener(taskSnapshot -> {
+            uploadedPicRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                String uploadedDownloadUrl = uri.toString();
+                saveProfilePictureUrlToFirestore("uploadedProfilePictureUrl", uploadedDownloadUrl);
+            }).addOnFailureListener(e -> Log.e("FirebaseStorage", "Failed to get uploaded download URL", e));
+        }).addOnFailureListener(e -> Log.e("FirebaseStorage", "Failed to upload additional image", e));
     }
 
     /**
@@ -213,11 +223,11 @@ public class InputUserInformation extends AppCompatActivity {
      *
      * @param downloadUrl The download URL of the profile picture.
      */
-    private void saveProfilePictureUrlToFirestore(String downloadUrl) {
+    private void saveProfilePictureUrlToFirestore(String key, String downloadUrl) {
         db.collection("profiles").document(user.getDeviceId())
-                .update(FIREBASE_PROFILE_PIC_KEY, downloadUrl)
-                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Profile picture URL saved successfully."))
-                .addOnFailureListener(e -> Log.e("Firestore", "Error saving profile picture URL", e));
+                .update(key, downloadUrl)
+                .addOnSuccessListener(aVoid -> Log.d("Firestore", key + " saved successfully."))
+                .addOnFailureListener(e -> Log.e("Firestore", "Error saving " + key, e));
     }
 
     /**
