@@ -197,7 +197,7 @@ public class InputUserInformation extends AppCompatActivity {
 
         // Create references for both file names
         StorageReference profilePicRef = storage.getReference().child("profile_pictures/" + user.getDeviceId() + "_profile_picture.png");
-        StorageReference uploadedPicRef = storage.getReference().child("profile_pictures/" + user.getDeviceId() + "_uploaded_profile_picture.png");
+        StorageReference uploadedPicRef = storage.getReference().child("uploaded_profile_pictures/" + user.getDeviceId() + "_profile_picture.png");
 
         // Upload the image to the profile pic file name
         UploadTask uploadTaskDefault = profilePicRef.putBytes(data);
@@ -213,7 +213,7 @@ public class InputUserInformation extends AppCompatActivity {
         uploadTaskAdditional.addOnSuccessListener(taskSnapshot -> {
             uploadedPicRef.getDownloadUrl().addOnSuccessListener(uri -> {
                 String uploadedDownloadUrl = uri.toString();
-                saveProfilePictureUrlToFirestore("uploadedProfilePictureUrl", uploadedDownloadUrl);
+                saveProfilePictureUrlToFirestore("profilePictureUrl", uploadedDownloadUrl);
             }).addOnFailureListener(e -> Log.e("FirebaseStorage", "Failed to get uploaded download URL", e));
         }).addOnFailureListener(e -> Log.e("FirebaseStorage", "Failed to upload additional image", e));
     }
@@ -235,13 +235,13 @@ public class InputUserInformation extends AppCompatActivity {
      * It also gets deleted off firestore and firebase.
      */
     private void removeProfilePicture() {
-        // Removes the photo from saved preference
+        // Removes the photo from saved preferences
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.remove("profile_picture_bitmap");
         editor.apply();
 
-        // Get the saved color from shared prefernce to set their auto generated pfp
+        // Get the saved color from shared preferences to set the auto-generated PFP
         int savedColor = sharedPreferences.getInt(PROFILE_COLOR_KEY, -1);
         if (savedColor == -1) {
             savedColor = ProfilePicture.randomColorGenerator();
@@ -250,31 +250,40 @@ public class InputUserInformation extends AppCompatActivity {
         }
 
         // Generate the default profile picture using the saved or generated color
-        if (user.getName().isEmpty()){
+        if (user.getName().isEmpty()) {
             profile_picture.setImageResource(R.drawable.profile_picture);
-        }
-        else{
+        } else {
             Bitmap defaultPicture = Image.generateProfilePicture(user.getName(), 200, savedColor, Color.WHITE);
             profile_picture.setImageBitmap(defaultPicture);
         }
 
-        // Delete the profile picture from Firebase Storage
-        StorageReference profilePicRef = FirebaseStorage.getInstance().getReference()
+        // Define both Firebase Storage references
+        StorageReference profilePicRef = storage.getReference()
                 .child("profile_pictures/" + user.getDeviceId() + "_profile_picture.png");
+        StorageReference uploadedPicRef = storage.getReference()
+                .child("uploaded_profile_pictures/" + user.getDeviceId() + "_profile_picture.png");
+
+        // Delete the profile picture from the `profile_pictures` folder
         profilePicRef.delete().addOnSuccessListener(aVoid -> {
-            Log.d("FirebaseStorage", "Profile picture deleted from Firebase Storage");
-            // Remove the profile picture URL from Firestore
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            Log.d("FirebaseStorage", "Profile picture deleted from Firebase Storage (profile_pictures)");
+
+            // Remove the `profilePictureUrl` from Firestore
             db.collection("profiles").document(user.getDeviceId())
                     .update("profilePictureUrl", null) // Set URL to null to indicate no profile picture
                     .addOnSuccessListener(aVoid1 -> {
                         Log.d("Firestore", "Profile picture URL removed from Firestore");
                     })
                     .addOnFailureListener(e -> Log.e("Firestore", "Error removing profile picture URL", e));
-        }).addOnFailureListener(e -> {
-            Log.e("FirebaseStorage", "Error deleting profile picture from Firebase Storage", e);
-        });
+
+        }).addOnFailureListener(e -> Log.e("FirebaseStorage", "Error deleting profile picture from Firebase Storage (profile_pictures)", e));
+
+        // Delete the profile picture from the `uploaded_profile_pictures` folder
+        uploadedPicRef.delete().addOnSuccessListener(aVoid -> {
+            Log.d("FirebaseStorage", "Profile picture deleted from Firebase Storage (uploaded_profile_pictures)");
+
+        }).addOnFailureListener(e -> Log.e("FirebaseStorage", "Error deleting profile picture from Firebase Storage (uploaded_profile_pictures)", e));
     }
+
 
     /**
      * Makes sure the phone number is valid with only integers
