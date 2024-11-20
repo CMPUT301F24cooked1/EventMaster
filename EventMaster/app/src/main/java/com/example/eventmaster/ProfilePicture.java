@@ -4,8 +4,14 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.util.Log;
 import android.widget.ImageView;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import java.io.ByteArrayOutputStream;
 import java.util.Random;
 
 /**
@@ -66,13 +72,48 @@ public class ProfilePicture {
             color = randomColorGenerator();
             prefs.edit().putInt(PROFILE_COLOR_KEY, color).apply();
         }
-        if (user.getName().isEmpty()){
-            profilePicture.setImageResource(R.drawable.profile_picture);
-        }
-        else{
-            Bitmap pfpBitmap = Image.generateProfilePicture(user.getName(), 180, color, Color.WHITE);
-            profilePicture.setImageBitmap(pfpBitmap);
-        }
 
+        Bitmap pfpBitmap;
+        if (user.getName().isEmpty()) {
+            profilePicture.setImageResource(R.drawable.profile_picture);
+        } else {
+            pfpBitmap = Image.generateProfilePicture(user.getName(), 180, color, Color.WHITE);
+            profilePicture.setImageBitmap(pfpBitmap);
+            // Upload the generated profile picture to Firebase
+            uploadGeneratedProfilePictureToFirebase(user, pfpBitmap);
+        }
     }
+
+    /**
+     * Uploads the generated profile picture to Firebase Storage.
+     *
+     * @param user the user object
+     * @param bitmap the generated profile picture bitmap
+     */
+    private static void uploadGeneratedProfilePictureToFirebase(Profile user, Bitmap bitmap) {
+        // Convert bitmap to byte array
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        byte[] data = baos.toByteArray();
+
+        // Get the Firebase Storage reference for the profile picture
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference profilePicRef = storage.getReference().child("profile_pictures/" + user.getDeviceId() + "_profile_picture.png");
+
+        // Upload the profile picture
+        profilePicRef.putBytes(data)
+                .addOnSuccessListener(taskSnapshot -> {
+                    Log.d("FirebaseStorage", "Generated profile picture uploaded successfully.");
+                    // Optionally, update Firestore with the download URL
+                    profilePicRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                        FirebaseFirestore db = FirebaseFirestore.getInstance();
+                        db.collection("profiles").document(user.getDeviceId())
+                                .update("profilePictureUrl", uri.toString())
+                                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Profile picture URL updated successfully."))
+                                .addOnFailureListener(e -> Log.e("Firestore", "Failed to update profile picture URL", e));
+                    }).addOnFailureListener(e -> Log.e("FirebaseStorage", "Failed to retrieve download URL", e));
+                })
+                .addOnFailureListener(e -> Log.e("FirebaseStorage", "Failed to upload generated profile picture", e));
+    }
+
 }
