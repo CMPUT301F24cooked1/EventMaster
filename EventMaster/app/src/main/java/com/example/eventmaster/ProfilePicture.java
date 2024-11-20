@@ -8,10 +8,12 @@ import android.util.Log;
 import android.widget.ImageView;
 
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Collections;
 import java.util.Random;
 
 /**
@@ -52,6 +54,7 @@ public class ProfilePicture {
         if (encodedImage != null) {
             Bitmap bitmap = Image.decodeBase64ToBitmap(encodedImage);
             profilePicture.setImageBitmap(bitmap);
+
         } else {
             generateProfilePicture(user, profilePicture, context);
         }
@@ -79,8 +82,10 @@ public class ProfilePicture {
         } else {
             pfpBitmap = Image.generateProfilePicture(user.getName(), 180, color, Color.WHITE);
             profilePicture.setImageBitmap(pfpBitmap);
+            Log.e("Firestore", "Gets to uploadedgeneratedpfp");
             // Upload the generated profile picture to Firebase
             uploadGeneratedProfilePictureToFirebase(user, pfpBitmap);
+
         }
     }
 
@@ -90,30 +95,45 @@ public class ProfilePicture {
      * @param user the user object
      * @param bitmap the generated profile picture bitmap
      */
-    private static void uploadGeneratedProfilePictureToFirebase(Profile user, Bitmap bitmap) {
+    public static void uploadGeneratedProfilePictureToFirebase(Profile user, Bitmap bitmap) {
+        // Ensure bitmap is not null
+        if (bitmap == null) {
+            Log.e("FirebaseStorage", "Bitmap is null, cannot upload.");
+            return;
+        }
+
         // Convert bitmap to byte array
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
         byte[] data = baos.toByteArray();
 
-        // Get the Firebase Storage reference for the profile picture
+        Log.d("ProfilePicture", "Data size: " + data.length);
+
+        // Get Firebase Storage reference
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference profilePicRef = storage.getReference().child("profile_pictures/" + user.getDeviceId() + "_profile_picture.png");
 
-        // Upload the profile picture
+        // Upload the file
         profilePicRef.putBytes(data)
                 .addOnSuccessListener(taskSnapshot -> {
-                    Log.d("FirebaseStorage", "Generated profile picture uploaded successfully.");
-                    // Optionally, update Firestore with the download URL
-                    profilePicRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                        FirebaseFirestore db = FirebaseFirestore.getInstance();
-                        db.collection("profiles").document(user.getDeviceId())
-                                .update("profilePictureUrl", uri.toString())
-                                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Profile picture URL updated successfully."))
-                                .addOnFailureListener(e -> Log.e("Firestore", "Failed to update profile picture URL", e));
-                    }).addOnFailureListener(e -> Log.e("FirebaseStorage", "Failed to retrieve download URL", e));
+                    Log.d("FirebaseStorage", "Profile picture uploaded successfully.");
+
+                    // Get download URL
+                    profilePicRef.getDownloadUrl()
+                            .addOnSuccessListener(uri -> {
+                                Log.d("FirebaseStorage", "Download URL: " + uri.toString());
+
+                                // Update Firestore with URL
+                                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                                db.collection("profiles").document(user.getDeviceId())
+                                        .set(Collections.singletonMap("profilePictureUrl", uri.toString()), SetOptions.merge())
+                                        .addOnSuccessListener(aVoid -> Log.d("Firestore", "Profile picture URL updated successfully."))
+                                        .addOnFailureListener(e -> Log.e("Firestore", "Failed to update profile picture URL: " + e.getMessage(), e));
+                            })
+                            .addOnFailureListener(e -> Log.e("FirebaseStorage", "Failed to retrieve download URL: " + e.getMessage(), e));
                 })
-                .addOnFailureListener(e -> Log.e("FirebaseStorage", "Failed to upload generated profile picture", e));
+                .addOnFailureListener(e -> Log.e("FirebaseStorage", "Failed to upload profile picture: " + e.getMessage(), e));
     }
+
 
 }
