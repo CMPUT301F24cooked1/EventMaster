@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -96,6 +97,7 @@ public class OrganizerEventListView extends AppCompatActivity{
 
 
         AppCompatButton waitingListButton = findViewById(R.id.waiting_list_button);
+        AppCompatButton invitedListButton = findViewById(R.id.invited_list_button);
 
         editPosterButton.setOnClickListener(v -> openFileChooser());
 
@@ -188,6 +190,13 @@ public class OrganizerEventListView extends AppCompatActivity{
         waitingListButton.setOnClickListener(v -> {
             Intent intent = new Intent(OrganizerEventListView.this, ViewWaitlistActivity.class);
             intent.putExtra("eventName", eventNameTextView.getText().toString()); // Pass the event name or ID as an extra
+            intent.putExtra("User", user);
+            startActivity(intent);
+        });
+
+        invitedListButton.setOnClickListener(v -> {
+            Intent intent = new Intent(OrganizerEventListView.this, ViewInvitedListActivity.class);
+            intent.putExtra("myEventName", eventNameTextView.getText().toString()); // Pass the event name or ID as an extra
             intent.putExtra("User", user);
             startActivity(intent);
         });
