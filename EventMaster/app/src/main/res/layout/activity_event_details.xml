@@ -25,59 +25,75 @@
 
 
     <ImageButton
-        android:id="@+id/profile"
-        android:layout_width="84dp"
-        android:layout_height="84dp"
-        android:layout_marginStart="60dp"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/profile_picture"
-        android:scaleType="centerInside"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <ImageButton
-        android:id="@+id/settings"
-        android:layout_width="66dp"
-        android:layout_height="64dp"
-        android:layout_marginStart="144dp"
-        android:layout_marginBottom="28dp"
-        android:background="@drawable/settings"
-        android:scaleType="centerInside"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <ImageButton
-        android:id="@+id/back_button"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginBottom="44dp"
-        android:background="@drawable/vector"
-        android:scaleType="centerInside"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <ImageButton
         android:id="@+id/home_icon"
-        android:layout_width="145dp"
-        android:layout_height="145dp"
-        android:layout_marginEnd="83dp"
-        android:layout_marginBottom="-12dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginBottom="8dp"
         android:background="@drawable/home_icon"
+        android:scaleType="centerInside"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/notification_icon"
+        app:layout_constraintHorizontal_bias="0.266"
+        app:layout_constraintStart_toEndOf="@+id/settings" />
+
+    <ImageButton
+        android:id="@+id/notification_icon"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_marginEnd="44dp"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/notification_icon"
         android:scaleType="centerInside"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <ImageButton
-        android:id="@+id/notification_icon"
-        android:layout_width="62dp"
-        android:layout_height="58dp"
-        android:layout_marginStart="304dp"
-        android:layout_marginBottom="30dp"
-        android:background="@drawable/notification_icon"
+        android:id="@+id/settings"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/settings"
         android:scaleType="centerInside"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/profile" />
+
+    <ImageButton
+        android:id="@+id/profile"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:layout_marginStart="64dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/profile_picture"
+        android:scaleType="centerInside"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView9"
+        app:layout_constraintVertical_bias="0.851"
+        tools:ignore="NotSibling" />
+
+    <ImageButton
+        android:id="@+id/back_button"
+        android:layout_width="20dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="44dp"
+        android:background="@drawable/vector"
+        android:scaleType="centerInside"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/profile"
         app:layout_constraintStart_toStartOf="parent" />
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="13dp"
+        android:text="               Profile            Settings          Home       Notifications"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settings" />
+
 
     <FrameLayout
         android:id="@+id/frameLayout2"
