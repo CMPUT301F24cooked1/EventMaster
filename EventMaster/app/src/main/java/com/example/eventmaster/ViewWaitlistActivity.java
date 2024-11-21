@@ -103,7 +103,7 @@ public class ViewWaitlistActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 long waitlistSize = waitlistUsers.size();
-                //Check if there are entrant in the waitlist
+                //Check if there are entrants in the waitlist
                 if (waitlistSize == 0) {
                     Toast.makeText(ViewWaitlistActivity.this, "Waitlist does not have any entrants and thus cannot be sampled.", Toast.LENGTH_SHORT).show();
                     Log.d("WaitlistSize", "Waitlist size is 0, cannot sample.");
@@ -295,7 +295,7 @@ public class ViewWaitlistActivity extends AppCompatActivity {
                 .document(deviceId)
                 .collection("My Events")
                 .document(eventName)
-                .collection("waitlist list")
+                .collection("unsampled list")
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -316,6 +316,7 @@ public class ViewWaitlistActivity extends AppCompatActivity {
 
                         //Start updating all Firestore data.
                         updateInvitedList(shuffledIds, eventName);
+                        updateUnsampledList(shuffledIds, eventName);
                     }
 
                 });
@@ -373,6 +374,38 @@ public class ViewWaitlistActivity extends AppCompatActivity {
                 });
     }
 
+    private void updateUnsampledList(ArrayList<String> shuffledIds, String eventName) {
+
+        firestore.collection("facilities")
+                .whereEqualTo("deviceId", deviceId)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+
+                        for (int i = 0; i < shuffledIds.size(); i++) {
+                            String entrantId = shuffledIds.get(i);
+                            firestore.collection("facilities")
+                                    .document(deviceId)
+                                    .collection("My Events")
+                                    .document(eventName)
+                                    .collection("unsampled list")
+                                    .document(entrantId)
+                                    .delete()
+                                    .addOnSuccessListener(aVoid -> {
+                                        Log.d("Firestore", "Device ID field updated in unsampled list successfully.");
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Log.e("Firestore", "Error updating device ID field in unsampled list", e);
+                                    });
+                            updateUnsampledEvents(entrantId, eventName);
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Firestore", "Error updating device ID field in unsampled list", e);
+                });
+    }
+
     /**
      * Puts a selected event under a given entrant's Invited Events list in Firestore.
      * @param entrantId The given entrant's device ID to mark as invited in Firestore
@@ -394,6 +427,30 @@ public class ViewWaitlistActivity extends AppCompatActivity {
                                 .collection("Invited Events")
                                 .document(eventName)
                                 .set(invitedEntrantData, SetOptions.merge())
+                                .addOnSuccessListener(aVoid -> {
+                                    Log.d("Invited Events", "Device ID field updated in entrant's invited list successfully.");
+                                })
+                                .addOnFailureListener(e -> {
+                                    Log.e("Invited Events", "Error updating device ID field in invited list", e);
+                                });
+                    } else {
+                        Log.e("Invited Events", "Failed to add user to invited events", task.getException());
+                    }
+                });
+    }
+
+    private void updateUnsampledEvents (String entrantId, String eventName) {
+        firestore.collection("entrants")
+                .document(entrantId)
+                .collection("Unsampled Events")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        firestore.collection("entrants")
+                                .document(entrantId)
+                                .collection("Unsampled Events")
+                                .document(eventName)
+                                .delete()
                                 .addOnSuccessListener(aVoid -> {
                                     Log.d("Invited Events", "Device ID field updated in entrant's invited list successfully.");
                                 })

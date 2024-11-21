@@ -5,9 +5,11 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -16,9 +18,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.SetOptions;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Activity for viewing a sampled list of entrants who have been invited to an event.
@@ -31,7 +36,11 @@ public class ViewInvitedListActivity extends AppCompatActivity {
     private String deviceId; // Replace with actual device ID
     private String eventName; // Define event name or ID
     private List<WaitlistUsersAdapter.User> invitedUsers;
+    private List<String> invitedIds;
     private Profile user;
+
+    private AppCompatButton notifyButton;
+    private AppCompatButton rejectedListButton;
 
     /**
      * Displays the list of users who have been invited to come to an Event.
@@ -49,6 +58,7 @@ public class ViewInvitedListActivity extends AppCompatActivity {
         user = (Profile) intentMain.getSerializableExtra("User");
 
         invitedUsers = new ArrayList<>();
+        invitedIds = new ArrayList<>();
 
         invitedRecyclerView = findViewById(R.id.waitlistRecyclerView);
         invitedRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -63,6 +73,9 @@ public class ViewInvitedListActivity extends AppCompatActivity {
         // Fetch the waitlist from Firebase
         fetchInvitedList();
 
+        notifyButton = findViewById(R.id.send_notification_button);
+        rejectedListButton = findViewById(R.id.rejected_list_button);
+
         // Initialize navigation buttons
         ImageButton notificationButton = findViewById(R.id.notifications);
         ImageButton settingsButton = findViewById(R.id.settings);
@@ -70,6 +83,11 @@ public class ViewInvitedListActivity extends AppCompatActivity {
         ImageButton homeButton = findViewById(R.id.home_icon);
         ImageButton backButton = findViewById(R.id.back_button); // Initialize back button
         deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        notifyButton.setOnClickListener(v -> {
+            String notifyDate = String.valueOf(System.currentTimeMillis());
+            setNotifiedInFirestore(eventName, notifyDate);
+        });
 
         // Set click listeners for navigation
         notificationButton.setOnClickListener(v -> {
@@ -143,5 +161,40 @@ public class ViewInvitedListActivity extends AppCompatActivity {
                     }
                 })
                 .addOnFailureListener(e -> Log.e("WaitlistActivity", "Error fetching user data", e));
+    }
+
+    private void setNotifiedInFirestore(String eventName, String notifyDate) {
+        for (int i = 0; i < invitedIds.size(); i++) {
+            Map<String, Object> notificationData = new HashMap<>();
+            notificationData.put("notifyDate", notifyDate);
+
+            String entrantId = invitedIds.get(i);
+            firestore.collection("entrants")
+                    .document(entrantId)
+                    .collection("Invited Events")
+                    .document(eventName)
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            String firestoreNotifyDate = documentSnapshot.getString("notifyDate");
+                            if (firestoreNotifyDate == null) {
+                                firestore.collection("entrants")
+                                        .document(entrantId)
+                                        .collection("Invited Events")
+                                        .document(eventName)
+                                        .set(notificationData, SetOptions.merge())
+                                        .addOnSuccessListener(aVoid -> {
+                                            Log.d("Notify Users", "User set as notified in firestore");
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            Log.e("Notify Users", "Error setting user as notified in firestore", e);
+                                        });
+                            } else {
+                                Log.d("Notify Users", "User has already been notified");
+                            }
+                        }
+                    });
+        }
+        Toast.makeText(ViewInvitedListActivity.this, "Previously un-notified users have been notified.", Toast.LENGTH_SHORT).show();
     }
 }

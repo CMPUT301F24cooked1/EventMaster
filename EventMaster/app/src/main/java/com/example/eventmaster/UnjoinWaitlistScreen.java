@@ -292,6 +292,19 @@ public class UnjoinWaitlistScreen extends AppCompatActivity {
                                                     Log.e("Firestore", "Error removing event from waitlist: " + e.getMessage());
                                                     Toast.makeText(UnjoinWaitlistScreen.this, "Error removing from waitlist", Toast.LENGTH_SHORT).show();
                                                 });
+
+                                        db.collection("entrants")
+                                                .document(entrantId)
+                                                .collection("Unsampled Events")
+                                                .document(eventDocId)
+                                                .delete()
+                                                .addOnSuccessListener(aVoid -> {
+                                                    Log.d("Firestore", "Successfully removed event from unsampled list");
+                                                })
+                                                .addOnFailureListener(e -> {
+                                                    Log.e("Firestore", "Error removing event from unsampled list: " + e.getMessage());
+                                                });
+
                                     } else {
                                         Toast.makeText(UnjoinWaitlistScreen.this, "Event not found in waitlist", Toast.LENGTH_SHORT).show();
                                     }
@@ -330,6 +343,17 @@ public class UnjoinWaitlistScreen extends AppCompatActivity {
                                     Toast.makeText(UnjoinWaitlistScreen.this, "Entrant removed from waitlist successfully", Toast.LENGTH_SHORT).show();
                                 })
                                 .addOnFailureListener(e -> Toast.makeText(UnjoinWaitlistScreen.this, "Error removing entrant from waitlist", Toast.LENGTH_SHORT).show());
+                        db.collection("facilities")
+                                .document(facilityId)
+                                .collection("My Events")
+                                .document(event)
+                                .collection("unsampled list")
+                                .document(userDeviceId)
+                                .delete()
+                                .addOnSuccessListener(aVoid -> {
+                                    Toast.makeText(UnjoinWaitlistScreen.this, "Entrant removed from unsampled list successfully", Toast.LENGTH_SHORT).show();
+                                })
+                                .addOnFailureListener(e -> Toast.makeText(UnjoinWaitlistScreen.this, "Error removing entrant from unsampled list", Toast.LENGTH_SHORT).show());
                     } else {
                         Toast.makeText(UnjoinWaitlistScreen.this, "Facility not found", Toast.LENGTH_SHORT).show();
                     }
