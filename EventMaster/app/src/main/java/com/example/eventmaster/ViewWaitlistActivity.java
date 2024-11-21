@@ -122,6 +122,18 @@ public class ViewWaitlistActivity extends AppCompatActivity {
 
                                     Map<String, Object> data = document.getData();
 
+                                    if (data.get("selectedCount") == data.get("eventCapacity")) {
+                                        Intent intent = new Intent(ViewWaitlistActivity.this, ViewInvitedListActivity.class);
+                                        intent.putExtra("myEventName", eventName);
+                                        intent.putExtra("userProfile", user);
+                                        intent.putExtra("Sampled?", 0);
+                                        chooseSampleResultLauncher.launch(intent);
+                                    } else {
+                                        findSampleSize(eventName, waitlistSize);
+                                    }
+
+
+/*
                                     if (data.get("Sampled") != null) {
                                         //Checks if the waitlist has already been sampled, skips to ViewInvitedListActivity if it has
                                         if ((boolean) data.get("Sampled")) {
@@ -136,6 +148,8 @@ public class ViewWaitlistActivity extends AppCompatActivity {
                                     } else {
                                         findSampleSize(eventName, waitlistSize);
                                     }
+
+ */
                                 }
                             }
                         }
@@ -363,10 +377,11 @@ public class ViewWaitlistActivity extends AppCompatActivity {
                             //Update info in Entrants in Firestore
                             updateInvitedEvents(entrantId, eventName);
                         }
-                        markEventAsSampled(deviceId, eventName);
+                        //markEventAsSampled(deviceId, eventName);
                         Intent intent = new Intent(ViewWaitlistActivity.this, ViewInvitedListActivity.class);
                         intent.putExtra("myEventName", eventName);
                         intent.putExtra("userProfile", user);
+                        intent.putExtra("Sampled?", 1);
                         chooseSampleResultLauncher.launch(intent);
                     } else {
                         Log.e("WaitlistActivity", "Failed to find invited list", task.getException());
