@@ -375,6 +375,19 @@ public class retrieveEventInfo extends AppCompatActivity {
                                     Log.e("Firestore", "Error adding event to waitlist: " + e.getMessage());
                                     Toast.makeText(retrieveEventInfo.this, "Error joining waitlist", Toast.LENGTH_SHORT).show();
                                 });
+                        db.collection("entrants")
+                                .document(entrantId)
+                                .collection("Unsampled Events")
+                                .document(event)
+                                .set(WaitlistEvents)
+                                .addOnSuccessListener(bVoid -> {
+                                    Log.d("Firestore", "Successfully added to unsampled list: ");
+                                })
+                                .addOnFailureListener(e -> {
+                                    Log.e("Firestore", "Error adding event to unsampled list: " + e.getMessage());
+                                    Toast.makeText(retrieveEventInfo.this, "Error joining waitlist", Toast.LENGTH_SHORT).show();
+                                });
+
                     }else{
                         Toast.makeText(retrieveEventInfo.this, "Waitlist not found", Toast.LENGTH_SHORT).show();
                     }
@@ -414,6 +427,17 @@ public class retrieveEventInfo extends AppCompatActivity {
                                     Toast.makeText(retrieveEventInfo.this, "Entrant added to waitlist successfully", Toast.LENGTH_SHORT).show();
                                 })
                                 .addOnFailureListener(e -> Toast.makeText(retrieveEventInfo.this, "Error adding entrant to waitlist", Toast.LENGTH_SHORT).show());
+                        db.collection("facilities")
+                                .document(facilityId)
+                                .collection("My Events")
+                                .document(event)
+                                .collection("unsampled list")
+                                .document(userDeviceId)
+                                .set(entrantData)
+                                .addOnSuccessListener(aVoid1 -> {
+                                    Toast.makeText(retrieveEventInfo.this, "Entrant added to unsampled list successfully", Toast.LENGTH_SHORT).show();
+                                })
+                                .addOnFailureListener(e -> Toast.makeText(retrieveEventInfo.this, "Error adding entrant to unsampled list", Toast.LENGTH_SHORT).show());
                     } else {
                         Toast.makeText(retrieveEventInfo.this, "Entrant not found", Toast.LENGTH_SHORT).show();
                     }
