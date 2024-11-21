@@ -46,9 +46,6 @@ public class ViewEventsAdapter extends RecyclerView.Adapter<ViewEventsAdapter.Ev
     private Boolean isClickable = true;
     private FirebaseFirestore firestore;
 
-
-
-
     public ViewEventsAdapter(List<Event> eventList, Context context, Profile user, Boolean isAdmin) {
         this.eventList = eventList;
         this.context = context;
