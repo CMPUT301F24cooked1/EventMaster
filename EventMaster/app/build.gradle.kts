@@ -38,13 +38,15 @@ dependencies {
 
     implementation(platform("com.google.firebase:firebase-bom:32.7.1"))
     implementation("com.google.firebase:firebase-firestore-ktx")
+    implementation("com.google.android.gms:play-services-auth:20.3.0")  // For authentication
     implementation("com.google.firebase:firebase-storage-ktx")
     implementation("com.firebaseui:firebase-ui-storage:8.0.0")  // Firebase UI Glide Storage integration
     implementation("com.google.android.gms:play-services-base:18.5.0")
     implementation("com.google.zxing:core:3.4.1")
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
-    implementation("com.github.bumptech.glide:glide:4.13.0")
-    annotationProcessor("com.github.bumptech.glide:compiler:4.13.0")
+    implementation ("com.github.bumptech.glide:glide:4.15.1")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.15.1")
+
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)

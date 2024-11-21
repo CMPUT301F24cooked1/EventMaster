@@ -1,24 +1,25 @@
 package com.example.eventmaster;
 
 import android.content.Context;
-import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,8 +39,8 @@ public class ViewImagesAdapter extends RecyclerView.Adapter<ViewImagesAdapter.Im
      * @param position position of the item
      * Creates an adapter to display all Events on the view events screen
      */
-    private List<StorageReference> imageList;
-    private ArrayList<StorageReference> selectedImages = new ArrayList<>();
+    private List<String> imageList;
+    private ArrayList<String> selectedImages = new ArrayList<>();
     private Context context;
     private Profile user;
     private Boolean isAdmin = false;
@@ -48,10 +49,7 @@ public class ViewImagesAdapter extends RecyclerView.Adapter<ViewImagesAdapter.Im
     private FirebaseFirestore firestore;
 
 
-
-
-
-    public ViewImagesAdapter(List<StorageReference> imageList, Context context, Profile user, Boolean isAdmin) {
+    public ViewImagesAdapter(List<String> imageList, Context context, Profile user, Boolean isAdmin) {
         this.imageList = imageList;
         this.context = context;
         this.user = user;
@@ -67,12 +65,14 @@ public class ViewImagesAdapter extends RecyclerView.Adapter<ViewImagesAdapter.Im
 
     @Override
     public void onBindViewHolder(@NonNull ViewImagesAdapter.ImageViewHolder holder, int position) {
-        StorageReference imageRef = imageList.get(position);
+        String imageUrl = imageList.get(position);
 
-        // display image
-        Glide.with(holder.imageView.getContext())
-                .load(imageRef)
+        Glide.with(context)
+                .load(imageUrl) // Updated URL
+                .placeholder(R.drawable.default_poster)
+                .error(R.drawable.error)
                 .into(holder.imageView);
+
         holder.itemView.setClickable(isClickable);
 
         // Checkbox stuff ------------------------------------
@@ -95,9 +95,6 @@ public class ViewImagesAdapter extends RecyclerView.Adapter<ViewImagesAdapter.Im
         });
 
         holder.checkBox.setVisibility(showCheckBox ? View.VISIBLE : View.GONE);
-
-
-
     }
 
     /**

@@ -1,6 +1,8 @@
 package com.example.eventmaster;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.provider.Settings;
@@ -18,13 +20,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import io.grpc.Context;
@@ -36,7 +42,7 @@ public class AdminImagesActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private ViewImagesAdapter viewImagesAdapter;
-    private List<StorageReference> imageList;
+    private List<String> imageList;
     private FirebaseStorage storage;
     private String deviceId; // Replace with actual device ID
     private Button deleteButton;
@@ -46,13 +52,15 @@ public class AdminImagesActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
     private ActivityResultLauncher<Intent> settingsResultLauncher;
     private ActivityResultLauncher<Intent> MainActivityResultLauncher;
-    //  private ActivityResultLauncher<Intent> QRScanScreenResultLauncher;
+    private ActivityResultLauncher<Intent> QRScanScreenResultLauncher;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ModeActivity.applyTheme(this);
         setContentView(R.layout.admin_images_screen);
         Profile user = (Profile) getIntent().getSerializableExtra("User"); // user from MainActivity
+        deviceId = user.getDeviceId();
 
         // Initialize Firebase Firestore
         storage = FirebaseStorage.getInstance();
@@ -61,7 +69,8 @@ public class AdminImagesActivity extends AppCompatActivity {
         // Set up RecyclerView
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        imageList = new ArrayList<>();
+        imageList = new ArrayList<String>();
+
         viewImagesAdapter = new ViewImagesAdapter(imageList, this, user, true);
         recyclerView.setAdapter(viewImagesAdapter);
 
@@ -86,6 +95,7 @@ public class AdminImagesActivity extends AppCompatActivity {
         // Retrieve events from Firestore
         retrieveImages();
 
+
         // Initialize navigation buttons
         ImageButton notificationButton = findViewById(R.id.notifications);
         ImageButton settingsButton = findViewById(R.id.settings);
@@ -96,19 +106,23 @@ public class AdminImagesActivity extends AppCompatActivity {
         // Set result launchers to set up navigation buttons on the bottom of the screen
         settingsResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
-                result -> {});
+                result -> {
+                });
 
         MainActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
-                result -> {});
+                result -> {
+                });
 
         notificationActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
-                result -> {});
+                result -> {
+                });
 
         ProfileActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
-                result -> {});
+                result -> {
+                });
 
         // Set click listeners for navigation buttons on the bottom of the screen
         // sends you to profile screen
@@ -143,18 +157,40 @@ public class AdminImagesActivity extends AppCompatActivity {
         });
     }
 
+
+    /**
+     * Gets the string url of the images, and saves them into imageList, to transfer to ViewImagesAdapter
+     */
     private void retrieveImages() {
         StorageReference storageRef = storage.getReference();
-        StorageReference folderRef = storageRef.child("event_posters/");
+        StorageReference folderRef = storageRef.child("event_posters");
+
         folderRef.listAll().addOnSuccessListener(listResult -> {
-            Log.d("Firebase", "Fetch image success");
-            for (StorageReference item : listResult.getItems()){
-                imageList.add(item);
+            // A list to track all the tasks
+            List<Task<Uri>> tasks = new ArrayList<>();
+
+            for (StorageReference fileRef : listResult.getItems()) {
+                // Add each task to the list
+                tasks.add(fileRef.getDownloadUrl());
             }
-            System.out.println("SIOZE" + imageList.size());
-            viewImagesAdapter.notifyDataSetChanged(); // notify the adapter of data changes
-        }).addOnFailureListener(e->{
-           Log.e("Firebase", "Error listing images",e );
+
+            // Wait for all tasks to complete
+            Tasks.whenAllSuccess(tasks).addOnSuccessListener((List<Object> results) -> {
+                // Update the imageList with all URLs
+                for (Object result : results) {
+                    if (result instanceof Uri) {
+                        imageList.add(((Uri) result).toString());
+                    }
+                }
+                // Notify the adapter that data has changed
+                viewImagesAdapter.notifyDataSetChanged();
+                Log.d("FirebaseStorage", "All image URLs retrieved and adapter updated.");
+            }).addOnFailureListener(e -> {
+                Log.e("FirebaseStorage", "Failed to retrieve all URLs.", e);
+            });
+        }).addOnFailureListener(e -> {
+            Log.e("Firebase", "Error listing images", e);
         });
     }
 }
+
