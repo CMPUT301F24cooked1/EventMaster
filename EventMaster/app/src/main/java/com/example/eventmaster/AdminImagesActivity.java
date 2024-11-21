@@ -166,23 +166,21 @@ public class AdminImagesActivity extends AppCompatActivity {
         StorageReference folderRef = storageRef.child("event_posters");
 
         folderRef.listAll().addOnSuccessListener(listResult -> {
-            // A list to track all the tasks
             List<Task<Uri>> tasks = new ArrayList<>();
 
+            // get all image urls
             for (StorageReference fileRef : listResult.getItems()) {
-                // Add each task to the list
                 tasks.add(fileRef.getDownloadUrl());
             }
 
-            // Wait for all tasks to complete
+            // firebase storage retrieval is async so need a listener when everything is done
             Tasks.whenAllSuccess(tasks).addOnSuccessListener((List<Object> results) -> {
-                // Update the imageList with all URLs
+                // adds everything to imageList
                 for (Object result : results) {
                     if (result instanceof Uri) {
                         imageList.add(((Uri) result).toString());
                     }
                 }
-                // Notify the adapter that data has changed
                 viewImagesAdapter.notifyDataSetChanged();
                 Log.d("FirebaseStorage", "All image URLs retrieved and adapter updated.");
             }).addOnFailureListener(e -> {
