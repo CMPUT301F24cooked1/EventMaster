@@ -218,6 +218,7 @@ public class ViewInvitedListActivity extends AppCompatActivity {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             String userDeviceId = document.getId(); // Fetch the name for each userDeviceId
                             copyUnsampledUser(userDeviceId);
+                            updateRejectedEvents(userDeviceId, eventName);
                         }
                     } else {
                         Log.e("Rejected List", "Error getting retrieving unsampled list: ", task.getException());
@@ -242,6 +243,34 @@ public class ViewInvitedListActivity extends AppCompatActivity {
                 })
                 .addOnFailureListener(e -> {
                     Log.e("Firestore", "Error updating device ID field in rejected list", e);
+                });
+    }
+
+    private void updateRejectedEvents(String entrantId, String eventName) {
+        Map<String, Object> rejectedEntrantData = new HashMap<>();
+        rejectedEntrantData.put("Event Name", eventName);
+
+        //Add Event name to Entrant in Firestore under Invited Events
+        firestore.collection("entrants")
+                .document(entrantId)
+                .collection("Rejected Events")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        firestore.collection("entrants")
+                                .document(entrantId)
+                                .collection("Rejected Events")
+                                .document(eventName)
+                                .set(rejectedEntrantData, SetOptions.merge())
+                                .addOnSuccessListener(aVoid -> {
+                                    Log.d("Rejected Events", "Device ID field updated in entrant's rejected lists successfully.");
+                                })
+                                .addOnFailureListener(e -> {
+                                    Log.e("Rejected Events", "Error updating device ID field in rejected list", e);
+                                });
+                    } else {
+                        Log.e("Rejected Events", "Failed to add user to rejected events", task.getException());
+                    }
                 });
     }
 }
