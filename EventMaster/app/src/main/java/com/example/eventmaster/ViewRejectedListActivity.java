@@ -116,7 +116,7 @@ public class ViewRejectedListActivity extends AppCompatActivity {
                 .document(deviceId)
                 .collection("My Events")
                 .document(eventName)
-                .collection("sampled list")
+                .collection("rejected list")
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {

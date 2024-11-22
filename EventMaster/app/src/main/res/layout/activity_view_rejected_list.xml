@@ -33,7 +33,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/waitlistRecyclerView"
             android:layout_width="376dp"
-            android:layout_height="650dp"
+            android:layout_height="match_parent"
             android:nestedScrollingEnabled="false"
             android:padding="16dp" />
     </LinearLayout>
@@ -42,12 +42,13 @@
         android:id="@+id/home_icon"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="4dp"
         android:background="@drawable/home_icon"
         android:scaleType="centerInside"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/settings"
-        app:layout_constraintTop_toBottomOf="@+id/view_container" />
+        app:layout_constraintEnd_toStartOf="@+id/notifications"
+        app:layout_constraintHorizontal_bias="0.466"
+        app:layout_constraintStart_toEndOf="@+id/settings" />
 
     <ImageButton
         android:id="@+id/notifications"
@@ -58,8 +59,7 @@
         android:background="@drawable/notification_icon"
         android:scaleType="centerInside"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/home_icon" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <ImageButton
         android:id="@+id/back_button"
@@ -96,6 +96,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view_container"
-        app:layout_constraintVertical_bias="0.851" />
+        app:layout_constraintVertical_bias="0.98" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
