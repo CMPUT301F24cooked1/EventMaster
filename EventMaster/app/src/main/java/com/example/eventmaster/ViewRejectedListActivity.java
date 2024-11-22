@@ -26,21 +26,20 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Activity for viewing a sampled list of entrants who have been invited to an event.
+ * Activity for viewing a sampled list of entrants who have been rejected to an event.
  */
-public class ViewInvitedListActivity extends AppCompatActivity {
+public class ViewRejectedListActivity extends AppCompatActivity {
 
-    private RecyclerView invitedRecyclerView;
-    private WaitlistUsersAdapter invitedAdapter;
+    private RecyclerView rejectedRecyclerView;
+    private WaitlistUsersAdapter rejectedAdapter;
     private FirebaseFirestore firestore;
     private String deviceId; // Replace with actual device ID
     private String eventName; // Define event name or ID
-    private List<WaitlistUsersAdapter.User> invitedUsers;
-    private List<String> invitedIds;
+    private List<WaitlistUsersAdapter.User> rejectedUsers;
+    private List<String> rejectedIds;
     private Profile user;
 
     private AppCompatButton notifyButton;
-    private AppCompatButton rejectedListButton;
 
     /**
      * Displays the list of users who have been invited to come to an Event.
@@ -51,30 +50,27 @@ public class ViewInvitedListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         ModeActivity.applyTheme(this);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_view_invited_list);
+        setContentView(R.layout.activity_view_rejected_list);
 
         Intent intentMain = getIntent();
         eventName = intentMain.getStringExtra("myEventName");
         user = (Profile) intentMain.getSerializableExtra("User");
 
-        invitedUsers = new ArrayList<>();
-        invitedIds = new ArrayList<>();
+        rejectedUsers = new ArrayList<>();
+        rejectedIds = new ArrayList<>();
 
-        invitedRecyclerView = findViewById(R.id.waitlistRecyclerView);
-        invitedRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        rejectedRecyclerView = findViewById(R.id.waitlistRecyclerView);
+        rejectedRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Pass the context and eventName to the adapter
-        invitedAdapter = new WaitlistUsersAdapter(invitedUsers, this, eventName);
-        invitedRecyclerView.setAdapter(invitedAdapter);
+        rejectedAdapter = new WaitlistUsersAdapter(rejectedUsers, this, eventName);
+        rejectedRecyclerView.setAdapter(rejectedAdapter);
 
         firestore = FirebaseFirestore.getInstance();
         deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         // Fetch the waitlist from Firebase
-        fetchInvitedList();
-
-        notifyButton = findViewById(R.id.send_notification_button);
-        rejectedListButton = findViewById(R.id.rejected_list_button);
+        fetchrejectedList();
 
         // Initialize navigation buttons
         ImageButton notificationButton = findViewById(R.id.notifications);
@@ -91,46 +87,40 @@ public class ViewInvitedListActivity extends AppCompatActivity {
 
         // Set click listeners for navigation
         notificationButton.setOnClickListener(v -> {
-            Intent intent = new Intent(ViewInvitedListActivity.this, Notifications.class);
+            Intent intent = new Intent(ViewRejectedListActivity.this, Notifications.class);
             startActivity(intent);
         });
 
         settingsButton.setOnClickListener(v -> {
-            Intent intent = new Intent(ViewInvitedListActivity.this, SettingsScreen.class);
+            Intent intent = new Intent(ViewRejectedListActivity.this, SettingsScreen.class);
             startActivity(intent);
         });
 
         profileButton.setOnClickListener(v -> {
-            Intent intent = new Intent(ViewInvitedListActivity.this, ProfileActivity.class);
+            Intent intent = new Intent(ViewRejectedListActivity.this, ProfileActivity.class);
             intent.putExtra("User", user);
             startActivity(intent);
         });
 
         homeButton.setOnClickListener(v -> {
-            Intent intent = new Intent(ViewInvitedListActivity.this, MainActivity.class);
+            Intent intent = new Intent(ViewRejectedListActivity.this, MainActivity.class);
             startActivity(intent);
         });
         // Set click listener for the back button
         backButton.setOnClickListener(v -> {
             finish(); // Close the current activity and return to the previous one
         });
-        rejectedListButton.setOnClickListener(v -> {
-            Intent intent = new Intent(ViewInvitedListActivity.this, ViewRejectedListActivity.class);
-            intent.putExtra("myEventName", eventName); // Pass the event name or ID as an extra
-            intent.putExtra("User", user);
-            startActivity(intent);
-        });
     }
 
     /**
-     * Gets the invited list from a specific event and calls fetchUserName on each device ID.
+     * Gets the rejected list from a specific event and calls fetchUserName on each device ID.
      */
-    private void fetchInvitedList() {
+    private void fetchrejectedList() {
         firestore.collection("facilities")
                 .document(deviceId)
                 .collection("My Events")
                 .document(eventName)
-                .collection("invited list")
+                .collection("sampled list")
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -146,7 +136,7 @@ public class ViewInvitedListActivity extends AppCompatActivity {
 
     //
     /**
-     * Fetches the user's name and profile picture URL based on the device ID. Saves them to invitedUsers
+     * Fetches the user's name and profile picture URL based on the device ID. Saves them to rejectedUsers
      * @param userDeviceId The device ID to fetch the username and profile picture from.
      */
     private void fetchUserName(String userDeviceId) {
@@ -161,8 +151,8 @@ public class ViewInvitedListActivity extends AppCompatActivity {
                         if (userName != null) {
                             // Create a User object and add it to the waitlist
                             WaitlistUsersAdapter.User user = new WaitlistUsersAdapter.User(userName, profilePictureUrl);
-                            invitedUsers.add(user);
-                            invitedAdapter.notifyDataSetChanged();
+                            rejectedUsers.add(user);
+                            rejectedAdapter.notifyDataSetChanged();
                         }
                     }
                 })
@@ -170,14 +160,14 @@ public class ViewInvitedListActivity extends AppCompatActivity {
     }
 
     private void setNotifiedInFirestore(String eventName, String notifyDate) {
-        for (int i = 0; i < invitedIds.size(); i++) {
+        for (int i = 0; i < rejectedIds.size(); i++) {
             Map<String, Object> notificationData = new HashMap<>();
             notificationData.put("notifyDate", notifyDate);
 
-            String entrantId = invitedIds.get(i);
+            String entrantId = rejectedIds.get(i);
             firestore.collection("entrants")
                     .document(entrantId)
-                    .collection("Invited Events")
+                    .collection("Rejected Events")
                     .document(eventName)
                     .get()
                     .addOnSuccessListener(documentSnapshot -> {
@@ -186,7 +176,7 @@ public class ViewInvitedListActivity extends AppCompatActivity {
                             if (firestoreNotifyDate == null) {
                                 firestore.collection("entrants")
                                         .document(entrantId)
-                                        .collection("Invited Events")
+                                        .collection("Rejected Events")
                                         .document(eventName)
                                         .set(notificationData, SetOptions.merge())
                                         .addOnSuccessListener(aVoid -> {
@@ -201,6 +191,6 @@ public class ViewInvitedListActivity extends AppCompatActivity {
                         }
                     });
         }
-        Toast.makeText(ViewInvitedListActivity.this, "Previously un-notified users have been notified.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(ViewRejectedListActivity.this, "Previously un-notified users have been notified.", Toast.LENGTH_SHORT).show();
     }
 }
