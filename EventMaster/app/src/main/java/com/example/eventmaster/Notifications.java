@@ -72,47 +72,6 @@ public class Notifications extends AppCompatActivity {
     }
 
 
-//    private void retrieveNotifiedEvents(String entrantId) {
-//        DocumentReference entrantDocRef = firestore.collection("entrants").document(entrantId);
-//
-//        entrantDocRef.collection("Invited Events").whereGreaterThan("running", 0).get().addOnCompleteListener(eventTask -> {
-//           // whereNotEqualTo("notifyDate", null)
-//            // .orderBy("notifyDate", Query.Direction.DESCENDING)
-//
-//            if (eventTask.isSuccessful()) {
-//                for (QueryDocumentSnapshot eventDoc : eventTask.getResult()) {
-//                    Event event = eventDoc.toObject(Event.class);
-//                    event.setEventName(eventDoc.getId()); // get event name
-//                    event.setNotificationType("Invited"); // set notification type
-//                    inviteList.add(event);   // add invited event to invited list
-//                }
-//                NotificationsAdapter.notifyDataSetChanged();
-//            }
-//        }).addOnFailureListener(e -> Log.e("Notifications", "Error retrieving invited events", e));
-//    }
-//
-//    private void retrieveRejectedEvents(String entrantId, List<Event> inviteList) {
-//        firestore.collection("entrants")
-//                .document(entrantId)
-//                .collection("Rejected Events")
-//                .get()
-//                .addOnCompleteListener(rejectedTask -> {
-//                    if (rejectedTask.isSuccessful()) {
-//                        List<Event> rejectedList = new ArrayList<>();
-//                        for (QueryDocumentSnapshot eventDoc : rejectedTask.getResult()) {
-//                            Event event = eventDoc.toObject(Event.class);
-//                            event.setEventName(eventDoc.getId()); // get event name
-//                            event.setNotificationType("Rejected"); // set notification type
-//                            rejectedList.add(event);  // add rejected event to rejected list
-//                        }
-//                        inviteList.addAll(rejectedList);
-//                        eventList.addAll(inviteList);  // add all events in one list to display everything
-//                        NotificationsAdapter.notifyDataSetChanged();
-//                    }
-//                }).addOnFailureListener(e -> Log.e("Notifications", "Error retrieving rejected events", e));
-//    }
-
-
     private void retrieveNotifiedEvents(String entrantId) {
         DocumentReference entrantDocRef = firestore.collection("entrants").document(entrantId);
 
@@ -147,9 +106,6 @@ public class Notifications extends AppCompatActivity {
                     if (rejectedTask.isSuccessful()) {
                         List<Event> rejectedList = new ArrayList<>();
                         for (QueryDocumentSnapshot eventDoc : rejectedTask.getResult()) {
-                            // Log details for debugging
-                            Log.d("DebugRejectedEvent", "Event Name: " + eventDoc.getId() + ", Notify Date: " + eventDoc.get("notifyDate"));
-
                             Event event = eventDoc.toObject(Event.class);
                             event.setEventName(eventDoc.getId()); // Get event name
                             event.setNotificationType("Rejected"); // Set notification type
