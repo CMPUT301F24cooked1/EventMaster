@@ -111,7 +111,6 @@ public class SettingsScreen extends AppCompatActivity {
                             Log.d("MainActivity", "User profile updated: " + user.getName());
                         }
                     }
-
                 });
 
         listResultLauncher = registerForActivityResult(
