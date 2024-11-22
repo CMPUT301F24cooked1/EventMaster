@@ -80,10 +80,6 @@ public class ViewRejectedListActivity extends AppCompatActivity {
         ImageButton backButton = findViewById(R.id.back_button); // Initialize back button
         deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
-        notifyButton.setOnClickListener(v -> {
-            String notifyDate = String.valueOf(System.currentTimeMillis());
-            setNotifiedInFirestore(eventName, notifyDate);
-        });
 
         // Set click listeners for navigation
         notificationButton.setOnClickListener(v -> {

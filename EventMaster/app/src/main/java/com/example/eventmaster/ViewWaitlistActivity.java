@@ -202,7 +202,7 @@ public class ViewWaitlistActivity extends AppCompatActivity {
                 .document(deviceId)
                 .collection("My Events")
                 .document(eventName)
-                .collection("waitlist list")
+                .collection("unsampled list")
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
