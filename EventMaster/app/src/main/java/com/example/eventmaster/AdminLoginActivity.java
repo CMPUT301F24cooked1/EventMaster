@@ -82,13 +82,11 @@ public class AdminLoginActivity extends AppCompatActivity {
 
 
         backButton = findViewById(R.id.back_button);
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(AdminLoginActivity.this, SettingsScreen.class);
-                intent.putExtra("User", user);
-                settingResultLauncher.launch(intent);
-            }
+        backButton.setOnClickListener(v -> {
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("User", user);
+            setResult(RESULT_OK, resultIntent);
+            finish();
         });
 
         ImageButton profileButton = findViewById(R.id.profile);
