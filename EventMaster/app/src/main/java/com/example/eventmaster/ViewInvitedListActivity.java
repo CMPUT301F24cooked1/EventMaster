@@ -38,6 +38,7 @@ public class ViewInvitedListActivity extends AppCompatActivity {
     private List<WaitlistUsersAdapter.User> invitedUsers;
     private List<String> invitedIds;
     private Profile user;
+    private int selected;
 
     private AppCompatButton notifyButton;
     private AppCompatButton rejectedListButton;
@@ -56,6 +57,7 @@ public class ViewInvitedListActivity extends AppCompatActivity {
         Intent intentMain = getIntent();
         eventName = intentMain.getStringExtra("myEventName");
         user = (Profile) intentMain.getSerializableExtra("User");
+        selected = intentMain.getIntExtra("Sampled?", 0);
 
         invitedUsers = new ArrayList<>();
         invitedIds = new ArrayList<>();
@@ -72,6 +74,11 @@ public class ViewInvitedListActivity extends AppCompatActivity {
 
         // Fetch the waitlist from Firebase
         fetchInvitedList();
+
+        if (selected == 1) {
+            Toast.makeText(ViewInvitedListActivity.this, "Copying unsampled list", Toast.LENGTH_SHORT).show();
+            copyUnsampledList();
+        }
 
         notifyButton = findViewById(R.id.send_notification_button);
         rejectedListButton = findViewById(R.id.rejected_list_button);
@@ -136,6 +143,7 @@ public class ViewInvitedListActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             String userDeviceId = document.getId();
+                            invitedIds.add(userDeviceId);
                             fetchUserName(userDeviceId); // Fetch the name for each userDeviceId
                         }
                     } else {
@@ -202,5 +210,73 @@ public class ViewInvitedListActivity extends AppCompatActivity {
                     });
         }
         Toast.makeText(ViewInvitedListActivity.this, "Previously un-notified users have been notified.", Toast.LENGTH_SHORT).show();
+    }
+
+    private void copyUnsampledList() {
+        firestore.collection("facilities")
+                .document(deviceId)
+                .collection("My Events")
+                .document(eventName)
+                .collection("unsampled list")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            String userDeviceId = document.getId(); // Fetch the name for each userDeviceId
+                            copyUnsampledUser(userDeviceId);
+                            updateRejectedEvents(userDeviceId, eventName);
+                        }
+                    } else {
+                        Log.e("Rejected List", "Error getting retrieving unsampled list: ", task.getException());
+                    }
+                });
+    }
+
+    private void copyUnsampledUser(String userDeviceId) {
+
+        Map<String, Object> rejectedData = new HashMap<>();
+        rejectedData.put("eventId", eventName);
+
+        firestore.collection("facilities")
+                .document(deviceId)
+                .collection("My Events")
+                .document(eventName)
+                .collection("rejected list")
+                .document(userDeviceId)
+                .set(rejectedData, SetOptions.merge())
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("Firestore", "Device ID field updated in rejected list successfully.");
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Firestore", "Error updating device ID field in rejected list", e);
+                });
+    }
+
+    private void updateRejectedEvents(String entrantId, String eventName) {
+        Map<String, Object> rejectedEntrantData = new HashMap<>();
+        rejectedEntrantData.put("Event Name", eventName);
+
+        //Add Event name to Entrant in Firestore under Invited Events
+        firestore.collection("entrants")
+                .document(entrantId)
+                .collection("Rejected Events")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        firestore.collection("entrants")
+                                .document(entrantId)
+                                .collection("Rejected Events")
+                                .document(eventName)
+                                .set(rejectedEntrantData, SetOptions.merge())
+                                .addOnSuccessListener(aVoid -> {
+                                    Log.d("Rejected Events", "Device ID field updated in entrant's rejected lists successfully.");
+                                })
+                                .addOnFailureListener(e -> {
+                                    Log.e("Rejected Events", "Error updating device ID field in rejected list", e);
+                                });
+                    } else {
+                        Log.e("Rejected Events", "Failed to add user to rejected events", task.getException());
+                    }
+                });
     }
 }
