@@ -49,16 +49,14 @@ public class Notifications extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         ModeActivity.applyTheme(this);
 
-        // Connect the layout with the Java class
         setContentView(R.layout.notifications_screen); // Make sure the layout file is named correctly
         Profile user = (Profile) getIntent().getSerializableExtra("User"); // todo: user from MainActivity
 
-        // Initialize Firebase Firestore
         firestore = FirebaseFirestore.getInstance();
         deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
 
-        // Set up RecyclerView
+        // Set up the RecyclerView
         displayName = findViewById(R.id.textView);
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -66,74 +64,49 @@ public class Notifications extends AppCompatActivity {
         eventList = new ArrayList<>();
         NotificationsAdapter = new NotificationsAdapter(eventList, this, user);
         recyclerView.setAdapter(NotificationsAdapter);
-        // Retrieve events from Firestore
+
+        // get events from the Firestore
         retrieveNotifiedEvents(deviceId);
         retrieveRejectedEvents(deviceId, inviteList);
-
-        Toast.makeText(this, "Device ID: " + deviceId, Toast.LENGTH_LONG).show();
     }
-
 
 
     private void retrieveNotifiedEvents(String entrantId) {
-
         DocumentReference entrantDocRef = firestore.collection("entrants").document(entrantId);
 
-        // Retrieve waitlisted events for the specific entrant
         entrantDocRef.collection("Invited Events").get().addOnCompleteListener(eventTask -> {
             if (eventTask.isSuccessful()) {
                 for (QueryDocumentSnapshot eventDoc : eventTask.getResult()) {
-                    // Create Event object and set fields
-                    Event event = new Event();
-                    event.setEventName(eventDoc.getId()); // Set the document name as eventName
-                    inviteList.add(event);
-//                    Event event = eventDoc.toObject(Event.class);
-//                    event.setDeviceID(entrantId);  // Set the device ID as the entrant ID
-//                    inviteList.add(event);
+                    Event event = eventDoc.toObject(Event.class);
+                    event.setEventName(eventDoc.getId()); // get event name
+                    event.setNotificationType("Invited"); // set notification type
+                    inviteList.add(event);   // add invited event to invited list
                 }
-                NotificationsAdapter.notifyDataSetChanged(); // Notify the adapter of data changes
-                Log.d("JoinEventScreen", "Number of waitlisted events: " + inviteList.size());
-                Log.d("JoinEventScreen", "Device ID: " + entrantId);
-
-            } else {
-                Log.d("Notifications", "QuerySnapshot is null");
+                NotificationsAdapter.notifyDataSetChanged();
             }
-        }).addOnFailureListener(e -> Log.e("Notifications", "Error retrieving waitlisted events", e));
+        }).addOnFailureListener(e -> Log.e("Notifications", "Error retrieving invited events", e));
     }
 
-
     private void retrieveRejectedEvents(String entrantId, List<Event> inviteList) {
-
         firestore.collection("entrants")
                 .document(entrantId)
                 .collection("Rejected Events")
                 .get()
-                .addOnCompleteListener(rejectedTask -> {   // Retrieve waitlisted events for the specific entrant
-            if (rejectedTask.isSuccessful()) {
-                List<Event> rejectedList = new ArrayList<>();
-                for (QueryDocumentSnapshot eventDoc : rejectedTask.getResult()) {
-                    Event event = new Event();
-                    event.setEventName(eventDoc.getId()); // Set the document name as eventName
-                    rejectedList.add(event);
-                }
-
-                inviteList.addAll(rejectedList);
-                eventList.addAll(inviteList);
-
-                NotificationsAdapter.notifyDataSetChanged(); // Notify the adapter of data changes
-                Log.d("JoinEventScreen", "Number of waitlisted events: " + inviteList.size());
-                Log.d("JoinEventScreen", "Device ID: " + entrantId);
-
-
-            } else {
-                Log.d("Notifications", "QuerySnapshot is null");
-            }
-        }).addOnFailureListener(e -> Log.e("Notifications", "Error retrieving waitlisted events", e));
+                .addOnCompleteListener(rejectedTask -> {
+                    if (rejectedTask.isSuccessful()) {
+                        List<Event> rejectedList = new ArrayList<>();
+                        for (QueryDocumentSnapshot eventDoc : rejectedTask.getResult()) {
+                            Event event = eventDoc.toObject(Event.class);
+                            event.setEventName(eventDoc.getId()); // get event name
+                            event.setNotificationType("Rejected"); // set notification type
+                            rejectedList.add(event);  // add rejected event to rejected list
+                        }
+                        inviteList.addAll(rejectedList);
+                        eventList.addAll(inviteList);  // add all events in one list to display everything
+                        NotificationsAdapter.notifyDataSetChanged();
+                    }
+                }).addOnFailureListener(e -> Log.e("Notifications", "Error retrieving rejected events", e));
     }
-
-
-
-
 
 }
 

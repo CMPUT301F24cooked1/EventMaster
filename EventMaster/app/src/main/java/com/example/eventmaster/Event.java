@@ -1,9 +1,9 @@
+
 package com.example.eventmaster;
 
 import com.google.firebase.firestore.IgnoreExtraProperties;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -21,6 +21,7 @@ public class Event implements Serializable {
     private int waitlistCapacity;
     private Date eventFinalDate;
     private boolean geolocation;
+    private String notificationType;
 
     /**
      * Default constructor required for calls to DataSnapshot.getValue(Event.class)
@@ -41,7 +42,7 @@ public class Event implements Serializable {
      * @param eventFinalDate Final date the event closes.
      * @param geolocation The final capacity for the Event (the number that will be sampled)
      */
-    public Event(String eventName, String eventDescription, String deviceID, int eventCapacity, int waitlistCapacity, Date eventFinalDate, boolean geolocation) {
+    public Event(String eventName, String eventDescription, String deviceID, int eventCapacity, int waitlistCapacity, Date eventFinalDate, boolean geolocation, String notificationType) {
         this.eventName = eventName;
         this.eventDescription = eventDescription;
         this.deviceID = deviceID;
@@ -49,6 +50,7 @@ public class Event implements Serializable {
         this.waitlistCapacity = waitlistCapacity;
         this.eventFinalDate = eventFinalDate;
         this.geolocation = geolocation;
+        this.notificationType = notificationType;
     }
 
     /**
@@ -191,6 +193,18 @@ public class Event implements Serializable {
     public String toString() {
         return "Event{id='" + deviceID + "', name='" + eventName + "'}";
     }
+
+    public void setNotificationType(String notificationType){
+        this.notificationType = notificationType;
+    }
+    public String getNotificationType(){
+        return notificationType;
+    }
+
 }
+
+
+
+
 
 
