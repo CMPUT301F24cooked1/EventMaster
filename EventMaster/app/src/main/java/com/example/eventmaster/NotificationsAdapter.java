@@ -41,8 +41,11 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
 
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
         Event event = eventList.get(position);
+
+        Log.d("AdapterDebug", "Binding Event: " + event.getEventName() + ", Type: " + event.getNotificationType());
+
         if (event != null) {
-            Log.d("AdapterDebug", "Binding Event: " + event.getEventName() + ", Type: " + event.getNotificationType());
+         //   Log.d("AdapterDebug", "Binding Event: " + event.getEventName() + ", Type: " + event.getNotificationType());
             holder.bind(event, context); // Call the bind method
         }
     }
@@ -83,6 +86,7 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
              if (event.getNotificationType().equals("Rejected")){
                  eventDescriptionTextView.setText("Oh no! Sorry you have not been selected... ");
             }
+
         }
     }
 }
