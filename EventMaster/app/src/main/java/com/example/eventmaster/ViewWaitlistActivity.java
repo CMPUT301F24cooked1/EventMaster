@@ -429,6 +429,7 @@ public class ViewWaitlistActivity extends AppCompatActivity {
     private void updateInvitedEvents(String entrantId, String eventName) {
         Map<String, Object> invitedEntrantData = new HashMap<>();
         invitedEntrantData.put("Event Name", eventName);
+        invitedEntrantData.put("facilityId", deviceId);
 
         //Add Event name to Entrant in Firestore under Invited Events
         firestore.collection("entrants")

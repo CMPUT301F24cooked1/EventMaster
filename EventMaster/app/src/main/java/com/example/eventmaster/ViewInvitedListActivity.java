@@ -255,6 +255,7 @@ public class ViewInvitedListActivity extends AppCompatActivity {
     private void updateRejectedEvents(String entrantId, String eventName) {
         Map<String, Object> rejectedEntrantData = new HashMap<>();
         rejectedEntrantData.put("Event Name", eventName);
+        rejectedEntrantData.put("facilityId", deviceId);
 
         //Add Event name to Entrant in Firestore under Invited Events
         firestore.collection("entrants")
