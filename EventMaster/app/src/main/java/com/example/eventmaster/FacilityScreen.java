@@ -1,8 +1,11 @@
 package com.example.eventmaster;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -21,6 +24,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -100,49 +104,6 @@ public class FacilityScreen extends AppCompatActivity {
             return insets;
         });
 
-        notificationButton = findViewById(R.id.notification_icon);
-
-        notificationButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Send user to ProfileActivity class
-                Intent intent = new Intent(FacilityScreen.this, Notifications.class);
-                intent.putExtra("User", user);
-                notificationActivityResultLauncher.launch(intent);
-            }
-        });
-
-        settingsButton = findViewById(R.id.settings);
-
-        settingsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(FacilityScreen.this, SettingsScreen.class);
-                intent.putExtra("User", user);
-                settingsResultLauncher.launch(intent);
-            }
-        });
-
-        profileButton = findViewById(R.id.profile);
-
-        profileButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Send user to ProfileActivity class
-                Intent intent = new Intent(FacilityScreen.this, ProfileActivity.class);
-                intent.putExtra("User", user);
-                ProfileActivityResultLauncher.launch(intent);
-            }
-        });
-
-        listButton = findViewById(R.id.list_icon);
-
-        listButton.setOnClickListener(v -> {
-            Intent intent = new Intent(FacilityScreen.this, ViewCreatedEventsActivity.class);
-            intent.putExtra("User", user);
-            startActivity(intent);
-        });
-
         viewEventsButton = findViewById(R.id.view_events_button);
 
         viewEventsButton.setOnClickListener(v -> {
@@ -196,20 +157,6 @@ public class FacilityScreen extends AppCompatActivity {
             }
         });
 
-
-        //Return to home screen, send up to date Facility object
-        backButton = findViewById(R.id.back_button);
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Returns to previous screen
-                Intent newIntent = new Intent(FacilityScreen.this, MainActivity.class);
-                newIntent.putExtra("updatedUserFacility", userFacility);
-                newIntent.putExtra("User", user);
-                setResult(RESULT_OK, newIntent);
-                finish();
-            }
-        });
         settingsResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -261,8 +208,53 @@ public class FacilityScreen extends AppCompatActivity {
                     }
 
                 });
-    }
 
+
+
+        // Initialize BottomNavigationView
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        // Disable tint for specific menu item
+        Menu menu = bottomNavigationView.getMenu();
+        MenuItem qrCodeItem = menu.findItem(R.id.nav_scan_qr);
+        Drawable qrIcon = qrCodeItem.getIcon();
+        qrIcon.setTintList(null);  // Disable tinting for this specific item
+        // Set up navigation item selection listener
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            Intent newIntent;
+
+            if (item.getItemId() == R.id.nav_Home) {
+                newIntent = new Intent(FacilityScreen.this, MainActivity.class);
+                newIntent.putExtra("User", user);
+                MainActivityResultLauncher.launch(newIntent);
+                return true;
+            } else if (item.getItemId() == R.id.nav_Settings) {
+                newIntent = new Intent(FacilityScreen.this, SettingsScreen.class);
+                newIntent.putExtra("User", user);
+                settingsResultLauncher.launch(newIntent);
+                return true;
+            } else if (item.getItemId() == R.id.nav_Notifications) {
+                newIntent = new Intent(FacilityScreen.this, Notifications.class);
+                newIntent.putExtra("User", user);
+                notificationActivityResultLauncher.launch(newIntent);
+                return true;
+            } else if (item.getItemId() == R.id.nav_Profile) {
+                newIntent = new Intent(FacilityScreen.this, ProfileActivity.class);
+                newIntent.putExtra("User", user);
+                ProfileActivityResultLauncher.launch(newIntent);
+                return true;
+            }else if (item.getItemId() == R.id.nav_scan_qr) {
+                openQRScanFragment();
+                return true;
+            }
+            return false;
+        });
+    }
+    private void openQRScanFragment() {
+        // Open QRScanFragment without simulating button click
+        Intent intent = new Intent(this, QRScanFragment.class);
+        intent.putExtra("User", user);  // Pass the user information if needed
+        startActivity(intent);
+    }
     /**
      * updates a user's Facility on firestore DB based on given device ID.
      * @param deviceId the deviceID of the user's device
