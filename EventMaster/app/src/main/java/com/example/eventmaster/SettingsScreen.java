@@ -165,12 +165,6 @@ public class SettingsScreen extends AppCompatActivity {
             ProfileActivityResultLauncher.launch(newIntent);
         });
 
-        // sends you to settings screen
-        settingsButton.setOnClickListener(v -> {
-            Intent newIntent = new Intent(SettingsScreen.this, SettingsScreen.class);
-            newIntent.putExtra("User", user);
-            settingsResultLauncher.launch(newIntent);
-        });
 
         // sends you to a list of invited events that you accepted
         listButton.setOnClickListener(v -> {
