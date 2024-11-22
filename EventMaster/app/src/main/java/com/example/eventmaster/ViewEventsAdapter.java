@@ -172,7 +172,7 @@ public class ViewEventsAdapter extends RecyclerView.Adapter<ViewEventsAdapter.Ev
         return eventList.size();
     }
 
-    public class EventViewHolder extends RecyclerView.ViewHolder {
+    public static class EventViewHolder extends RecyclerView.ViewHolder {
         /**
          * Initializes the event adapter
          * @param itemView the view that will be held
