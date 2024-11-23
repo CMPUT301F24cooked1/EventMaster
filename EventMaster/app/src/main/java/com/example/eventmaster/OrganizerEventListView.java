@@ -7,6 +7,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -17,6 +19,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.SetOptions;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
@@ -86,12 +89,6 @@ public class OrganizerEventListView extends AppCompatActivity{
 
         // Load event details from Firestore
         loadEventDetails();
-        // Initialize navigation buttons
-        ImageButton notificationButton = findViewById(R.id.notifications);
-        ImageButton settingsButton = findViewById(R.id.settings);
-        ImageButton profileButton = findViewById(R.id.profile);
-        ImageButton homeButton = findViewById(R.id.home_icon);
-        ImageButton backButton = findViewById(R.id.back_button); // Initialize back button
 
         deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
@@ -100,40 +97,6 @@ public class OrganizerEventListView extends AppCompatActivity{
         AppCompatButton invitedListButton = findViewById(R.id.invited_list_button);
 
         editPosterButton.setOnClickListener(v -> openFileChooser());
-
-
-        // Set click listeners for navigation
-        notificationButton.setOnClickListener(v -> {
-            Intent newIntent = new Intent(OrganizerEventListView.this, Notifications.class);
-            newIntent.putExtra("User", user);
-            notificationActivityResultLauncher.launch(newIntent);
-        });
-
-
-        settingsButton.setOnClickListener(v -> {
-            Intent newIntent = new Intent(OrganizerEventListView.this, SettingsScreen.class);
-            newIntent.putExtra("User", user);
-            settingsResultLauncher.launch(newIntent);
-        });
-
-        profileButton.setOnClickListener(v -> {
-            Intent newIntent = new Intent(OrganizerEventListView.this, ProfileActivity.class);
-            newIntent.putExtra("User", user);
-            ProfileActivityResultLauncher.launch(newIntent);
-        });
-
-        homeButton.setOnClickListener(v -> {
-            Intent intent = new Intent(OrganizerEventListView.this, MainActivity.class);
-            intent.putExtra("User", user);
-            startActivity(intent);
-        });
-        // Set click listener for the back button
-        backButton.setOnClickListener(v -> {
-            Intent resultIntent = new Intent();
-            resultIntent.putExtra("User", user);
-            setResult(RESULT_OK, resultIntent);
-            finish();
-        });
 
         settingsResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -187,6 +150,8 @@ public class OrganizerEventListView extends AppCompatActivity{
 
                 });
 
+
+
         waitingListButton.setOnClickListener(v -> {
             Intent intent = new Intent(OrganizerEventListView.this, ViewWaitlistActivity.class);
             intent.putExtra("eventName", eventNameTextView.getText().toString()); // Pass the event name or ID as an extra
@@ -200,6 +165,54 @@ public class OrganizerEventListView extends AppCompatActivity{
             intent.putExtra("User", user);
             startActivity(intent);
         });
+
+
+        // Initialize BottomNavigationView
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        // Disable tint for specific menu item
+        Menu menu = bottomNavigationView.getMenu();
+        MenuItem qrCodeItem = menu.findItem(R.id.nav_scan_qr);
+        Drawable qrIcon = qrCodeItem.getIcon();
+        qrIcon.setTintList(null);  // Disable tinting for this specific item
+        // Set up navigation item selection listener
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            Intent newIntent;
+
+            if (item.getItemId() == R.id.nav_Home) {
+                newIntent = new Intent(OrganizerEventListView.this, MainActivity.class);
+                newIntent.putExtra("User", user);
+                MainActivityResultLauncher.launch(newIntent);
+                return true;
+            } else if (item.getItemId() == R.id.nav_Settings) {
+                newIntent = new Intent(OrganizerEventListView.this, SettingsScreen.class);
+                newIntent.putExtra("User", user);
+                settingsResultLauncher.launch(newIntent);
+                return true;
+            } else if (item.getItemId() == R.id.nav_Notifications) {
+                newIntent = new Intent(OrganizerEventListView.this, Notifications.class);
+                newIntent.putExtra("User", user);
+                notificationActivityResultLauncher.launch(newIntent);
+                return true;
+            } else if (item.getItemId() == R.id.nav_Profile) {
+                newIntent = new Intent(OrganizerEventListView.this, ProfileActivity.class);
+                newIntent.putExtra("User", user);
+                ProfileActivityResultLauncher.launch(newIntent);
+                return true;
+            }else if (item.getItemId() == R.id.nav_scan_qr) {
+                openQRScanFragment();
+                return true;
+            }
+            return false;
+        });
+
+
+
+    }
+    private void openQRScanFragment() {
+        // Open QRScanFragment without simulating button click
+        Intent intent = new Intent(this, QRScanFragment.class);
+        intent.putExtra("User", user);  // Pass the user information if needed
+        startActivity(intent);
 
     }
 
