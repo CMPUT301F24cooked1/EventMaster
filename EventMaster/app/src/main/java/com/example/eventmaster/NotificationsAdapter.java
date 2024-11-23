@@ -16,19 +16,20 @@ import java.util.List;
 
 public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdapter.EventViewHolder> {
 
-
     private List<Event> eventList;
     private Context context;
     private String deviceID;
     private FirebaseFirestore db;
     private String hashData;
     private Profile user;
+    private OnNotificationClickListener listener;
 
+    public NotificationsAdapter(List<Event> eventList, Context context, Profile user, OnNotificationClickListener listener) {
 
-    public NotificationsAdapter(List<Event> eventList, Context context, Profile user) {
         this.eventList = eventList;
         this.context = context;
         this.user = user;
+        this.listener = listener;
     }
 
     @NonNull
@@ -45,9 +46,14 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
         Log.d("AdapterDebug", "Binding Event: " + event.getEventName() + ", Type: " + event.getNotificationType());
 
         if (event != null) {
-         //   Log.d("AdapterDebug", "Binding Event: " + event.getEventName() + ", Type: " + event.getNotificationType());
-            holder.bind(event, context); // Call the bind method
+            holder.bind(event, context); 
         }
+
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onNotificationClick(event.getEventName(), event.getDeviceID());
+            }
+        });
     }
 
     @Override
@@ -88,6 +94,10 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
             }
 
         }
+    }
+
+    public interface OnNotificationClickListener {
+        void onNotificationClick(String eventName, String facilityID);
     }
 }
 
