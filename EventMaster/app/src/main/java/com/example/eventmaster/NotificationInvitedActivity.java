@@ -92,16 +92,16 @@ public class NotificationInvitedActivity extends AppCompatActivity {
     /**
      * Fetches the user's choice status (accepted or declined) and updates the UI accordingly.
      *
-     * @param facilityId Facility ID
+     * @param userId User ID or device ID
      * @param eventName Event name
      * @param choiceMadeText TextView to display the choice made
      * @param acceptButton Button for accepting the invitation
      * @param declineButton Button for declining the invitation
      */
-    private void fetchChoiceStatus(String facilityId, String eventName, TextView choiceMadeText, AppCompatButton acceptButton, AppCompatButton declineButton) {
-        firestore.collection("facilities")
-                .document(facilityId)
-                .collection("My Events")
+    private void fetchChoiceStatus(String userId, String eventName, TextView choiceMadeText, AppCompatButton acceptButton, AppCompatButton declineButton) {
+        firestore.collection("entrants")
+                .document(userId)
+                .collection("Invited Events")
                 .document(eventName)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
@@ -110,10 +110,13 @@ public class NotificationInvitedActivity extends AppCompatActivity {
                         if (choiceStatus != null) {
                             updateUIForChoiceMade(choiceMadeText, choiceStatus, acceptButton, declineButton);
                         }
+                    } else {
+                        Log.w("Firestore", "No document found for event: " + eventName);
                     }
                 })
                 .addOnFailureListener(e -> Log.e("Firestore", "Error fetching choice status", e));
     }
+
 
     /**
      * Updates the choice status in Firestore.
@@ -121,9 +124,9 @@ public class NotificationInvitedActivity extends AppCompatActivity {
      * @param status The choice status ("accepted" or "declined")
      */
     private void updateChoiceStatusInFirestore(String status) {
-        firestore.collection("facilities")
-                .document(facility_id)
-                .collection("My Events")
+        firestore.collection("entrants")
+                .document(user.getDeviceId())
+                .collection("Invited Events")
                 .document(event_name)
                 .update("choiceStatus", status)
                 .addOnSuccessListener(aVoid -> Log.d("Firestore", "Choice status updated successfully"))
