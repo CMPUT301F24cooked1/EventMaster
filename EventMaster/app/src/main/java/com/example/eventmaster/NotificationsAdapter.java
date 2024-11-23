@@ -21,13 +21,15 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
     private FirebaseFirestore db;
     private String hashData;
     private Profile user;
+    private OnNotificationClickListener listener;
 
 
 
-    public NotificationsAdapter(List<Event> eventList, Context context, Profile user) {
+    public NotificationsAdapter(List<Event> eventList, Context context, Profile user, OnNotificationClickListener listener) {
         this.eventList = eventList;
         this.context = context;
         this.user = user;
+        this.listener = listener;
     }
 
     @NonNull
@@ -50,6 +52,12 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
         } else {
             holder.eventNameTextView.setText("No Event Name");
         }
+
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onNotificationClick(event.getEventName(), event.getDeviceID());
+            }
+        });
     }
 
     @Override
@@ -81,6 +89,10 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
         public void bind(Event event, Context context) {
             eventNameTextView.setText(event.getEventName());  // Set the event name to the TextView
         }
+    }
+
+    public interface OnNotificationClickListener {
+        void onNotificationClick(String eventName, String facilityID);
     }
 }
 

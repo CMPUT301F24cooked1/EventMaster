@@ -30,79 +30,58 @@
         android:text="Event Name"
         android:textColor="#757575"
         android:textSize="24dp"
-        app:layout_constraintBottom_toTopOf="@+id/event_description"
+        app:layout_constraintBottom_toTopOf="@+id/scrollView2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title"
         app:layout_constraintVertical_bias="0.024" />
 
-    <TextView
-        android:id="@+id/event_description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="125dp"
-        android:layout_marginBottom="576dp"
-        android:text="Event Description"
-        android:textColor="#757575"
-        android:textSize="24dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <ScrollView
+        android:id="@+id/scrollView2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/textview"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/event_name" />
+        app:layout_constraintTop_toBottomOf="@id/event_name">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/event_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Event Description"
+                android:textColor="@color/grey"
+                android:textSize="24dp" />
+        </LinearLayout>
+    </ScrollView>
 
     <TextView
         android:id="@+id/textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="120dp"
         android:text="          You were not selected \n to join the event from the waitlist."
         android:textColor="#757575"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/event_description"
+        app:layout_constraintTop_toBottomOf="@+id/scrollView2"
         app:layout_constraintVertical_bias="0.059" />
 
     <ImageButton
-        android:id="@+id/list_icon"
-        android:layout_width="66dp"
-        android:layout_height="65dp"
-        android:layout_marginEnd="132dp"
-        android:layout_marginBottom="27dp"
-        android:background="@drawable/list_icon"
-        android:scaleType="centerInside"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <ImageButton
-        android:id="@+id/notification_icon"
-        android:layout_width="62dp"
-        android:layout_height="58dp"
-        android:layout_marginEnd="57dp"
-        android:layout_marginBottom="30dp"
-        android:background="@drawable/notification_icon"
-        android:scaleType="centerInside"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <ImageButton
-        android:id="@+id/settings"
-        android:layout_width="66dp"
-        android:layout_height="64dp"
-        android:layout_marginStart="132dp"
-        android:layout_marginBottom="28dp"
-        android:background="@drawable/settings"
-        android:scaleType="centerInside"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <ImageButton
-        android:id="@+id/profile"
-        android:layout_width="84dp"
-        android:layout_height="84dp"
-        android:layout_marginStart="48dp"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/profile_picture"
+        android:id="@+id/back"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="44dp"
+        android:background="@drawable/vector"
         android:scaleType="centerInside"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

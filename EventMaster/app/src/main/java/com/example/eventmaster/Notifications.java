@@ -1,5 +1,6 @@
 package com.example.eventmaster;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -36,44 +37,80 @@ public class Notifications extends AppCompatActivity {
      * @param savedInstanceState If the activity is being re-initialized after being shut down, this Bundle contains the data it most recently saved.
      */
     private RecyclerView recyclerView;
-    private NotificationsAdapter NotificationsAdapter;
+    private NotificationsAdapter notificationsAdapter;
     private List<Event> inviteList;
     private List<Event> eventList;
+    private List<Event> rejectedList;
     private FirebaseFirestore firestore;
-    private String deviceId; // Replace with actual device ID
-    private FirebaseFirestore db; // Firestore instance
+    private String deviceId;
+    private FirebaseFirestore db;
     private TextView displayName;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ModeActivity.applyTheme(this);
 
-        // Connect the layout with the Java class
-        setContentView(R.layout.notifications_screen); // Make sure the layout file is named correctly
+
+        setContentView(R.layout.notifications_screen);
         Profile user = (Profile) getIntent().getSerializableExtra("User"); // todo: user from MainActivity
 
-        // Initialize Firebase Firestore
         firestore = FirebaseFirestore.getInstance();
         deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
 
-        // Set up RecyclerView
         displayName = findViewById(R.id.textView);
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         inviteList = new ArrayList<>();
         eventList = new ArrayList<>();
-        NotificationsAdapter = new NotificationsAdapter(eventList, this, user);
-        recyclerView.setAdapter(NotificationsAdapter);
+
+
         // Retrieve events from Firestore
         retrieveNotifiedEvents(deviceId);
         retrieveRejectedEvents(deviceId, inviteList);
 
+        notificationsAdapter = new NotificationsAdapter(eventList, this, user, (eventName, facilityID) -> {
+            Intent intent = null;
+
+            if (isEventInList(eventName, inviteList)) {
+                intent = new Intent(this, NotificationInvitedActivity.class);
+            } else if (isEventInList(eventName, rejectedList)) {
+                intent = new Intent(this, NotificationRejectedActivity.class);
+            }
+
+            if (intent != null) {
+                intent.putExtra("event_name", eventName);
+                intent.putExtra("facility_id", facilityID);
+                intent.putExtra("User", user);
+
+                Log.d("Intent", "Passing Event Name: " + eventName);
+                Log.d("Intent", "Passing Facility ID: " + facilityID);
+
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, "Error: Unable to determine event type", Toast.LENGTH_SHORT).show();
+                Log.e("Notifications", "Event not found in either invite or rejected list.");
+            }
+        });
+
+
+        recyclerView.setAdapter(notificationsAdapter);
+
         Toast.makeText(this, "Device ID: " + deviceId, Toast.LENGTH_LONG).show();
+
     }
 
-
+    // checks which event is in which list
+    private boolean isEventInList(String eventName, List<Event> list) {
+        for (Event event : list) {
+            if (event.getEventName().equals(eventName)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     private void retrieveNotifiedEvents(String entrantId) {
 
@@ -85,13 +122,16 @@ public class Notifications extends AppCompatActivity {
                 for (QueryDocumentSnapshot eventDoc : eventTask.getResult()) {
                     // Create Event object and set fields
                     Event event = new Event();
+                    String eventName = eventDoc.getId();
+                    String facilityID = eventDoc.getString("facilityId");
                     event.setEventName(eventDoc.getId()); // Set the document name as eventName
+                    event.setDeviceID(eventDoc.getString("facilityId"));
                     inviteList.add(event);
 //                    Event event = eventDoc.toObject(Event.class);
 //                    event.setDeviceID(entrantId);  // Set the device ID as the entrant ID
 //                    inviteList.add(event);
                 }
-                NotificationsAdapter.notifyDataSetChanged(); // Notify the adapter of data changes
+                notificationsAdapter.notifyDataSetChanged(); // Notify the adapter of data changes
                 Log.d("JoinEventScreen", "Number of waitlisted events: " + inviteList.size());
                 Log.d("JoinEventScreen", "Device ID: " + entrantId);
 
@@ -110,17 +150,20 @@ public class Notifications extends AppCompatActivity {
                 .get()
                 .addOnCompleteListener(rejectedTask -> {   // Retrieve waitlisted events for the specific entrant
             if (rejectedTask.isSuccessful()) {
-                List<Event> rejectedList = new ArrayList<>();
+                rejectedList = new ArrayList<>();
                 for (QueryDocumentSnapshot eventDoc : rejectedTask.getResult()) {
                     Event event = new Event();
+                    String eventName = eventDoc.getId();
+                    String facilityID = eventDoc.getString("facilityId");
                     event.setEventName(eventDoc.getId()); // Set the document name as eventName
+                    event.setDeviceID(eventDoc.getString("facilityId"));
                     rejectedList.add(event);
                 }
 
                 inviteList.addAll(rejectedList);
                 eventList.addAll(inviteList);
 
-                NotificationsAdapter.notifyDataSetChanged(); // Notify the adapter of data changes
+                notificationsAdapter.notifyDataSetChanged(); // Notify the adapter of data changes
                 Log.d("JoinEventScreen", "Number of waitlisted events: " + inviteList.size());
                 Log.d("JoinEventScreen", "Device ID: " + entrantId);
 
