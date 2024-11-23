@@ -191,6 +191,7 @@ public class NotificationInvitedActivity extends AppCompatActivity {
      * Updates Firestore when the user accepts the invitation.
      */
     private void updateFirestoreOnAccept() {
+        removeUserFromInvitedList(facility_id, event_name, user.getDeviceId());
         firestore.collection("facilities")
                 .document(facility_id)
                 .collection("My Events")
