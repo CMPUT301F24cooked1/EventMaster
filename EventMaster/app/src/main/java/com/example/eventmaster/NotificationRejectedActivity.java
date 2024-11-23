@@ -37,7 +37,7 @@ public class NotificationRejectedActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ModeActivity.applyTheme(NotificationRejectedActivity.this);
-        setContentView(R.layout.notification_invited_screen);
+        setContentView(R.layout.notification_rejected_screen);
 
         user = (Profile) getIntent().getSerializableExtra("User");
         event_name = getIntent().getStringExtra("event_name");

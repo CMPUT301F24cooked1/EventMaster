@@ -67,7 +67,7 @@ public class NotificationInvitedActivity extends AppCompatActivity {
 
         fetchEventDescription(facility_id, event_name, event_description_text);
 
-        fetchChoiceStatus(facility_id, event_name, choice_made, accept_invite, decline_invite);
+        fetchChoiceStatus(user.getDeviceId(), event_name, choice_made, accept_invite, decline_invite);
 
         accept_invite.setOnClickListener(v -> {
             updateFirestoreOnAccept();
