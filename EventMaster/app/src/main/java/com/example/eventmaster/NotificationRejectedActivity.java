@@ -48,7 +48,6 @@ public class NotificationRejectedActivity extends AppCompatActivity {
         event_name_text.setText(event_name);
         fetchEventDescription(facility_id, event_name);
 
-
         ImageButton backButton = findViewById(R.id.back);
 
         // Set click listener for the back button

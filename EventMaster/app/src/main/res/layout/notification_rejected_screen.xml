@@ -64,16 +64,21 @@
 
     <TextView
         android:id="@+id/textview"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="120dp"
-        android:text="          You were not selected \n to join the event from the waitlist."
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:gravity="center"
+        android:text=" You were not selected to join the event from the waitlist this time. But don’t worry! You’re still on the waitlist, and we’ll notify you immediately if a spot opens up."
         android:textColor="#757575"
+        android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/scrollView2"
         app:layout_constraintVertical_bias="0.059" />
+
 
     <ImageButton
         android:id="@+id/back"
