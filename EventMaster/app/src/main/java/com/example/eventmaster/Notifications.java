@@ -47,7 +47,11 @@ public class Notifications extends AppCompatActivity {
     private FirebaseFirestore db;
     private TextView displayName;
 
-
+    /**
+     * Initializes the Notifications activity, sets up views, and retrieves event data from Firestore.
+     *
+     * @param savedInstanceState Saved instance state for restoring activity state
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,7 +105,13 @@ public class Notifications extends AppCompatActivity {
 
     }
 
-    // checks which event is in which list
+    /**
+     * Checks if an event is in a given list.
+     *
+     * @param eventName Name of the event to check
+     * @param list List of events to search in
+     * @return True if the event is found, false otherwise
+     */
     private boolean isEventInList(String eventName, List<Event> list) {
         for (Event event : list) {
             if (event.getEventName().equals(eventName)) {
@@ -111,6 +121,11 @@ public class Notifications extends AppCompatActivity {
         return false;
     }
 
+    /**
+     * Retrieves the list of invited events from Firestore.
+     *
+     * @param entrantId The unique identifier for the entrant (device ID)
+     */
     private void retrieveNotifiedEvents(String entrantId) {
         DocumentReference entrantDocRef = firestore.collection("entrants").document(entrantId);
 
@@ -129,7 +144,6 @@ public class Notifications extends AppCompatActivity {
                             event.setEventName(eventName);
                             event.setDeviceID(facilityID);
 
-                            
                             event.setNotificationType("Invited"); 
                             inviteList.add(event); 
                         }
@@ -146,6 +160,12 @@ public class Notifications extends AppCompatActivity {
 
     }
 
+    /**
+     * Retrieves the list of rejected events from Firestore.
+     *
+     * @param entrantId  The unique identifier for the entrant (device ID)
+     * @param inviteList List to add rejected events to
+     */
     private void retrieveRejectedEvents(String entrantId, List<Event> inviteList) {
     firestore.collection("entrants")
             .document(entrantId)
@@ -178,9 +198,7 @@ public class Notifications extends AppCompatActivity {
                     Log.d("Notifications", "No rejected events found.");
                 }
             }).addOnFailureListener(e -> Log.e("Notifications", "Error retrieving rejected events", e));
-}
-
-
+    }
 
 }
 

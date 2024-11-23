@@ -18,6 +18,13 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 
+/**
+ * NotificationInvitedActivity handles user interactions with an event invitation.
+ * <p>
+ * Users can accept or decline an invitation. Based on their choice, the activity updates Firestore records and displays a message that tells them if they accepted/declined.
+ * Users can only press 1 button and their choice will be reflected by a message when they click back on the notification.
+ * </p>
+ */
 public class NotificationInvitedActivity extends AppCompatActivity {
 
     private Profile user;
@@ -26,6 +33,11 @@ public class NotificationInvitedActivity extends AppCompatActivity {
     private String facility_id;
     private FirebaseFirestore firestore;
 
+    /**
+     * Initializes the activity, sets up views, and fetches event data.
+     *
+     * @param savedInstanceState Saved instance state for restoring activity state
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +89,15 @@ public class NotificationInvitedActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Fetches the user's choice status (accepted or declined) and updates the UI accordingly.
+     *
+     * @param facilityId Facility ID
+     * @param eventName Event name
+     * @param choiceMadeText TextView to display the choice made
+     * @param acceptButton Button for accepting the invitation
+     * @param declineButton Button for declining the invitation
+     */
     private void fetchChoiceStatus(String facilityId, String eventName, TextView choiceMadeText, AppCompatButton acceptButton, AppCompatButton declineButton) {
         firestore.collection("facilities")
                 .document(facilityId)
@@ -94,6 +115,11 @@ public class NotificationInvitedActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> Log.e("Firestore", "Error fetching choice status", e));
     }
 
+    /**
+     * Updates the choice status in Firestore.
+     *
+     * @param status The choice status ("accepted" or "declined")
+     */
     private void updateChoiceStatusInFirestore(String status) {
         firestore.collection("facilities")
                 .document(facility_id)
@@ -104,6 +130,14 @@ public class NotificationInvitedActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> Log.e("Firestore", "Error updating choice status", e));
     }
 
+    /**
+     * Updates the UI based on the user's choice.
+     *
+     * @param choiceMadeText TextView to display the choice made
+     * @param choiceStatus   The choice status ("accepted" or "declined")
+     * @param acceptButton   Button for accepting the invitation
+     * @param declineButton  Button for declining the invitation
+     */
     private void updateUIForChoiceMade(TextView choiceMadeText, String choiceStatus, AppCompatButton acceptButton, AppCompatButton declineButton) {
         choiceMadeText.setVisibility(View.VISIBLE);
         acceptButton.setVisibility(View.GONE);
@@ -116,7 +150,13 @@ public class NotificationInvitedActivity extends AppCompatActivity {
         }
     }
 
-
+    /**
+     * Fetches the event description from Firestore.
+     *
+     * @param facilityId Facility ID
+     * @param eventName Event name
+     * @param eventDescriptionText TextView to display the event description
+     */
     private void fetchEventDescription(String facilityId, String eventName, TextView eventDescriptionText) {
         if (facilityId == null || eventName == null) {
             Toast.makeText(this, "Error: Facility ID or Event Name is missing", Toast.LENGTH_SHORT).show();
@@ -147,6 +187,9 @@ public class NotificationInvitedActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Updates Firestore when the user accepts the invitation.
+     */
     private void updateFirestoreOnAccept() {
         firestore.collection("facilities")
                 .document(facility_id)
@@ -165,10 +208,14 @@ public class NotificationInvitedActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Updates Firestore when the user declines the invitation.
+     */
     private void updateFirestoreOnDecline() {
-        // add to decline list, selectedCount in facilities firebase decreases by 1
+        // add to decline list, remove off invited list, selectedCount in facilities firebase decreases by 1
 
         decreaseSelectedCount(facility_id, event_name);
+        removeUserFromInvitedList(facility_id, event_name, user.getDeviceId());
         firestore.collection("facilities")
                 .document(facility_id)
                 .collection("My Events")
@@ -186,6 +233,42 @@ public class NotificationInvitedActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Removes the user from the invited list in Firestore.
+     *
+     * @param facilityId Facility ID
+     * @param eventName Event name
+     * @param deviceId Device ID of the user
+     */
+    private void removeUserFromInvitedList(String facilityId, String eventName, String deviceId) {
+        if (facilityId == null || eventName == null || deviceId == null) {
+            Log.e("Firestore", "Cannot remove user: Missing facilityId, eventName, or deviceId");
+            return;
+        }
+
+        firestore.collection("facilities")
+                .document(facilityId)
+                .collection("My Events")
+                .document(eventName)
+                .collection("invited list")
+                .document(deviceId)
+                .delete()
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(this, "Successfully removed from invited list", Toast.LENGTH_SHORT).show();
+                    Log.d("Firestore", "Device ID removed from invited list successfully");
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Failed to remove from invited list", Toast.LENGTH_SHORT).show();
+                    Log.e("Firestore", "Error removing device ID from invited list", e);
+                });
+    }
+
+    /**
+     * Decreases the selectedCount field in Firestore by 1.
+     *
+     * @param facilityId Facility ID
+     * @param eventName Event name
+     */
     private void decreaseSelectedCount(String facilityId, String eventName) {
         if (facilityId == null || eventName == null) {
             Toast.makeText(this, "Error: Facility ID or Event Name is missing", Toast.LENGTH_SHORT).show();
