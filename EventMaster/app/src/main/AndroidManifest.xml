@@ -58,6 +58,8 @@
         <activity android:name=".UnjoinWaitlistScreen" />
         <activity android:name=".AppInfoActivity" />
         <activity android:name=".QrCaptureActivity" />
+        <activity android:name=".NotificationInvitedActivity" />
+        <activity android:name=".NotificationRejectedActivity" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
