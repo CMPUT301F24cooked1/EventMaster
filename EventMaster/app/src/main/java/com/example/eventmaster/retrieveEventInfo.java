@@ -1,5 +1,13 @@
 package com.example.eventmaster;
 
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+
+import static com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY;
+
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -16,8 +24,12 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.app.ActivityCompat;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.Priority;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -34,6 +46,12 @@ import org.w3c.dom.Text;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.tasks.OnSuccessListener;
+
+
 /**
  * Initializes the Event Information Screen
  * Allows entrant to join waitlist notifying firebase
@@ -43,9 +61,10 @@ import java.util.Map;
 public class retrieveEventInfo extends AppCompatActivity {
     /**
      * Initializes the Event Information Screen
+     *
      * @param savedInstanceState If the activity is being re-initialized after
-     *     previously being shut down then this Bundle contains the data it most
-     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     * previously being shut down then this Bundle contains the data it most
+     * recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
      * @param hashedData the hash data of the event that is needed in order to access proper data
      * @param deviceID the facilities device ID
      * @param event the event // dont think I need this
@@ -63,7 +82,13 @@ public class retrieveEventInfo extends AppCompatActivity {
     private String email;
     private String phone_number;
     private Long waitlistCapacity;
+
     private boolean geolocation;
+    private double latitude;
+    private double longitude;
+    private FusedLocationProviderClient fusedLocationProviderClient;
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+    private LocationCallback locationCallback;
 
     private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
     private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
@@ -74,10 +99,10 @@ public class retrieveEventInfo extends AppCompatActivity {
     /**
      * Creates the event information screen where the user can view event details, name and poster
      * There is also a button that allows them to join the waiting list for the event, this will update the firestore database
-     * @param savedInstanceState If the activity is being re-initialized after
-     *     previously being shut down then this Bundle contains the data it most
-     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
      *
+     * @param savedInstanceState If the activity is being re-initialized after
+     *                           previously being shut down then this Bundle contains the data it most
+     *                           recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +119,7 @@ public class retrieveEventInfo extends AppCompatActivity {
 
 
         Intent intentMain = getIntent();
-        user =  (Profile) intentMain.getSerializableExtra("User");
+        user = (Profile) intentMain.getSerializableExtra("User");
 
         // will need to access user device id but just hardcoded for now
         String userDeviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -109,7 +134,7 @@ public class retrieveEventInfo extends AppCompatActivity {
                             name = documentSnapshot.getString("name");
                             email = documentSnapshot.getString("email");
                             phone_number = documentSnapshot.getString("phone number");
-                        }else{
+                        } else {
                             Log.d("Firestore", "Document does not exist");
                         }
                     }
@@ -142,13 +167,45 @@ public class retrieveEventInfo extends AppCompatActivity {
             Toast.makeText(this, "Failed to retrieve event data.", Toast.LENGTH_SHORT).show();
         }
 
+        ActivityCompat.requestPermissions(this, new String[]{ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION},
+                PackageManager.PERMISSION_GRANTED);
+
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
         // links the description screen to the join waitlist screen
         joinWaitlistButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getAndCompareDocumentCount(deviceID, userDeviceId, hashedData, deviceID, posterUrl); //checks if waitlist is full
+                getAndCompareDocumentCount(deviceID, userDeviceId, hashedData, deviceID, posterUrl);
+                if (geolocation) {
+                    buttonGetLocation();
+                }
             }
         });
+
+        LocationRequest locationRequest = new LocationRequest.Builder(PRIORITY_HIGH_ACCURACY, 100)
+                .setWaitForAccurateLocation(false)
+                .setMinUpdateIntervalMillis(2000)
+                .setMaxUpdateDelayMillis(100)
+                .build();
+        LocationCallback locationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(@NonNull LocationResult locationResult) {
+                if (locationResult == null) {
+                    return;
+                }
+                // Handle live location updates if necessary
+            }
+        };
+
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+
+        LocationServices.getFusedLocationProviderClient(getApplicationContext())
+                .requestLocationUpdates(locationRequest, locationCallback, null);
+
+
 
         // Initialize navigation buttons
         ImageButton notificationButton = findViewById(R.id.notification_icon);
@@ -250,6 +307,41 @@ public class retrieveEventInfo extends AppCompatActivity {
             setResult(RESULT_OK, resultIntent);
             finish();
         });
+
+    }
+
+    public void buttonGetLocation() {
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        fusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                if (location != null) {
+                    latitude = location.getLatitude();
+                    longitude = location.getLongitude();
+                } else {
+                    latitude = 0;
+                    longitude = 0;
+                }
+                Toast.makeText(retrieveEventInfo.this, "This is the longitude and latitude" + longitude + latitude, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        Map<String, Object> geolocation = new HashMap<>();
+        geolocation.put("longitude", Double.toString(longitude));
+        geolocation.put("latitude", Double.toString(latitude));
+        db.collection("entrants")
+                .document(user.getDeviceId())
+                .update(geolocation)
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("Firestore", "Fields add successfully");
+                })
+                .addOnFailureListener(e -> {
+                    Log.w("Firestore", "Error adding fields", e);
+                });
 
     }
 
