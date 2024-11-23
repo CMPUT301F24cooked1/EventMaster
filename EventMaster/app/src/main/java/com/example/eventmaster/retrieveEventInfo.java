@@ -63,6 +63,7 @@ public class retrieveEventInfo extends AppCompatActivity {
     private String email;
     private String phone_number;
     private Long waitlistCapacity;
+    private boolean geolocation;
 
     private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
     private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
@@ -278,6 +279,7 @@ public class retrieveEventInfo extends AppCompatActivity {
                                 String eventPosterUrl = document.getString("posterUrl");
                                 String waitlistCountdown = document.getString("waitlistCountdown");
                                 waitlistCapacity = document.getLong("waitlistCapacity");
+                                geolocation = document.getBoolean("geolocationEnabled");
 
                                 // Call the display method with the retrieved data
                                 displayEventInfo(eventName, eventDescription, eventPosterUrl, waitlistCountdown);
@@ -301,11 +303,18 @@ public class retrieveEventInfo extends AppCompatActivity {
         TextView eventNameTextView = findViewById(R.id.event_name);
         TextView eventDescriptionTextView = findViewById(R.id.event_decription);
         TextView countdownTextView = findViewById(R.id.event_open_time);
+        TextView geolocationTextView = findViewById(R.id.geolocation);
 
         // Set the text for the TextViews
         eventNameTextView.setText(eventName);
         eventDescriptionTextView.setText(eventDescription);
         countdownTextView.setText("Event is Open until: " + waitlistCountdown);
+
+        if (geolocation) {
+            geolocationTextView.setText("Event requires geolocation");
+        } else {
+            geolocationTextView.setText("Event does not require geolocation");
+        }
 
         if (eventPosterUrl == null){
             eventPoster.setImageResource(R.drawable.default_poster); // set default poster
