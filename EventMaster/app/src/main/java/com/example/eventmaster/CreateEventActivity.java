@@ -3,10 +3,13 @@ package com.example.eventmaster;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -16,10 +19,13 @@ import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -101,12 +107,11 @@ public class CreateEventActivity extends AppCompatActivity {
         createEventButton = findViewById(R.id.createEventButton);
         uploadPosterButton = findViewById(R.id.Upload_poster_button);
 
-        // Initialize navigation buttons
-        ImageButton notificationButton = findViewById(R.id.notification);
-        ImageButton settingsButton = findViewById(R.id.settings);
-        ImageButton profileButton = findViewById(R.id.profile);
-        ImageButton viewEventsButton = findViewById(R.id.view_events);
-        ImageButton backButton = findViewById(R.id.back_button); // Initialize back button
+        ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
+        ActivityResultLauncher<Intent> notificationActivityResultLauncher;
+        ActivityResultLauncher<Intent> settingsResultLauncher;
+        ActivityResultLauncher<Intent> MainActivityResultLauncher;
+        android.content.Intent Intent;
 
         geolocationSwitch = findViewById(R.id.geolocation_switch);
 
@@ -117,31 +122,7 @@ public class CreateEventActivity extends AppCompatActivity {
         waitlistCountdownText.setOnClickListener(v -> showDateTimePicker());
 
         // Set click listeners for navigation
-        notificationButton.setOnClickListener(v -> {
-            Intent intent = new Intent(CreateEventActivity.this, Notifications.class);
-            startActivity(intent);
-        });
 
-        settingsButton.setOnClickListener(v -> {
-            Intent intent = new Intent(CreateEventActivity.this, SettingsScreen.class);
-            startActivity(intent);
-        });
-
-        profileButton.setOnClickListener(v -> {
-            Intent intent = new Intent(CreateEventActivity.this, ProfileActivity.class);
-            intent.putExtra("User", user);
-            startActivity(intent);
-        });
-
-        viewEventsButton.setOnClickListener(v -> {
-            Intent intent = new Intent(CreateEventActivity.this, ViewCreatedEventsActivity.class);
-            startActivity(intent);
-        });
-
-        // Set click listener for the back button
-        backButton.setOnClickListener(v -> {
-            finish(); // Close the current activity and return to the previous one
-        });
 
         // Set up the upload poster button
         uploadPosterButton.setOnClickListener(v -> openFileChooser()); // Open the image chooser
@@ -151,7 +132,111 @@ public class CreateEventActivity extends AppCompatActivity {
             // Call createEvent before proceeding to the next activity
             createEvent();
         });
+
+        // Set result launchers to set up navigation buttons on the bottom of the screen
+        settingsResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+
+                });
+
+        MainActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+
+                });
+
+        notificationActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+
+                });
+
+        ProfileActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+
+                });
+
+
+        // Initialize BottomNavigationView
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        // Disable tint for specific menu item
+        Menu menu = bottomNavigationView.getMenu();
+        MenuItem qrCodeItem = menu.findItem(R.id.nav_scan_qr);
+        Drawable qrIcon = qrCodeItem.getIcon();
+        qrIcon.setTintList(null);  // Disable tinting for this specific item
+        // Set up navigation item selection listener
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            Intent newIntent;
+
+            if (item.getItemId() == R.id.nav_Home) {
+                newIntent = new Intent(CreateEventActivity.this, MainActivity.class);
+                newIntent.putExtra("User", user);
+                MainActivityResultLauncher.launch(newIntent);
+                return true;
+            } else if (item.getItemId() == R.id.nav_Settings) {
+                newIntent = new Intent(CreateEventActivity.this, SettingsScreen.class);
+                newIntent.putExtra("User", user);
+                settingsResultLauncher.launch(newIntent);
+                return true;
+            } else if (item.getItemId() == R.id.nav_Notifications) {
+                newIntent = new Intent(CreateEventActivity.this, Notifications.class);
+                newIntent.putExtra("User", user);
+                notificationActivityResultLauncher.launch(newIntent);
+                return true;
+            } else if (item.getItemId() == R.id.nav_Profile) {
+                newIntent = new Intent(CreateEventActivity.this, ProfileActivity.class);
+                newIntent.putExtra("User", user);
+                ProfileActivityResultLauncher.launch(newIntent);
+                return true;
+            }else if (item.getItemId() == R.id.nav_scan_qr) {
+                openQRScanFragment();
+                return true;
+            }
+            return false;
+        });
+
+
+
     }
+    private void openQRScanFragment() {
+        // Open QRScanFragment without simulating button click
+        Intent intent = new Intent(this, QRScanFragment.class);
+        intent.putExtra("User", user);  // Pass the user information if needed
+        startActivity(intent);
+
+    }
+
+
 
     /**
      * Displays a date and time picker for the waitlist countdown. Ensures the selected date is in the future.

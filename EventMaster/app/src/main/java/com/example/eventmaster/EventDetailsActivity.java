@@ -6,6 +6,8 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,10 +17,13 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -39,6 +44,12 @@ public class EventDetailsActivity extends AppCompatActivity {
     private static Bitmap cachedPosterBitmap; // Static variable to cache the poster image
     private String deviceId; // Replace with actual device ID
     private Profile user;
+    private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
+    private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
+    private ActivityResultLauncher<Intent> settingsResultLauncher;
+    private ActivityResultLauncher<Intent> MainActivityResultLauncher;
+    private android.content.Intent Intent;
+
 
     /**
             * Called when the activity is created. Initializes the UI components and retrieves
@@ -65,41 +76,112 @@ public class EventDetailsActivity extends AppCompatActivity {
 
         // Load event details from Firestore
         loadEventDetails();
-        // Initialize navigation buttons
-        ImageButton notificationButton = findViewById(R.id.notification_icon);
-        ImageButton settingsButton = findViewById(R.id.settings);
-        ImageButton profileButton = findViewById(R.id.profile);
-        ImageButton homeButton = findViewById(R.id.home_icon);
-        ImageButton backButton = findViewById(R.id.back_button); // Initialize back button
+
         deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        // Set result launchers to set up navigation buttons on the bottom of the screen
+        settingsResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
 
-        // Set click listeners for navigation
-        notificationButton.setOnClickListener(v -> {
-            Intent intent = new Intent(EventDetailsActivity.this, Notifications.class);
-            startActivity(intent);
+                });
+
+        MainActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+
+                });
+
+        notificationActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+
+                });
+
+        ProfileActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+
+                });
+
+
+        // Initialize BottomNavigationView
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        // Disable tint for specific menu item
+        Menu menu = bottomNavigationView.getMenu();
+        MenuItem qrCodeItem = menu.findItem(R.id.nav_scan_qr);
+        Drawable qrIcon = qrCodeItem.getIcon();
+        qrIcon.setTintList(null);  // Disable tinting for this specific item
+        // Set up navigation item selection listener
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            Intent newIntent;
+
+            if (item.getItemId() == R.id.nav_Home) {
+                newIntent = new Intent(EventDetailsActivity.this, MainActivity.class);
+                newIntent.putExtra("User", user);
+                MainActivityResultLauncher.launch(newIntent);
+                return true;
+            } else if (item.getItemId() == R.id.nav_Settings) {
+                newIntent = new Intent(EventDetailsActivity.this, SettingsScreen.class);
+                newIntent.putExtra("User", user);
+                settingsResultLauncher.launch(newIntent);
+                return true;
+            } else if (item.getItemId() == R.id.nav_Notifications) {
+                newIntent = new Intent(EventDetailsActivity.this, Notifications.class);
+                newIntent.putExtra("User", user);
+                notificationActivityResultLauncher.launch(newIntent);
+                return true;
+            } else if (item.getItemId() == R.id.nav_Profile) {
+                newIntent = new Intent(EventDetailsActivity.this, ProfileActivity.class);
+                newIntent.putExtra("User", user);
+                ProfileActivityResultLauncher.launch(newIntent);
+                return true;
+            }else if (item.getItemId() == R.id.nav_scan_qr) {
+                openQRScanFragment();
+                return true;
+            }
+            return false;
         });
 
-        settingsButton.setOnClickListener(v -> {
-            Intent intent = new Intent(EventDetailsActivity.this, SettingsScreen.class);
-            startActivity(intent);
-        });
 
-        profileButton.setOnClickListener(v -> {
-            Intent intent = new Intent(EventDetailsActivity.this, ProfileActivity.class);
-            intent.putExtra("User", user);
-            startActivity(intent);
-        });
-
-        homeButton.setOnClickListener(v -> {
-            Intent intent = new Intent(EventDetailsActivity.this, MainActivity.class);
-            startActivity(intent);
-        });
-        // Set click listener for the back button
-        backButton.setOnClickListener(v -> {
-            finish(); // Close the current activity and return to the previous one
-        });
 
     }
+    private void openQRScanFragment() {
+        // Open QRScanFragment without simulating button click
+        Intent intent = new Intent(this, QRScanFragment.class);
+        intent.putExtra("User", user);  // Pass the user information if needed
+        startActivity(intent);
+
+    }
+
+
 
     /**
      * Loads event details from Firestore, including event name, description, and QR code.
