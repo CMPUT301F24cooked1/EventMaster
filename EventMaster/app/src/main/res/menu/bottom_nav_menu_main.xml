@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_Events"
+        android:icon="@drawable/list_icon"
+        android:title="Events" />
+    <item
+        android:id="@+id/nav_Settings"
+        android:icon="@drawable/settings"
+        android:title="Settings" />
+    <item
+        android:id="@+id/nav_scan_qr"
+        android:icon="@drawable/scan_qr_icon"
+        android:title="Scan" />
+
+    <item
+        android:id="@+id/nav_Notifications"
+        android:icon="@drawable/notification_icon"
+        android:title="Notifications" />
+    <item
+        android:id="@+id/nav_Profile"
+        android:icon="@drawable/profile_picture"
+        android:title="Profile" />
+</menu>

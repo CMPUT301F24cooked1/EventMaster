@@ -4,10 +4,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -33,6 +36,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -57,8 +61,10 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private String deviceId;
     private Facility userFacility;
-    private ActivityResultLauncher<Intent> settingResultLauncher;
-    private ActivityResultLauncher<Intent> profileResultLauncher;
+    private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
+    private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
+    private ActivityResultLauncher<Intent> settingsResultLauncher;
+    private ActivityResultLauncher<Intent> MainActivityResultLauncher;
     private ActivityResultLauncher<Intent> createEventResultLauncher;
     private ActivityResultLauncher<Intent> joinEventScreenResultLauncher;
     private ActivityResultLauncher<Intent> joinedEventsActivityResultLauncher;
@@ -105,31 +111,6 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        // Connecting the home screen to the SettingsScreen
-        settingResultLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(), result -> {
-                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
-                        if (updatedUser != null) {
-                            user = updatedUser; // Apply the updated Profile to MainActivity's user
-                            Log.d("MainActivity", "User profile updated: " + user.getName());
-                        }
-                    }
-                }
-        );
-
-        // Connecting the home screen to the profile
-        profileResultLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),result ->{
-                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
-                        if (updatedUser != null) {
-                            user = updatedUser; // Apply the updated Profile to MainActivity's user
-                            Log.d("MainActivity", "User profile updated: " + user.getName());
-                        }
-                    }
-                }
-        );
 
         // Connecting home screen to list of joined events screen
         joinedEventsActivityResultLauncher = registerForActivityResult(
@@ -178,18 +159,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Reference to the settings button
-        ImageButton settingButton = findViewById(R.id.settings);
 
-        settingButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Send user to SettingsScreen class
-                Intent intent = new Intent(MainActivity.this, SettingsScreen.class);
-                intent.putExtra("User", user);
-                settingResultLauncher.launch(intent);
-            }
-        });
 
 
         // Reference to the join events button
@@ -206,33 +176,6 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, JoinEventScreen.class);
                 intent.putExtra("User", user);
                 joinEventScreenResultLauncher.launch(intent);
-            }
-        });
-
-        // Reference to the profile button
-        ImageButton profileButton = findViewById(R.id.profile);
-
-        profileButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Send user to ProfileActivity class
-                Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
-                intent.putExtra("User", user);
-                profileResultLauncher.launch(intent);
-            }
-        });
-
-        // Reference to the list button
-        ImageButton listButton = findViewById(R.id.list_icon);
-
-        listButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Send user to JoinedEventsActivity class
-                Intent intent = new Intent(MainActivity.this, JoinedEventsActivity.class);
-                intent.putExtra("User", user);
-                joinedEventsActivityResultLauncher.launch(intent);
-
             }
         });
 
@@ -287,7 +230,97 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+        // Set result launchers to set up navigation buttons on the bottom of the screen
+        settingsResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+
+                });
+
+
+        notificationActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+
+                });
+
+        ProfileActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+
+                });
+        // Initialize BottomNavigationView
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_menu_main);
+        // Disable tint for specific menu item
+        Menu menu = bottomNavigationView.getMenu();
+        MenuItem qrCodeItem = menu.findItem(R.id.nav_scan_qr);
+        Drawable qrIcon = qrCodeItem.getIcon();
+        qrIcon.setTintList(null);  // Disable tinting for this specific item
+        // Set up navigation item selection listener
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            Intent newIntent;
+
+            if (item.getItemId() == R.id.nav_Events) {
+                newIntent = new Intent(MainActivity.this, JoinedEventsActivity.class);
+                newIntent.putExtra("User", user);
+                joinedEventsActivityResultLauncher.launch(newIntent);
+                return true;
+            } else if (item.getItemId() == R.id.nav_Settings) {
+                newIntent = new Intent(MainActivity.this, SettingsScreen.class);
+                newIntent.putExtra("User", user);
+                settingsResultLauncher.launch(newIntent);
+                return true;
+            } else if (item.getItemId() == R.id.nav_Notifications) {
+                newIntent = new Intent(MainActivity.this, Notifications.class);
+                newIntent.putExtra("User", user);
+                notificationActivityResultLauncher.launch(newIntent);
+                return true;
+            } else if (item.getItemId() == R.id.nav_Profile) {
+                newIntent = new Intent(MainActivity.this, ProfileActivity.class);
+                newIntent.putExtra("User", user);
+                ProfileActivityResultLauncher.launch(newIntent);
+                return true;
+            }else if (item.getItemId() == R.id.nav_scan_qr) {
+                openQRScanFragment();
+                return true;
+            }
+            return false;
+        });
+
+
+
     }
+    private void openQRScanFragment() {
+        // Open QRScanFragment without simulating button click
+        Intent intent = new Intent(this, QRScanFragment.class);
+        intent.putExtra("User", user);  // Pass the user information if needed
+        startActivity(intent);
+
+    }
+
+
 
     /**
      * Adds deviceID to firestore DB in a given collection, checks if deviceID has already been added.
