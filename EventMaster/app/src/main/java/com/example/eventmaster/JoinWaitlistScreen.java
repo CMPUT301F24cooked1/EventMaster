@@ -1,6 +1,7 @@
 package com.example.eventmaster;
 
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -22,6 +23,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import org.w3c.dom.Text;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,6 +39,7 @@ public class JoinWaitlistScreen extends AppCompatActivity {
     TextView eventFinalDate;
     ImageView eventPoster;
     private Profile user;
+    private boolean geolocation;
 
 
     //private Profile user;
@@ -83,7 +87,6 @@ public class JoinWaitlistScreen extends AppCompatActivity {
         } else {
             Toast.makeText(this, "Failed to retrieve event data.", Toast.LENGTH_SHORT).show();
         }
-
 
 
 
@@ -184,6 +187,8 @@ public class JoinWaitlistScreen extends AppCompatActivity {
 
     }
 
+
+
     /**
      * Retrieves the event's hash data, name, description and poster
      * @param hashedData
@@ -207,6 +212,7 @@ public class JoinWaitlistScreen extends AppCompatActivity {
                                 String eventName = document.getString("eventName");
                                 String eventDescription = document.getString("eventDescription");
                                 String eventPosterUrl = document.getString("posterUrl");
+                                geolocation = document.getBoolean("geolocationEnabled");
 
                                 // Call the display method with the retrieved data
                                 displayEventInfo(eventName, eventDescription, eventPosterUrl);//eventPosterUrl);
@@ -230,10 +236,18 @@ public class JoinWaitlistScreen extends AppCompatActivity {
     private void displayEventInfo(String eventName, String eventDescription, String eventPosterUrl) {
         TextView eventNameTextView = findViewById(R.id.event_name);
         TextView eventDescriptionTextView = findViewById(R.id.event_decription);
+        TextView geolocationTextView = findViewById(R.id.geolocation);
 
         // Set the text for the TextViews
         eventNameTextView.setText(eventName);
         eventDescriptionTextView.setText(eventDescription);
+
+        if (geolocation) {
+            geolocationTextView.setText("Event requires geolocation");
+        } else {
+            geolocationTextView.setText("Event does not require geolocation");
+        }
+
 
         if (eventPosterUrl == null){
             eventPoster.setImageResource(R.drawable.default_poster);  // set default poster
