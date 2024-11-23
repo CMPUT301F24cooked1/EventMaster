@@ -8,11 +8,11 @@ import java.util.Date;
 
 /**
  * Runs unit tests for the Event Class.
- */
+
 public class EventUnitTest {
     /**
      * Tests the getter for the Event name.
-     */
+
     @Test
     void testGetEventName() {
         long date = 1748761200;
@@ -23,7 +23,7 @@ public class EventUnitTest {
 
     /**
      * Tests the setter for the Event name.
-     */
+
     @Test
     void testSetEventName() {
         long date = 1748761200;
@@ -35,7 +35,7 @@ public class EventUnitTest {
 
     /**
      * Tests the getter for the Event capacity.
-     */
+
     @Test
     void testGetEventCapacity() {
         long date = 1748761200;
@@ -46,7 +46,7 @@ public class EventUnitTest {
 
     /**
      * Tests the setter for the Event capacity.
-     */
+
     @Test
     void testSetEventCapacity() {
         long date = 1748761200;
@@ -58,7 +58,7 @@ public class EventUnitTest {
 
     /**
      * Tests the getter for the final Event date.
-     */
+
     @Test
     void testGetDate() {
         long date = 1748761200;
@@ -69,7 +69,7 @@ public class EventUnitTest {
 
     /**
      * Tests the setter for the final Event date.
-     */
+
     @Test
     void testSetDate() {
         long date = 1748761200;
@@ -81,3 +81,4 @@ public class EventUnitTest {
         assertEquals(testDate2, userEvent.getEventFinalDate());
     }
 }
+/**/
