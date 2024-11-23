@@ -205,6 +205,7 @@ public class ViewRejectedListActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             String userDeviceId = document.getId();
+                            rejectedIds.add(userDeviceId);
                             fetchUserName(userDeviceId); // Fetch the name for each userDeviceId
                         }
                     } else {
