@@ -75,6 +75,13 @@ public class ViewRejectedListActivity extends AppCompatActivity {
         firestore = FirebaseFirestore.getInstance();
         deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
+        notifyButton = findViewById(R.id.send_notification_button);
+
+        notifyButton.setOnClickListener(v -> {
+            String notifyDate = String.valueOf(System.currentTimeMillis());
+            setNotifiedInFirestore(eventName, notifyDate);
+        });
+
         // Fetch the waitlist from Firebase
         fetchrejectedList();
         ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
