@@ -330,18 +330,6 @@ public class retrieveEventInfo extends AppCompatActivity {
             }
         });
 
-        Map<String, Object> geolocation = new HashMap<>();
-        geolocation.put("longitude", Double.toString(longitude));
-        geolocation.put("latitude", Double.toString(latitude));
-        db.collection("entrants")
-                .document(user.getDeviceId())
-                .update(geolocation)
-                .addOnSuccessListener(aVoid -> {
-                    Log.d("Firestore", "Fields add successfully");
-                })
-                .addOnFailureListener(e -> {
-                    Log.w("Firestore", "Error adding fields", e);
-                });
 
     }
 
@@ -510,6 +498,8 @@ public class retrieveEventInfo extends AppCompatActivity {
         entrantData.put("email", email);
         entrantData.put("name", name);
         entrantData.put("phone number", phone_number);
+        entrantData.put("latitude", latitude);
+        entrantData.put("longitude", longitude);
 
         db.collection("facilities")
                 .whereEqualTo("deviceId", deviceId)
