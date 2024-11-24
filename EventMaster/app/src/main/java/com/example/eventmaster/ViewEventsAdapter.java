@@ -13,6 +13,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -39,6 +41,7 @@ public class ViewEventsAdapter extends RecyclerView.Adapter<ViewEventsAdapter.Ev
      */
     private List<Event> eventList;
     private ArrayList<Event> selectedEvents = new ArrayList<>();
+    private ArrayList<Event> selectedEventsStorage = new ArrayList<>();
     private Context context;
     private Profile user;
     private Boolean isAdmin = false;
@@ -84,6 +87,9 @@ public class ViewEventsAdapter extends RecyclerView.Adapter<ViewEventsAdapter.Ev
             if (isChecked) {
                 if (!selectedEvents.contains(eventList.get(position))) {
                     selectedEvents.add(eventList.get(position));
+                    selectedEventsStorage.add(eventList.get(position));
+                    Log.d("EVENTS", "selectedEvents size: "+ selectedEvents.size());
+                    Log.d("EVENTS", "selected event: "+ selectedEvents);
                 }
             } else {
                 selectedEvents.remove(eventList.get(position));
@@ -114,13 +120,17 @@ public class ViewEventsAdapter extends RecyclerView.Adapter<ViewEventsAdapter.Ev
      */
     public void deleteSelectedEvents() {
         firestore = FirebaseFirestore.getInstance();
-        if (!selectedEvents.isEmpty()) {
+        if (!selectedEventsStorage.isEmpty()) {
             CollectionReference facilitiesRef = firestore.collection("facilities");
             Log.d("Firestore Debug", "Attempting to fetch facilities");
 
             facilitiesRef.get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     Log.d("Firestore Debug", "Facilities fetched successfully");
+                    Log.d("Firestore Debug", "Selected events: " + selectedEventsStorage);
+
+                    List<Task<Void>> deleteTasks = new ArrayList<>();
+
                     for (QueryDocumentSnapshot facilityDoc : task.getResult()) {
                         // Retrieve events for each facility
                         CollectionReference eventsRef = facilityDoc.getReference().collection("My Events");
@@ -130,20 +140,22 @@ public class ViewEventsAdapter extends RecyclerView.Adapter<ViewEventsAdapter.Ev
                                 for (QueryDocumentSnapshot eventDoc : eventTask.getResult()) {
                                     Event event = eventDoc.toObject(Event.class);
                                     String documentId = eventDoc.getId();
-                                    Log.d("Selected Events", "Selected Events: " + selectedEvents.toString());
-                                    Log.d("Current Event", "Current Event: " + event.toString());
-                                    if (selectedEvents.contains(event)) {
+                                    Log.d("Selected Events", "Selected Events: " + selectedEventsStorage);
+                                    Log.d("Current Event", "Current Event: " + event);
+
+                                    if (selectedEventsStorage.contains(event)) {
                                         // Use the document ID to delete the event
                                         DocumentReference eventRef = eventsRef.document(documentId);
-
-                                        eventRef.delete().addOnSuccessListener(aVoid -> {
+                                        Task<Void> deleteTask = eventRef.delete().addOnSuccessListener(aVoid -> {
                                             Log.d("Event Deletion", "Event deleted successfully with ID: " + documentId);
+                                            eventList.remove(event); // Ensure dataset consistency
+                                            notifyDataSetChanged();
                                         }).addOnFailureListener(e -> {
                                             Log.e("Event Deletion", "Error deleting event: " + e.getMessage());
                                         });
 
-                                        // Optionally remove the event from your local list
-                                        eventList.remove(event);
+                                        // Add this task to the list
+                                        deleteTasks.add(deleteTask);
                                     }
                                 }
                             } else {
@@ -153,15 +165,24 @@ public class ViewEventsAdapter extends RecyclerView.Adapter<ViewEventsAdapter.Ev
                             Log.e("Firestore Failure", "Failed to fetch events", e);
                         });
                     }
+
+                    // Wait for all delete tasks to complete
+                    Tasks.whenAll(deleteTasks).addOnCompleteListener(allTasks -> {
+                        if (allTasks.isSuccessful()) {
+                            Log.d("Firestore Debug", "All selected events deleted successfully");
+                        } else {
+                            Log.e("Firestore Debug", "Error deleting some events", allTasks.getException());
+                        }
+                        // Notify the adapter once all deletions are done
+                        notifyDataSetChanged();
+                    });
+
                 } else {
                     Log.e("Firestore Error", "Error fetching facilities: ", task.getException());
                 }
             }).addOnFailureListener(e -> {
                 Log.e("Firestore Failure", "Failed to fetch facilities", e);
             });
-
-            // Move notifyDataSetChanged() inside the success block to ensure it only runs after events are deleted
-            notifyDataSetChanged();
         } else {
             Log.d("Firestore Debug", "No selected events to delete");
         }

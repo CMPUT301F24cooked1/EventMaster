@@ -96,9 +96,9 @@ public class ViewProfilesAdapter extends RecyclerView.Adapter<ViewProfilesAdapte
         holder.checkBox.setVisibility(showCheckBox ? View.VISIBLE : View.GONE);
 
         // display profile picture
-        if (profile.getName() != null){
-            ProfilePicture.loadProfilePicture(profile, holder.profilePicture, context);
-        }
+        //if (profile.getName() != null){
+        //    ProfilePicture.loadProfilePicture(profile, holder.profilePicture, context);
+        //}
     }
 
     /**

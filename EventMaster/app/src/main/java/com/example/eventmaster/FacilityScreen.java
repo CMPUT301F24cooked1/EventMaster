@@ -87,7 +87,7 @@ public class FacilityScreen extends AppCompatActivity {
         assert userFacility != null;
 
         //Updates facility info in the database
-        updateFacilityInfo(userFacility.getDeviceID(), userFacility.getFacilityName(), userFacility.getFacilityAddress(), userFacility.getFacilityDesc());
+        updateFacilityInfo(userFacility.getDeviceId(), userFacility.getFacilityName(), userFacility.getFacilityAddress(), userFacility.getFacilityDesc());
 
         //Set text for Facility fields.
         facilityNameText = findViewById(R.id.facilityNameText);
@@ -119,7 +119,7 @@ public class FacilityScreen extends AppCompatActivity {
                 if (returnResult != null && returnResult.getResultCode() == RESULT_OK) {
                     if (returnResult.getData() != null && returnResult.getData().getSerializableExtra("editedUserFacility") != null) {
                         updatedUserFacility = (Facility) returnResult.getData().getSerializableExtra("editedUserFacility");
-                        updateFacilityInfo(updatedUserFacility.getDeviceID(), updatedUserFacility.getFacilityName(), updatedUserFacility.getFacilityAddress(), updatedUserFacility.getFacilityDesc());
+                        updateFacilityInfo(updatedUserFacility.getDeviceId(), updatedUserFacility.getFacilityName(), updatedUserFacility.getFacilityAddress(), updatedUserFacility.getFacilityDesc());
                         facilityNameText.setText(updatedUserFacility.getFacilityName());
                         facilityAddressText.setText(updatedUserFacility.getFacilityAddress());
                         facilityDescText.setText(updatedUserFacility.getFacilityDesc());

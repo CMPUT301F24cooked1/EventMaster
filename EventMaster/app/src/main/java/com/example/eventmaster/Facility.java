@@ -9,25 +9,30 @@ import java.io.Serializable;
  *
  */
 public class Facility implements Serializable {
-    private String deviceID;
+    private String deviceId;
     private String facilityName;
     private String facilityAddress;
     private String facilityDesc;
+
+
+    public Facility(){
+        // empty constructor
+    }
 
     /**
      * Constructs a new Facility object with all the details
      * This constructor initializes the facility with its given name, address, and description
      * as well as the deviceID of the user it's tied to
-     * @param deviceID Device ID of the user whose Facility it is.
+     * @param deviceId Device ID of the user whose Facility it is.
      * @param facilityName The name of the Facility.
      * @param facilityAddress The address of the Facility.
      * @param facilityDesc The description of the Facility.
      */
-    public Facility(String deviceID, String facilityName, String facilityAddress, String facilityDesc) {
+    public Facility(String deviceId, String facilityName, String facilityAddress, String facilityDesc) {
         this.facilityName = facilityName;
         this.facilityAddress = facilityAddress;
         this.facilityDesc = facilityDesc;
-        this.deviceID = deviceID;
+        this.deviceId = deviceId;
     }
 
     /**
@@ -89,16 +94,16 @@ public class Facility implements Serializable {
      *
      * @return the deviceId of the user
      */
-    public String getDeviceID() {
-        return deviceID;
+    public String getDeviceId() {
+        return deviceId;
     }
 
     /**
      * Sets the deviceId of the user.
      *
-     * @param deviceID the deviceID of the user's device
+     * @param deviceId the deviceID of the user's device
      */
-    public void setDeviceID(String deviceID) {
-        this.deviceID = deviceID;
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
     }
 }
