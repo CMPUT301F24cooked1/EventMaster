@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/app_background"
-    tools:context=".ViewCreatedEventsActivity">
+    tools:context=".ViewInvitedListActivity">
 
     <TextView
         android:id="@+id/textView"
@@ -13,7 +13,7 @@
         android:layout_marginStart="92dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="93dp"
-        android:text="Waitlist"
+        android:text="Declined List"
         android:textSize="32sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -26,7 +26,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="60dp"
-        android:layout_marginBottom="60dp"
         android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView">
@@ -34,23 +33,12 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/waitlistRecyclerView"
             android:layout_width="376dp"
-            android:layout_height="600dp"
+            android:layout_height="match_parent"
             android:nestedScrollingEnabled="false"
             android:padding="16dp" />
     </LinearLayout>
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/choose_sample_button"
-        android:layout_width="271dp"
-        android:layout_height="70dp"
-        android:background="@drawable/rounded_button"
-        android:text="Choose"
-        android:textSize="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.895" />
+
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
@@ -68,8 +56,5 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/bottom_nav_menu" />
-
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

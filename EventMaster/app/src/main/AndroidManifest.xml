@@ -22,6 +22,12 @@
         <activity
             android:name=".ViewRejectedListActivity"
             android:exported="false" />
+        <activity
+            android:name=".ViewDeclinedListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ViewAttendeesListActivity"
+            android:exported="false" />
         <activity android:name=".AdminEventActivity" />
         <activity android:name=".AdminProfileActivity" />
         <activity android:name=".AdminFacilitiesActivity" />

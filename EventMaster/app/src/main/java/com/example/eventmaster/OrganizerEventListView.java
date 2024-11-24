@@ -95,6 +95,8 @@ public class OrganizerEventListView extends AppCompatActivity{
 
         AppCompatButton waitingListButton = findViewById(R.id.waiting_list_button);
         AppCompatButton invitedListButton = findViewById(R.id.invited_list_button);
+        AppCompatButton declinedListButton = findViewById(R.id.declined_list_button);
+        AppCompatButton attendeesButton = findViewById(R.id.attendees_button);
 
         editPosterButton.setOnClickListener(v -> openFileChooser());
 
@@ -161,6 +163,20 @@ public class OrganizerEventListView extends AppCompatActivity{
 
         invitedListButton.setOnClickListener(v -> {
             Intent intent = new Intent(OrganizerEventListView.this, ViewInvitedListActivity.class);
+            intent.putExtra("myEventName", eventNameTextView.getText().toString()); // Pass the event name or ID as an extra
+            intent.putExtra("User", user);
+            startActivity(intent);
+        });
+
+        declinedListButton.setOnClickListener(v -> {
+            Intent intent = new Intent(OrganizerEventListView.this, ViewDeclinedListActivity.class);
+            intent.putExtra("myEventName", eventNameTextView.getText().toString()); // Pass the event name or ID as an extra
+            intent.putExtra("User", user);
+            startActivity(intent);
+        });
+
+        attendeesButton.setOnClickListener(v -> {
+            Intent intent = new Intent(OrganizerEventListView.this, ViewAttendeesListActivity.class);
             intent.putExtra("myEventName", eventNameTextView.getText().toString()); // Pass the event name or ID as an extra
             intent.putExtra("User", user);
             startActivity(intent);
