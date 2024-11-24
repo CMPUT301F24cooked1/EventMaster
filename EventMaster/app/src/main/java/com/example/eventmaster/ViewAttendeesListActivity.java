@@ -82,7 +82,14 @@ public class ViewAttendeesListActivity extends AppCompatActivity {
         ActivityResultLauncher<Intent> MainActivityResultLauncher;
         // Fetch the waitlist from Firebase
         fetchattendeesList();
-
+        ImageButton backButton = findViewById(R.id.back);
+        // Set click listener for the back button
+        backButton.setOnClickListener(v -> {
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("User", user);
+            setResult(RESULT_OK, resultIntent);
+            finish();
+        });
         notifyButton = findViewById(R.id.send_notification_button);
         deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 

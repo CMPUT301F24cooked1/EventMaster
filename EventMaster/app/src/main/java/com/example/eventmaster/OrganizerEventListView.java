@@ -97,7 +97,14 @@ public class OrganizerEventListView extends AppCompatActivity{
         AppCompatButton invitedListButton = findViewById(R.id.invited_list_button);
         AppCompatButton declinedListButton = findViewById(R.id.declined_list_button);
         AppCompatButton attendeesButton = findViewById(R.id.attendees_button);
-
+        ImageButton backButton = findViewById(R.id.back);
+        // Set click listener for the back button
+        backButton.setOnClickListener(v -> {
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("User", user);
+            setResult(RESULT_OK, resultIntent);
+            finish();
+        });
         editPosterButton.setOnClickListener(v -> openFileChooser());
 
         settingsResultLauncher = registerForActivityResult(

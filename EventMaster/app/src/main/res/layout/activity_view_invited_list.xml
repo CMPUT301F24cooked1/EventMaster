@@ -38,7 +38,16 @@
             android:nestedScrollingEnabled="false"
             android:padding="16dp" />
     </LinearLayout>
-
+    <ImageButton
+        android:id="@+id/back"
+        android:layout_width="12dp"
+        android:layout_height="18dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/vector"
+        android:scaleType="centerInside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/rejected_list_button"
         android:layout_width="220dp"

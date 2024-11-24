@@ -97,7 +97,14 @@ public class ViewInvitedListActivity extends AppCompatActivity {
             String notifyDate = String.valueOf(System.currentTimeMillis());
             setNotifiedInFirestore(eventName, notifyDate);
         });
-
+        ImageButton backButton = findViewById(R.id.back);
+        // Set click listener for the back button
+        backButton.setOnClickListener(v -> {
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("User", user);
+            setResult(RESULT_OK, resultIntent);
+            finish();
+        });
         rejectedListButton.setOnClickListener(v -> {
             Intent intent = new Intent(ViewInvitedListActivity.this, ViewRejectedListActivity.class);
             intent.putExtra("myEventName", eventName); // Pass the event name or ID as an extra

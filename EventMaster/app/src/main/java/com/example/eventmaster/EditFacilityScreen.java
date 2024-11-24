@@ -95,48 +95,13 @@ public class EditFacilityScreen extends AppCompatActivity {
             }
         });
 
-        //Return to FacilityScreen and discard any entered data.
-        backButton = findViewById(R.id.back_button);
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Returns to previous screen
-                Intent resultIntent = new Intent();
-                resultIntent.putExtra("User", user);
-                setResult(RESULT_CANCELED);
-                finish();
-            }
-        });
-
-        notificationButton = findViewById(R.id.notification_icon);
-
-        notificationButton.setOnClickListener(v -> {
-            Intent newIntent = new Intent(EditFacilityScreen.this, Notifications.class);
-            newIntent.putExtra("User", user);
-            notificationActivityResultLauncher.launch(newIntent);
-        });
-
-        settingsButton = findViewById(R.id.settings);
-
-        settingsButton.setOnClickListener(v -> {
-            Intent newIntent = new Intent(EditFacilityScreen.this, SettingsScreen.class);
-            newIntent.putExtra("User", user);
-            settingsResultLauncher.launch(newIntent);
-        });
-
-        profileButton = findViewById(R.id.profile);
-
-        profileButton.setOnClickListener(v -> {
-            Intent newIntent = new Intent(EditFacilityScreen.this, ProfileActivity.class);
-            newIntent.putExtra("User", user);
-            ProfileActivityResultLauncher.launch(newIntent);
-        });
-
-        listButton = findViewById(R.id.list_icon);
-
-        listButton.setOnClickListener(v -> {
-            Intent intent = new Intent(EditFacilityScreen.this, ViewCreatedEventsActivity.class);
-            startActivity(intent);
+        ImageButton backButton = findViewById(R.id.back);
+        // Set click listener for the back button
+        backButton.setOnClickListener(v -> {
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("User", user);
+            setResult(RESULT_OK, resultIntent);
+            finish();
         });
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {

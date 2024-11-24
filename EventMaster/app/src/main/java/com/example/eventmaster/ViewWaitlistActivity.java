@@ -103,7 +103,14 @@ public class ViewWaitlistActivity extends AppCompatActivity {
                 }
             }
         });
-
+        ImageButton backButton = findViewById(R.id.back);
+        // Set click listener for the back button
+        backButton.setOnClickListener(v -> {
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("User", user);
+            setResult(RESULT_OK, resultIntent);
+            finish();
+        });
         //Start sampling selected entrants in order to move to ViewInvitedListActivity
         chooseSampleButton = findViewById(R.id.choose_sample_button);
         chooseSampleButton.setOnClickListener(new View.OnClickListener() {

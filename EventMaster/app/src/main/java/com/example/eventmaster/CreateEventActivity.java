@@ -121,7 +121,14 @@ public class CreateEventActivity extends AppCompatActivity {
         // Open date picker on TextView click
         waitlistCountdownText.setOnClickListener(v -> showDateTimePicker());
 
-        // Set click listeners for navigation
+        ImageButton backButton = findViewById(R.id.back);
+        // Set click listener for the back button
+        backButton.setOnClickListener(v -> {
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("User", user);
+            setResult(RESULT_OK, resultIntent);
+            finish();
+        });
 
 
         // Set up the upload poster button
