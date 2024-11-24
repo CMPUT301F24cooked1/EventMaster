@@ -4,5 +4,6 @@
     <string name="profile_screen">My Profile</string>
     <string name="Developers">Developed by \n Daniel V.\n Ellen C.\n Nelson W.\n Inna D.\n Ray S.\n Vansh S.</string>
     <string name="remove_pfp"><u>remove profile picture</u></string>
-
+    <string name="title_activity_maps">MapsActivity</string>
+    <string name="google_maps_key">AIzaSyC9bWvuWrlCcA-cMGNF1tib2l43cQfh5Yk</string>
 </resources>

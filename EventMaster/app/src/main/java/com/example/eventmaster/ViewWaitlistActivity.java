@@ -111,6 +111,9 @@ public class ViewWaitlistActivity extends AppCompatActivity {
             setResult(RESULT_OK, resultIntent);
             finish();
         });
+        ImageButton mapIconButton = findViewById(R.id.map_icon);
+        mapIconButton.setOnClickListener(v -> checkGeolocationStatus());
+
         //Start sampling selected entrants in order to move to ViewInvitedListActivity
         chooseSampleButton = findViewById(R.id.choose_sample_button);
         chooseSampleButton.setOnClickListener(new View.OnClickListener() {
@@ -268,6 +271,37 @@ public class ViewWaitlistActivity extends AppCompatActivity {
 
 
     }
+    private void checkGeolocationStatus() {
+        DocumentReference eventRef = firestore.collection("facilities")
+                .document(deviceId)
+                .collection("My Events")
+                .document(eventName);
+
+        eventRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    Boolean geolocationEnabled = document.getBoolean("geolocationEnabled");
+                    if (geolocationEnabled != null && geolocationEnabled) {
+                        openMapScreen();
+                    } else {
+                        Toast.makeText(this, "Event's geolocation is disabled.", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(this, "Event data not found.", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Log.e("GeolocationCheck", "Failed to fetch event data", task.getException());
+            }
+        });
+    }
+    private void openMapScreen() {
+        Intent intent = new Intent(ViewWaitlistActivity.this, MapActivity.class);
+        intent.putExtra("deviceId", deviceId);
+        intent.putExtra("eventName", eventName);
+        startActivity(intent);
+    }
+
     private void openQRScanFragment() {
         // Open QRScanFragment without simulating button click
         Intent intent = new Intent(this, QRScanFragment.class);

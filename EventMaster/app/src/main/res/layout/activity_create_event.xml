@@ -8,21 +8,19 @@ tools:context=".MainActivity"
 android:background="@drawable/app_background">
 
 
-    <Switch
-        android:id="@+id/geolocation_switch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="88dp"
-        android:thumbTint="@color/white"
-        android:trackTint="#9E8A4D"
-        android:trackTintMode="src_over"
-        app:layout_constraintBottom_toTopOf="@+id/createEventButton"
-        app:layout_constraintEnd_toStartOf="@+id/button2"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/waitlistCountdown"
-        app:layout_constraintVertical_bias="1.0" />
+     <Switch
+         android:id="@+id/geolocation_switch"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_marginEnd="8dp"
+         android:layout_marginBottom="32dp"
+         android:thumbTint="@color/white"
+         android:trackTint="#9E8A4D"
+         android:trackTintMode="src_over"
+         app:layout_constraintBottom_toTopOf="@+id/createEventButton"
+         app:layout_constraintEnd_toStartOf="@+id/button2"
+         app:layout_constraintHorizontal_bias="1.0"
+         app:layout_constraintStart_toStartOf="parent" />
 
      <ImageButton
          android:id="@+id/back"
@@ -34,37 +32,40 @@ android:background="@drawable/app_background">
          android:scaleType="centerInside"
          app:layout_constraintStart_toStartOf="parent"
          app:layout_constraintTop_toTopOf="parent" />
-    <TextView
-        android:id="@+id/waitlist_countdown"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Waitlist Countdown"
-        android:textSize="22dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.438"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.559" />
 
-    <TextView
-        android:id="@+id/waitlist_capacity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Waitlist Capacity"
-        android:textSize="22dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.451"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.458" />
+     <TextView
+         android:id="@+id/waitlist_countdown"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:text="Waitlist Countdown"
+         android:textSize="22dp"
+         app:layout_constraintBottom_toBottomOf="parent"
+         app:layout_constraintEnd_toEndOf="parent"
+         app:layout_constraintHorizontal_bias="0.438"
+         app:layout_constraintStart_toStartOf="parent"
+         app:layout_constraintTop_toTopOf="parent"
+         app:layout_constraintVertical_bias="0.648" />
 
-    <EditText
+     <TextView
+         android:id="@+id/waitlist_capacity"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:text="Waitlist Capacity"
+         android:textSize="22dp"
+         app:layout_constraintBottom_toBottomOf="parent"
+         app:layout_constraintEnd_toEndOf="parent"
+         app:layout_constraintHorizontal_bias="0.451"
+         app:layout_constraintStart_toStartOf="parent"
+         app:layout_constraintTop_toTopOf="parent"
+         app:layout_constraintVertical_bias="0.55" />
+
+     <EditText
         android:id="@+id/eventDescription"
         android:layout_width="271dp"
         android:layout_height="82dp"
         android:textColor="@color/black"
+         android:gravity="center"
+         android:hint="Enter Event Description"
         android:background="@drawable/edittext_border"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -79,6 +80,8 @@ android:background="@drawable/app_background">
         android:layout_height="wrap_content"
         android:background="@drawable/edittext_border"
         android:textColor="@color/black"
+        android:gravity="center"
+        android:hint="Select Event Capacity"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.414"
@@ -86,40 +89,59 @@ android:background="@drawable/app_background">
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.404" />
 
+
+     <AutoCompleteTextView
+         android:id="@+id/eventVenue"
+         android:layout_width="271dp"
+         android:layout_height="wrap_content"
+         android:layout_marginTop="1dp"
+         android:background="@drawable/edittext_border"
+         android:gravity="center"
+         android:hint="Enter Venue address"
+         android:inputType="text"
+         android:textColor="@color/black"
+         app:layout_constraintBottom_toTopOf="@+id/waitlist_capacity"
+         app:layout_constraintEnd_toEndOf="parent"
+         app:layout_constraintHorizontal_bias="0.414"
+         app:layout_constraintStart_toStartOf="parent"
+         app:layout_constraintTop_toBottomOf="@+id/event_capcacity_text2"
+         app:layout_constraintVertical_bias="0.0" />
+
      <EditText
          android:id="@+id/waitlistCountdown"
          android:layout_width="271dp"
          android:layout_height="wrap_content"
          android:background="@drawable/edittext_border"
-         android:textColor="@color/black"
-         android:gravity="center"
-         android:text="Select Waitlist Countdown"
-         android:padding="8dp"
-         android:textSize="16sp"
          android:clickable="true"
          android:focusable="true"
+         android:gravity="center"
+         android:padding="8dp"
+         android:hint="Select Waitlist Countdown"
+         android:textColor="@color/black"
+         android:textSize="16sp"
          app:layout_constraintBottom_toBottomOf="parent"
          app:layout_constraintEnd_toEndOf="parent"
          app:layout_constraintHorizontal_bias="0.414"
          app:layout_constraintStart_toStartOf="parent"
          app:layout_constraintTop_toTopOf="parent"
-         app:layout_constraintVertical_bias="0.601" />
-
+         app:layout_constraintVertical_bias="0.689" />
 
      <EditText
-        android:id="@+id/waitlistCapacity"
-        android:layout_width="271dp"
-        android:layout_height="wrap_content"
-        android:background="@drawable/edittext_border"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:textColor="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.414"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.499" />
+         android:id="@+id/waitlistCapacity"
+         android:layout_width="271dp"
+         android:layout_height="wrap_content"
+         android:gravity="center"
+         android:hint="Select Waitlist Capacity"
+         android:background="@drawable/edittext_border"
+         android:textColor="@color/black"
+         app:layout_constraintBottom_toBottomOf="parent"
+         app:layout_constraintEnd_toEndOf="parent"
+         app:layout_constraintHorizontal_bias="0.414"
+         app:layout_constraintStart_toStartOf="parent"
+         app:layout_constraintTop_toTopOf="parent"
+         app:layout_constraintVertical_bias="0.592" />
 
-    <TextView
+     <TextView
         android:id="@+id/event_description_text2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -145,23 +167,36 @@ android:background="@drawable/app_background">
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.364" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/createEventButton"
-        android:layout_width="271dp"
-        android:layout_height="70dp"
-        android:layout_marginStart="70dp"
-        android:layout_marginEnd="70dp"
-        android:layout_marginBottom="120dp"
-        android:background="@drawable/white_rounded_button"
-        android:text="Create Event"
-        android:textSize="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
 
+     <TextView
+         android:id="@+id/event_capcacity_text2"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:text="Event Venue"
+         android:textSize="22dp"
+         app:layout_constraintBottom_toBottomOf="parent"
+         app:layout_constraintEnd_toEndOf="parent"
+         app:layout_constraintHorizontal_bias="0.439"
+         app:layout_constraintStart_toStartOf="parent"
+         app:layout_constraintTop_toTopOf="parent"
+         app:layout_constraintVertical_bias="0.457" />
 
-    <TextView
+     <androidx.appcompat.widget.AppCompatButton
+         android:id="@+id/createEventButton"
+         android:layout_width="271dp"
+         android:layout_height="70dp"
+         android:layout_marginStart="70dp"
+         android:layout_marginEnd="70dp"
+         android:layout_marginBottom="80dp"
+         android:background="@drawable/white_rounded_button"
+         android:text="Create Event"
+         android:textSize="20dp"
+         app:layout_constraintBottom_toBottomOf="parent"
+         app:layout_constraintEnd_toEndOf="parent"
+         app:layout_constraintHorizontal_bias="0.0"
+         app:layout_constraintStart_toStartOf="parent" />
+
+     <TextView
         android:id="@+id/create_event"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -177,18 +212,17 @@ android:background="@drawable/app_background">
         app:layout_constraintTop_toTopOf="parent" />
 
 
-    <ImageButton
-        android:id="@+id/imageButton5"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginStart="88dp"
-        android:background="@drawable/upload_image_icon"
-        android:scaleType="centerInside"
-        app:layout_constraintBottom_toTopOf="@+id/createEventButton"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/geolocation_switch"
-        app:layout_constraintVertical_bias="0.428" />
-
+     <ImageButton
+         android:id="@+id/imageButton5"
+         android:layout_width="32dp"
+         android:layout_height="32dp"
+         android:layout_marginStart="104dp"
+         android:background="@drawable/upload_image_icon"
+         android:scaleType="centerInside"
+         app:layout_constraintBottom_toTopOf="@+id/geolocation_switch"
+         app:layout_constraintStart_toStartOf="parent"
+         app:layout_constraintTop_toBottomOf="@+id/waitlistCountdown"
+         app:layout_constraintVertical_bias="0.458" />
 
      <com.google.android.material.bottomnavigation.BottomNavigationView
          android:id="@+id/bottom_navigation"
@@ -208,55 +242,55 @@ android:background="@drawable/app_background">
          app:menu="@menu/bottom_nav_menu" />
 
 
+     <TextView
+         android:id="@+id/Upload_poster_button"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_marginStart="12dp"
+         android:background="#00FFFFFF"
+         android:text="Upload Poster"
+         android:textSize="18dp"
+         app:layout_constraintBottom_toTopOf="@+id/button2"
+         app:layout_constraintStart_toEndOf="@+id/imageButton5"
+         app:layout_constraintTop_toBottomOf="@+id/waitlistCountdown"
+         app:layout_constraintVertical_bias="0.343" />
 
      <TextView
-        android:id="@+id/Upload_poster_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="75dp"
-        android:layout_marginBottom="20dp"
-        android:background="#00FFFFFF"
-        android:text="Upload Poster"
-        android:textSize="18dp"
-        app:layout_constraintBottom_toTopOf="@+id/createEventButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.162"
-        app:layout_constraintStart_toEndOf="@+id/imageButton5"
-        app:layout_constraintTop_toBottomOf="@+id/button2"
-        app:layout_constraintVertical_bias="0.591" />
+         android:id="@+id/button2"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_marginEnd="120dp"
+         android:background="#00FFFFFF"
+         android:text="Enable Geolocation"
+         android:textSize="18dp"
+         app:layout_constraintBottom_toTopOf="@+id/createEventButton"
+         app:layout_constraintEnd_toEndOf="parent"
+         app:layout_constraintTop_toBottomOf="@+id/waitlistCountdown"
+         app:layout_constraintVertical_bias="0.615" />
 
-    <TextView
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="45dp"
-        android:layout_marginEnd="120dp"
-        android:background="#00FFFFFF"
-        android:text="Enable Geolocation"
-        android:textSize="18dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/waitlistCountdown" />
+     <TextView
+         android:id="@+id/facility_name_text"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:text="Event Name"
+         android:textSize="22dp"
+         app:layout_constraintBottom_toBottomOf="parent"
+         app:layout_constraintEnd_toEndOf="parent"
+         app:layout_constraintHorizontal_bias="0.467"
+         app:layout_constraintStart_toStartOf="parent"
+         app:layout_constraintTop_toTopOf="parent"
+         app:layout_constraintVertical_bias="0.126" />
 
-    <TextView
-        android:id="@+id/facility_name_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Event Name"
-        android:textSize="22dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.463"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.105" />
+     <EditText
 
-    <EditText
         android:id="@+id/eventName"
         android:layout_width="271dp"
         android:layout_height="wrap_content"
         android:textColor="@color/black"
         android:background="@drawable/edittext_border"
-        app:layout_constraintBottom_toBottomOf="parent"
+         android:hint="Enter Event Name"
+         android:gravity="center"
+         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.414"
         app:layout_constraintStart_toStartOf="parent"

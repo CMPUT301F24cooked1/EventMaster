@@ -25,6 +25,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
+import com.google.android.gms.common.api.Status;
+import com.google.android.libraries.places.widget.AutocompleteActivity;
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -36,6 +39,7 @@ import com.journeyapps.barcodescanner.BarcodeEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -44,6 +48,13 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.widget.TextView;
 import java.util.Calendar;
+
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import android.widget.AutoCompleteTextView;
 
 /**
  * CreateEventActivity.java
@@ -70,10 +81,12 @@ public class CreateEventActivity extends AppCompatActivity {
     private Profile user;
     private Uri posterUri; // To hold the URI of the selected poster
     private String posterDownloadUrl = null; // To hold the download URL of the uploaded poster
+    private AutoCompleteTextView eventVenue;
+    private String eventVenueAddress;
 
     private TextView waitlistCountdownText;
     private Calendar waitlistCalendar;
-
+    private static final int AUTOCOMPLETE_REQUEST_CODE = 2;
     private static final int PICK_IMAGE_REQUEST = 1; // Request code for image selection
     /**
      * Initializes the activity, including UI elements and Firebase references.
@@ -231,10 +244,57 @@ public class CreateEventActivity extends AppCompatActivity {
             }
             return false;
         });
+        // Initialize Places SDK
+        if (!Places.isInitialized()) {
+            Places.initialize(getApplicationContext(), getString(R.string.google_maps_key));
+        }
 
+        eventVenue = findViewById(R.id.eventVenue);
+
+        // Set up the autocomplete feature for venue input
+        eventVenue.setOnClickListener(v -> openPlaceAutocomplete());
 
 
     }
+
+    private void openPlaceAutocomplete() {
+        // Create an intent for Place Autocomplete
+        Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS))
+                .build(this);
+
+        startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
+    }
+
+    // Handle the result from the autocomplete activity
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                // Handle the autocomplete result
+                Place place = Autocomplete.getPlaceFromIntent(data);
+                eventVenueAddress = place.getAddress();
+                eventVenue.setText(eventVenueAddress);
+            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+                // Handle autocomplete error
+                Status status = Autocomplete.getStatusFromIntent(data);
+                Toast.makeText(this, "Error: " + status.getStatusMessage(), Toast.LENGTH_SHORT).show();
+            }
+        }  if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
+            posterUri = data.getData(); // Get the selected image URI
+            if (posterUri != null) {
+                Log.d("onActivityResult", "Poster URI set: " + posterUri.toString());
+                Toast.makeText(this, "Poster selected", Toast.LENGTH_SHORT).show();
+            } else {
+                Log.e("onActivityResult", "Poster URI is null");
+            }
+        }
+    }
+
+
+
+
     private void openQRScanFragment() {
         // Open QRScanFragment without simulating button click
         Intent intent = new Intent(this, QRScanFragment.class);
@@ -284,22 +344,6 @@ public class CreateEventActivity extends AppCompatActivity {
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
 
-    /**
-     * Handles the result of the image selection for the poster.
-     * @param requestCode Request code used to identify the activity result.
-     * @param resultCode Result code to determine if the result is successful.
-     * @param data Data containing the URI of the selected image.
-     */
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
-                && data != null && data.getData() != null) {
-            posterUri = data.getData(); // Store the URI of the selected poster
-            Toast.makeText(this, "Poster selected", Toast.LENGTH_SHORT).show();
-        }
-    }
 
     /**
      * Validates event inputs and initiates the creation of an event in Firebase.
@@ -313,7 +357,7 @@ public class CreateEventActivity extends AppCompatActivity {
         String waitlistCountdown = waitlistCountdownText.getText().toString();
 
         // Input validation
-        if (eventName.isEmpty() || eventDescription.isEmpty() || eventCapacity.isEmpty() || waitlistCountdown.isEmpty()) {
+        if (eventName.isEmpty() || eventDescription.isEmpty() || eventCapacity.isEmpty() || waitlistCountdown.isEmpty()|| eventVenueAddress.isEmpty())  {
             Toast.makeText(this, "Please fill in all required fields", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -376,16 +420,21 @@ public class CreateEventActivity extends AppCompatActivity {
 
                             posterRef.putFile(posterUri)
                                     .addOnSuccessListener(taskSnapshot -> {
+                                        Log.d("PosterUpload", "Upload Success");
                                         posterRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                                            posterDownloadUrl = uri.toString(); // Save the download URL
-                                            // Once the poster is uploaded, create the event in Firestore
-                                            saveEventToFirestore(eventName, eventDescription, eventCapacity, waitlistCapacity, waitlistCountdown);
+                                            Log.d("PosterDownloadUrl", "Poster URL: " + uri.toString());
+                                            posterDownloadUrl = uri.toString();
+                                            // Continue saving event after poster upload
+                                            saveEventToFirestore(eventName, eventDescription, eventCapacity, waitlistCapacity, waitlistCountdown, eventVenueAddress);
                                         });
                                     })
-                                    .addOnFailureListener(e -> Toast.makeText(CreateEventActivity.this, "Poster upload failed", Toast.LENGTH_SHORT).show());
+                                    .addOnFailureListener(e -> {
+                                        Log.e("PosterUpload", "Upload Failed", e);
+                                        Toast.makeText(CreateEventActivity.this, "Poster upload failed", Toast.LENGTH_SHORT).show();
+                                    });
                         } else {
                             // No poster selected, just save the event
-                            saveEventToFirestore(eventName, eventDescription, eventCapacity, waitlistCapacity, waitlistCountdown);
+                            saveEventToFirestore(eventName, eventDescription, eventCapacity, waitlistCapacity, waitlistCountdown,eventVenueAddress);
                         }
                     }
                 })
@@ -400,7 +449,7 @@ public class CreateEventActivity extends AppCompatActivity {
      * @param waitlistCapacity Capacity for the waitlist.
      * @param waitlistCountdown Date and time for the waitlist countdown.
      */
-    private void saveEventToFirestore(String eventName, String eventDescription, String eventCapacity, String waitlistCapacity, String waitlistCountdown) {
+    private void saveEventToFirestore(String eventName, String eventDescription, String eventCapacity, String waitlistCapacity, String waitlistCountdown, String eventVenueAddress) {
         // Create a map for event data
         Map<String, Object> eventData = new HashMap<>();
         eventData.put("eventName", eventName);
@@ -408,7 +457,7 @@ public class CreateEventActivity extends AppCompatActivity {
         eventData.put("eventCapacity", Integer.parseInt(eventCapacity));
         eventData.put("waitlistCapacity", waitlistCapacity.isEmpty() ? 0 : Integer.parseInt(waitlistCapacity));
         eventData.put("waitlistCountdown", waitlistCountdown);
-
+        eventData.put("eventVenue", eventVenueAddress);
         // Get the state of the geolocation switch
         boolean isGeolocationEnabled = geolocationSwitch.isChecked();
         eventData.put("geolocationEnabled", isGeolocationEnabled); // Add geolocation status to event data
@@ -416,6 +465,9 @@ public class CreateEventActivity extends AppCompatActivity {
         // Include the poster URL if it exists
         if (posterDownloadUrl != null) {
             eventData.put("posterUrl", posterDownloadUrl);
+            Log.d("Firestore", "Poster URL added: " + posterDownloadUrl);
+        } else {
+            Log.d("Firestore", "No poster URL, skipping");
         }
 
         // Query the "facilities" collection for the document with the matching deviceId
