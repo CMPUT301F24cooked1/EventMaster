@@ -108,9 +108,14 @@ public class ViewInvitedListActivity extends AppCompatActivity {
         deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         notifyButton.setOnClickListener(v -> {
-            String notifyDate = String.valueOf(System.currentTimeMillis());
-            setNotifiedInFirestore(eventName, notifyDate);
+            if (invitedIds != null) {
+                String notifyDate = String.valueOf(System.currentTimeMillis());
+                setNotifiedInFirestore(eventName, notifyDate);
+            } else {
+                Toast.makeText(this, "Cannot notify. Empty list of entrants.", Toast.LENGTH_SHORT).show();
+            }
         });
+
         ImageButton backButton = findViewById(R.id.back);
         // Set click listener for the back button
         backButton.setOnClickListener(v -> {
@@ -318,7 +323,7 @@ public class ViewInvitedListActivity extends AppCompatActivity {
 
     private void notifyInvitedUser(String invitedId, String eventName) {
         String invitedTitle = "Invited to Event";
-        String invitedBody = "You have been invited to join to the " + eventName + " event. Open the app to see details.";
+        String invitedBody = "You have been invited to join the " + eventName + " event. Open the app to see details.";
 
         firestore.collection("profiles")
                 .document(invitedId)

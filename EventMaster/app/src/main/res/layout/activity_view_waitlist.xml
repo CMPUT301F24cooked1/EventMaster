@@ -41,16 +41,30 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/choose_sample_button"
-        android:layout_width="271dp"
-        android:layout_height="70dp"
-        android:background="@drawable/rounded_button"
+        android:layout_width="220dp"
+        android:layout_height="60dp"
+        android:background="@drawable/white_rounded_button"
         android:text="Choose"
         android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.895" />
+        app:layout_constraintVertical_bias="0.78" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/send_notification_button"
+        android:layout_width="220dp"
+        android:layout_height="60dp"
+        android:background="@drawable/rounded_button"
+        android:text="Notify"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintVertical_bias="0.88" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"

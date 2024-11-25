@@ -45,6 +45,7 @@ public class ViewAttendeesListActivity extends AppCompatActivity {
     private List<String> attendeesIds;
     private Profile user;
     private int selected;
+    private String privateKey;
 
     private AppCompatButton notifyButton;
 
@@ -82,6 +83,18 @@ public class ViewAttendeesListActivity extends AppCompatActivity {
         ActivityResultLauncher<Intent> MainActivityResultLauncher;
         // Fetch the waitlist from Firebase
         fetchattendeesList();
+
+        //Grab private key from firestore for notifications.
+        firestore.collection("private_key")
+                .document("key")
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        privateKey = documentSnapshot.getString("pkey");
+                    }
+                })
+                .addOnFailureListener(e -> Log.e("KEY", "Error fetching private key", e));
+
         ImageButton backButton = findViewById(R.id.back);
         // Set click listener for the back button
         backButton.setOnClickListener(v -> {
@@ -94,8 +107,12 @@ public class ViewAttendeesListActivity extends AppCompatActivity {
         deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         notifyButton.setOnClickListener(v -> {
-            String notifyDate = String.valueOf(System.currentTimeMillis());
-            setNotifiedInFirestore(eventName, notifyDate);
+            if (attendeesIds != null) {
+                String notifyDate = String.valueOf(System.currentTimeMillis());
+                setNotifiedInFirestore(eventName, notifyDate);
+            } else {
+                Toast.makeText(this, "Cannot notify. Empty list of entrants.", Toast.LENGTH_SHORT).show();
+            }
         });
 
         // Set result launchers to set up navigation buttons on the bottom of the screen
@@ -272,6 +289,9 @@ public class ViewAttendeesListActivity extends AppCompatActivity {
                                         .set(notificationData, SetOptions.merge())
                                         .addOnSuccessListener(aVoid -> {
                                             Log.d("Notify Users", "User set as notified in firestore");
+
+                                            //Send push notification to specific user.
+                                            notifyAttendingUser(entrantId, eventName);
                                         })
                                         .addOnFailureListener(e -> {
                                             Log.e("Notify Users", "Error setting user as notified in firestore", e);
@@ -283,5 +303,25 @@ public class ViewAttendeesListActivity extends AppCompatActivity {
                     });
         }
         Toast.makeText(ViewAttendeesListActivity.this, "Previously un-notified users have been notified.", Toast.LENGTH_SHORT).show();
+    }
+
+    private void notifyAttendingUser(String invitedId, String eventName) {
+        String invitedTitle = "Attending Event";
+        String invitedBody = "Congrats! You have decided to attend the " + eventName + " event. Open the app to see details.";
+
+        firestore.collection("profiles")
+                .document(invitedId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String invitedToken = documentSnapshot.getString("notificationToken");
+
+                        if (invitedToken != null) {
+                            FCMNotificationSender attendNotification = new FCMNotificationSender(invitedToken, invitedTitle, invitedBody, getApplicationContext());
+                            attendNotification.SendNotifications(privateKey);
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> Log.e("Notification", "Failed to send user push notification. ", e));
     }
 }
