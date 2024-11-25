@@ -90,8 +90,12 @@ public class ViewRejectedListActivity extends AppCompatActivity {
         notifyButton = findViewById(R.id.send_notification_button);
 
         notifyButton.setOnClickListener(v -> {
-            String notifyDate = String.valueOf(System.currentTimeMillis());
-            setNotifiedInFirestore(eventName, notifyDate);
+            if (rejectedIds != null) {
+                String notifyDate = String.valueOf(System.currentTimeMillis());
+                setNotifiedInFirestore(eventName, notifyDate);
+            } else {
+                Toast.makeText(this, "Cannot notify. Empty list of entrants.", Toast.LENGTH_SHORT).show();
+            }
         });
 
         // Fetch the waitlist from Firebase
