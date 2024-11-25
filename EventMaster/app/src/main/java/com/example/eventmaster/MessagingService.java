@@ -1,0 +1,92 @@
+package com.example.eventmaster;
+
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
+import android.provider.Settings;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
+
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.messaging.FirebaseMessagingService;
+import com.google.firebase.messaging.RemoteMessage;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
+//www.youtube.com/watch?v=spbSMpjONGc, 2024-11-24
+public class MessagingService extends FirebaseMessagingService {
+
+    private NotificationManager notificationManager;
+
+    @Override
+    public void onNewToken(@NonNull String token) {
+        super.onNewToken(token);
+        //Log.d("good", "good3 " + token);
+        //updateNewToken(token);
+    }
+
+    @Override
+    public void onMessageReceived(@NonNull RemoteMessage message) {
+        super.onMessageReceived(message);
+
+        Log.d("Notification", "Message Recieved from firebase.");
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "Notification");
+
+        Intent resultIntent = new Intent(this, MainActivity.class);
+        PendingIntent pendingIntent;
+        pendingIntent = PendingIntent.getActivity(this, 1, resultIntent, PendingIntent.FLAG_IMMUTABLE);
+        builder.setContentTitle(Objects.requireNonNull(message.getNotification().getTitle()));
+        builder.setContentText(message.getNotification().getBody());
+        builder.setStyle(new NotificationCompat.BigTextStyle().bigText(message.getNotification().getBody()));
+        builder.setAutoCancel(true);
+        builder.setSmallIcon(R.drawable.app_logo);
+        builder.setPriority(NotificationCompat.PRIORITY_HIGH);
+        builder.setContentIntent(pendingIntent);
+
+        notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+
+        String channelId = "Notification";
+        NotificationChannel channel = new NotificationChannel(
+                channelId, "Coding", NotificationManager.IMPORTANCE_HIGH
+        );
+        channel.enableLights(true);
+        channel.canBypassDnd();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            channel.canBubble();
+        }
+
+        notificationManager.createNotificationChannel(channel);
+        builder.setChannelId(channelId);
+        notificationManager.notify(1, builder.build());
+    }
+
+    /*
+    private void updateNewToken(String notificationToken) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);;
+
+        Map<String, Object> tokenData = new HashMap<>();
+        tokenData.put("notificationToken", notificationToken);
+
+        db.collection("profiles")
+                .document(deviceId)
+                .set(tokenData, SetOptions.merge())
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("Notification Token", "Notification token for user uploaded firestore");
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Notification Token", "Error uploading notification token for user in firestore", e);
+                });
+    }
+
+     */
+}
