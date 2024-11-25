@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import io.grpc.Context;
+//import io.grpc.Context;
 
 /**
  * Displays all of the images that have been created

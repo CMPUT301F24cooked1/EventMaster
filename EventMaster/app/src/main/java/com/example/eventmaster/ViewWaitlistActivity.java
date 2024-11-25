@@ -124,6 +124,11 @@ public class ViewWaitlistActivity extends AppCompatActivity {
                 if (waitlistSize == 0) {
                     Toast.makeText(ViewWaitlistActivity.this, "Waitlist does not have any entrants and thus cannot be sampled.", Toast.LENGTH_SHORT).show();
                     Log.d("WaitlistSize", "Waitlist size is 0, cannot sample.");
+                    Intent intent = new Intent(ViewWaitlistActivity.this, ViewInvitedListActivity.class);
+                    intent.putExtra("myEventName", eventName);
+                    intent.putExtra("userProfile", user);
+                    intent.putExtra("Sampled?", 0);
+                    chooseSampleResultLauncher.launch(intent);
                 } else {
                     Log.d("WaitlistSize", "Waitlist size is " + waitlistSize + ": Sampling beginning now.");
                     DocumentReference docRef = firestore.collection("facilities")
@@ -385,8 +390,8 @@ public class ViewWaitlistActivity extends AppCompatActivity {
                         }
 
                         //Check if the waitlist is smaller than the sample size, and assign waitlistSize accordingly
-                        if (sampleSize > waitlistSize) {
-                            sampleSize = waitlistSize;
+                        if ((sampleSize - selectedCount) > waitlistSize) {
+                            sampleSize = waitlistSize + selectedCount;
                         }
 
                         //Set the new selectedCount value to full in Firestore
