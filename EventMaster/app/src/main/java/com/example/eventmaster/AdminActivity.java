@@ -177,7 +177,9 @@ public class AdminActivity extends AppCompatActivity {
         qrCodeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                Intent intent = new Intent(AdminActivity.this, AdminQRActivity.class);
+                intent.putExtra("User", user);
+                allFacilitiesResultLauncher.launch(intent);
             }
         });
     }
