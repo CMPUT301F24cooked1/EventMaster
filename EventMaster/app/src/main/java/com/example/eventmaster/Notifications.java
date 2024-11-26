@@ -217,7 +217,7 @@ public class Notifications extends AppCompatActivity {
     private void retrieveAttendeesEvents(String entrantId) {
         firestore.collection("entrants")
                 .document(entrantId)
-                .collection("Attendees Events")
+                .collection("Joined Events")
                 .whereNotEqualTo("notifyDate", null)
                 .orderBy("notifyDate", Query.Direction.DESCENDING)
                 .get()
