@@ -3,11 +3,8 @@ package com.example.eventmaster;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
@@ -21,8 +18,6 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.AppCompatButton;
-
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 /**
  * Displays the settings screen
@@ -43,8 +38,7 @@ public class SettingsScreen extends AppCompatActivity {
     private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
     private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
     private ActivityResultLauncher<Intent> settingsResultLauncher;
-    private ActivityResultLauncher<Intent> MainActivityResultLauncher;
-
+    private ActivityResultLauncher<Intent> listResultLauncher;
 
     /**
      * Initializes the Setting Screen
@@ -59,8 +53,7 @@ public class SettingsScreen extends AppCompatActivity {
         ModeActivity.applyTheme(SettingsScreen.this);
         setContentView(R.layout.setting_screen);
 
-        Intent intentMain = getIntent();
-        user =  (Profile) intentMain.getSerializableExtra("User");
+        user = (Profile) getIntent().getSerializableExtra("User"); // user from MainActivity
 
         notificationSwitch = findViewById(R.id.notification_button);
 
@@ -107,7 +100,7 @@ public class SettingsScreen extends AppCompatActivity {
             }
         });
 
-        /// Set result launchers to set up navigation buttons on the bottom of the screen
+        // Set result launchers to set up navigation buttons on the bottom of the screen
         settingsResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -118,10 +111,9 @@ public class SettingsScreen extends AppCompatActivity {
                             Log.d("MainActivity", "User profile updated: " + user.getName());
                         }
                     }
-
                 });
 
-        MainActivityResultLauncher = registerForActivityResult(
+        listResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
@@ -159,45 +151,51 @@ public class SettingsScreen extends AppCompatActivity {
                     }
 
                 });
+        ImageButton notificationButton = findViewById(R.id.notification_icon);
+        ImageButton settingsButton = findViewById(R.id.settings);
+        ImageButton profileButton = findViewById(R.id.profile);
+        ImageButton listButton = findViewById(R.id.list_icon);
+        ImageButton backButton = findViewById(R.id.back); // Initialize back button
 
-
-        // Initialize BottomNavigationView
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-        // Disable tint for specific menu item
-        Menu menu = bottomNavigationView.getMenu();
-        MenuItem qrCodeItem = menu.findItem(R.id.nav_scan_qr);
-        Drawable qrIcon = qrCodeItem.getIcon();
-        qrIcon.setTintList(null);  // Disable tinting for this specific item
-        // Set up navigation item selection listener
-        bottomNavigationView.setOnItemSelectedListener(item -> {
-            Intent newIntent;
-
-            if (item.getItemId() == R.id.nav_Home) {
-                newIntent = new Intent(SettingsScreen.this, MainActivity.class);
-                newIntent.putExtra("User", user);
-                MainActivityResultLauncher.launch(newIntent);
-                return true;
-            } else if (item.getItemId() == R.id.nav_Settings) {
-                newIntent = new Intent(SettingsScreen.this, SettingsScreen.class);
-                newIntent.putExtra("User", user);
-                settingsResultLauncher.launch(newIntent);
-                return true;
-            } else if (item.getItemId() == R.id.nav_Notifications) {
-                newIntent = new Intent(SettingsScreen.this, Notifications.class);
-                newIntent.putExtra("User", user);
-                notificationActivityResultLauncher.launch(newIntent);
-                return true;
-            } else if (item.getItemId() == R.id.nav_Profile) {
-                newIntent = new Intent(SettingsScreen.this, ProfileActivity.class);
-                newIntent.putExtra("User", user);
-                ProfileActivityResultLauncher.launch(newIntent);
-                return true;
-            }else if (item.getItemId() == R.id.nav_scan_qr) {
-                openQRScanFragment();
-                return true;
-            }
-            return false;
+        // Set click listeners for navigation
+        profileButton.setOnClickListener(v -> {
+            Intent newIntent = new Intent(SettingsScreen.this, ProfileActivity.class);
+            newIntent.putExtra("User", user);
+            ProfileActivityResultLauncher.launch(newIntent);
         });
+
+
+        // sends you to a list of invited events that you accepted
+        listButton.setOnClickListener(v -> {
+            Intent newIntent = new Intent(SettingsScreen.this, JoinedEventsActivity.class);
+            newIntent.putExtra("User", user);
+            listResultLauncher.launch(newIntent);
+        });
+        notificationButton.setOnClickListener(v -> {
+            Intent newIntent = new Intent(SettingsScreen.this, Notifications.class);
+            newIntent.putExtra("User", user);
+            notificationActivityResultLauncher.launch(newIntent);
+        });
+
+        // Set click listener for the back button
+        backButton.setOnClickListener(v -> {
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("User", user);
+            setResult(RESULT_OK, resultIntent);
+            finish();
+        });
+
+        ProfileActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),result ->{
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+                });
+
 
         //Links the Settings Screen to the Admin Login screen
         adminCodeResultLauncher = registerForActivityResult(
@@ -238,14 +236,6 @@ public class SettingsScreen extends AppCompatActivity {
                 appInfoResultLauncher.launch(intent);
             }
         });
-
-    }
-
-    private void openQRScanFragment() {
-        // Open QRScanFragment without simulating button click
-        Intent intent = new Intent(this, QRScanFragment.class);
-        intent.putExtra("User", user);  // Pass the user information if needed
-        startActivity(intent);
 
     }
 

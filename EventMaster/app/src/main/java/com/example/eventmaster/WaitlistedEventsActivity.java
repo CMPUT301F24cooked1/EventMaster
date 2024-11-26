@@ -219,18 +219,6 @@ public class WaitlistedEventsActivity extends AppCompatActivity {
 
 
 
-
-    // Reference to the settings button
-
-
-//    public void onEventClick(Event event) {
-//        // Start QR scanner activity
-//        Intent intent = new Intent(this, QRScanFragment.class);
-//        startActivity(intent);
-//    }
-
-
-
 }
 
 

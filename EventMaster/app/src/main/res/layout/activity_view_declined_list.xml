@@ -13,31 +13,12 @@
         android:layout_marginStart="92dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="93dp"
-        android:text="Invited List"
+        android:text="Declined List"
         android:textSize="32sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <LinearLayout
-        android:id="@+id/view_container"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="60dp"
-        android:layout_marginBottom="60dp"
-        android:orientation="vertical"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/waitlistRecyclerView"
-            android:layout_width="376dp"
-            android:layout_height="650dp"
-            android:nestedScrollingEnabled="false"
-            android:padding="16dp" />
-    </LinearLayout>
     <ImageButton
         android:id="@+id/back"
         android:layout_width="12dp"
@@ -48,33 +29,24 @@
         android:scaleType="centerInside"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/rejected_list_button"
-        android:layout_width="220dp"
-        android:layout_height="60dp"
-        android:background="@drawable/white_rounded_button"
-        android:text="Rejected List"
-        android:textSize="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+    <LinearLayout
+        android:id="@+id/view_container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="60dp"
+        android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.78" />
+        app:layout_constraintTop_toBottomOf="@+id/textView">
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/send_notification_button"
-        android:layout_width="220dp"
-        android:layout_height="60dp"
-        android:background="@drawable/rounded_button"
-        android:text="Notify"
-        android:textSize="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintVertical_bias="0.88" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/waitlistRecyclerView"
+            android:layout_width="376dp"
+            android:layout_height="match_parent"
+            android:nestedScrollingEnabled="false"
+            android:padding="16dp" />
+    </LinearLayout>
+
 
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -93,4 +65,5 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/bottom_nav_menu" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -33,7 +33,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.grpc.Context;
+//import io.grpc.Context;
 
 /**
  * Displays all of the images that have been created

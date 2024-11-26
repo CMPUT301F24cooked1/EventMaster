@@ -32,19 +32,18 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Activity for viewing a sampled list of entrants who have been rejected to an event.
+ * Activity for viewing a sampled list of entrants who have been declined to an event.
  */
-public class ViewRejectedListActivity extends AppCompatActivity {
+public class ViewDeclinedListActivity extends AppCompatActivity {
 
-    private RecyclerView rejectedRecyclerView;
-    private WaitlistUsersAdapter rejectedAdapter;
+    private RecyclerView declinedRecyclerView;
+    private WaitlistUsersAdapter declinedAdapter;
     private FirebaseFirestore firestore;
     private String deviceId; // Replace with actual device ID
     private String eventName; // Define event name or ID
-    private List<WaitlistUsersAdapter.User> rejectedUsers;
-    private List<String> rejectedIds;
+    private List<WaitlistUsersAdapter.User> declinedUsers;
+    private List<String> declinedIds;
     private Profile user;
-    private String privateKey;
 
     private AppCompatButton notifyButton;
 
@@ -57,54 +56,39 @@ public class ViewRejectedListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         ModeActivity.applyTheme(this);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_view_rejected_list);
+        setContentView(R.layout.activity_view_declined_list);
 
         Intent intentMain = getIntent();
         eventName = intentMain.getStringExtra("myEventName");
         user = (Profile) intentMain.getSerializableExtra("User");
 
-        rejectedUsers = new ArrayList<>();
-        rejectedIds = new ArrayList<>();
+        declinedUsers = new ArrayList<>();
+        declinedIds = new ArrayList<>();
 
-        rejectedRecyclerView = findViewById(R.id.waitlistRecyclerView);
-        rejectedRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        declinedRecyclerView = findViewById(R.id.waitlistRecyclerView);
+        declinedRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Pass the context and eventName to the adapter
-        rejectedAdapter = new WaitlistUsersAdapter(rejectedUsers, this, eventName);
-        rejectedRecyclerView.setAdapter(rejectedAdapter);
+        declinedAdapter = new WaitlistUsersAdapter(declinedUsers, this, eventName);
+        declinedRecyclerView.setAdapter(declinedAdapter);
 
         firestore = FirebaseFirestore.getInstance();
         deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
-        //Grab private key from firestore for notifications.
-        firestore.collection("private_key")
-                .document("key")
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        privateKey = documentSnapshot.getString("pkey");
-                    }
-                })
-                .addOnFailureListener(e -> Log.e("KEY", "Error fetching private key", e));
-
-        notifyButton = findViewById(R.id.send_notification_button);
-
-        notifyButton.setOnClickListener(v -> {
-            if (rejectedIds != null) {
-                String notifyDate = String.valueOf(System.currentTimeMillis());
-                setNotifiedInFirestore(eventName, notifyDate);
-            } else {
-                Toast.makeText(this, "Cannot notify. Empty list of entrants.", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        // Fetch the waitlist from Firebase
-        fetchrejectedList();
+        // Fetch the declined from Firebase
+        fetchdeclinedList();
         ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
         ActivityResultLauncher<Intent> notificationActivityResultLauncher;
         ActivityResultLauncher<Intent> settingsResultLauncher;
         ActivityResultLauncher<Intent> MainActivityResultLauncher;
-
+        ImageButton backButton = findViewById(R.id.back);
+        // Set click listener for the back button
+        backButton.setOnClickListener(v -> {
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("User", user);
+            setResult(RESULT_OK, resultIntent);
+            finish();
+        });
         // Set result launchers to set up navigation buttons on the bottom of the screen
         settingsResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -158,14 +142,7 @@ public class ViewRejectedListActivity extends AppCompatActivity {
 
                 });
 
-        ImageButton backButton = findViewById(R.id.back);
-        // Set click listener for the back button
-        backButton.setOnClickListener(v -> {
-            Intent resultIntent = new Intent();
-            resultIntent.putExtra("User", user);
-            setResult(RESULT_OK, resultIntent);
-            finish();
-        });
+
         // Initialize BottomNavigationView
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         // Disable tint for specific menu item
@@ -178,22 +155,22 @@ public class ViewRejectedListActivity extends AppCompatActivity {
             Intent newIntent;
 
             if (item.getItemId() == R.id.nav_Home) {
-                newIntent = new Intent(ViewRejectedListActivity.this, MainActivity.class);
+                newIntent = new Intent(ViewDeclinedListActivity.this, MainActivity.class);
                 newIntent.putExtra("User", user);
                 MainActivityResultLauncher.launch(newIntent);
                 return true;
             } else if (item.getItemId() == R.id.nav_Settings) {
-                newIntent = new Intent(ViewRejectedListActivity.this, SettingsScreen.class);
+                newIntent = new Intent(ViewDeclinedListActivity.this, SettingsScreen.class);
                 newIntent.putExtra("User", user);
                 settingsResultLauncher.launch(newIntent);
                 return true;
             } else if (item.getItemId() == R.id.nav_Notifications) {
-                newIntent = new Intent(ViewRejectedListActivity.this, Notifications.class);
+                newIntent = new Intent(ViewDeclinedListActivity.this, Notifications.class);
                 newIntent.putExtra("User", user);
                 notificationActivityResultLauncher.launch(newIntent);
                 return true;
             } else if (item.getItemId() == R.id.nav_Profile) {
-                newIntent = new Intent(ViewRejectedListActivity.this, ProfileActivity.class);
+                newIntent = new Intent(ViewDeclinedListActivity.this, ProfileActivity.class);
                 newIntent.putExtra("User", user);
                 ProfileActivityResultLauncher.launch(newIntent);
                 return true;
@@ -215,31 +192,30 @@ public class ViewRejectedListActivity extends AppCompatActivity {
 
     }
     /**
-     * Gets the rejected list from a specific event and calls fetchUserName on each device ID.
+     * Gets the declined list from a specific event and calls fetchUserName on each device ID.
      */
-    private void fetchrejectedList() {
+    private void fetchdeclinedList() {
         firestore.collection("facilities")
                 .document(deviceId)
                 .collection("My Events")
                 .document(eventName)
-                .collection("rejected list")
+                .collection("declined list")
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             String userDeviceId = document.getId();
-                            rejectedIds.add(userDeviceId);
                             fetchUserName(userDeviceId); // Fetch the name for each userDeviceId
                         }
                     } else {
-                        Log.e("WaitlistActivity", "Error getting waitlist: ", task.getException());
+                        Log.e("Declined listActivity", "Error getting declined: ", task.getException());
                     }
                 });
     }
 
     //
     /**
-     * Fetches the user's name and profile picture URL based on the device ID. Saves them to rejectedUsers
+     * Fetches the user's name and profile picture URL based on the device ID. Saves them to declinedUsers
      * @param userDeviceId The device ID to fetch the username and profile picture from.
      */
     private void fetchUserName(String userDeviceId) {
@@ -252,10 +228,10 @@ public class ViewRejectedListActivity extends AppCompatActivity {
                         String profilePictureUrl = documentSnapshot.getString("profilePictureUrl"); // Assuming 'profilePictureUrl' is the field for profile picture
 
                         if (userName != null) {
-                            // Create a User object and add it to the waitlist
+                            // Create a User object and add it to the declined
                             WaitlistUsersAdapter.User user = new WaitlistUsersAdapter.User(userName, profilePictureUrl);
-                            rejectedUsers.add(user);
-                            rejectedAdapter.notifyDataSetChanged();
+                            declinedUsers.add(user);
+                            declinedAdapter.notifyDataSetChanged();
                         }
                     }
                 })
@@ -263,14 +239,14 @@ public class ViewRejectedListActivity extends AppCompatActivity {
     }
 
     private void setNotifiedInFirestore(String eventName, String notifyDate) {
-        for (int i = 0; i < rejectedIds.size(); i++) {
+        for (int i = 0; i < declinedIds.size(); i++) {
             Map<String, Object> notificationData = new HashMap<>();
             notificationData.put("notifyDate", notifyDate);
 
-            String entrantId = rejectedIds.get(i);
+            String entrantId = declinedIds.get(i);
             firestore.collection("entrants")
                     .document(entrantId)
-                    .collection("Rejected Events")
+                    .collection("Declined Events")
                     .document(eventName)
                     .get()
                     .addOnSuccessListener(documentSnapshot -> {
@@ -279,14 +255,11 @@ public class ViewRejectedListActivity extends AppCompatActivity {
                             if (firestoreNotifyDate == null) {
                                 firestore.collection("entrants")
                                         .document(entrantId)
-                                        .collection("Rejected Events")
+                                        .collection("Declined Events")
                                         .document(eventName)
                                         .set(notificationData, SetOptions.merge())
                                         .addOnSuccessListener(aVoid -> {
                                             Log.d("Notify Users", "User set as notified in firestore");
-
-                                            //Send push notification to specific user.
-                                            notifyRejectedUser(entrantId, eventName);
                                         })
                                         .addOnFailureListener(e -> {
                                             Log.e("Notify Users", "Error setting user as notified in firestore", e);
@@ -297,26 +270,6 @@ public class ViewRejectedListActivity extends AppCompatActivity {
                         }
                     });
         }
-        Toast.makeText(ViewRejectedListActivity.this, "Previously un-notified users have been notified.", Toast.LENGTH_SHORT).show();
-    }
-
-    private void notifyRejectedUser(String rejectedId, String eventName) {
-        String invitedTitle = "Rejected from Event";
-        String invitedBody = "You have not been selected for the " + eventName + " event. Open the app to see details.";
-
-        firestore.collection("profiles")
-                .document(rejectedId)
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        String invitedToken = documentSnapshot.getString("notificationToken");
-
-                        if (invitedToken != null) {
-                            FCMNotificationSender invitedNotification = new FCMNotificationSender(invitedToken, invitedTitle, invitedBody, getApplicationContext());
-                            invitedNotification.SendNotifications(privateKey);
-                        }
-                    }
-                })
-                .addOnFailureListener(e -> Log.e("Notification", "Failed to send user push notification. ", e));
+        Toast.makeText(ViewDeclinedListActivity.this, "Previously un-notified users have been notified.", Toast.LENGTH_SHORT).show();
     }
 }

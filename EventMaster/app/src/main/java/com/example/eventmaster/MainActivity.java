@@ -1,11 +1,14 @@
 package com.example.eventmaster;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -29,6 +32,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -45,12 +49,14 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.firestore.auth.User;
 import com.example.eventmaster.Profile;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 
 import java.security.cert.PKIXRevocationChecker;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -69,9 +75,32 @@ public class MainActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> joinEventScreenResultLauncher;
     private ActivityResultLauncher<Intent> joinedEventsActivityResultLauncher;
 
+    private String token;
     Profile user;
 
     //private ActivityResultLauncher<Intent> scanQRFragmentResultLauncher;
+
+    //Request notification permission
+    private final ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+
+                } else {
+
+                }
+            });
+
+    private void askNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) ==
+                    PackageManager.PERMISSION_GRANTED) {
+            } else if (shouldShowRequestPermissionRationale(android.Manifest.permission.POST_NOTIFICATIONS)) {
+
+            } else {
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+            }
+        }
+    }
 
     /**
      * Initializes the MainActivity and sets up the icons for navigation.
@@ -97,13 +126,27 @@ public class MainActivity extends AppCompatActivity {
 
         user = new Profile(deviceId, "", "", ""); // create a new user
 
+        askNotificationPermission(); //Ask for notification permission if not granted.
+
         storeDeviceID(deviceId, "profiles");
         storeDeviceID(deviceId, "facilities");
         storeDeviceID(deviceId, "entrants");
         storeDeviceID(deviceId, "organizers");
         initializeUser(deviceId); // grab all the user's info from firestore based on device id
 
+        //Get user's notification token for FCM service and upload to firestore
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
+            @Override
+            public void onComplete(@NonNull Task<String> task) {
+                if (!task.isSuccessful()) {
+                    Toast.makeText(MainActivity.this, Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
+                }
 
+                token = task.getResult();
+                uploadToken(token);
+                Log.d("Notification Token", "User notification token: " + token);
+            }
+        });
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -403,6 +446,21 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("Firestore", "Error fetching document", task.getException());
             }
         });
+    }
+
+    private void uploadToken(String notificationToken) {
+        Map<String, Object> tokenData = new HashMap<>();
+        tokenData.put("notificationToken", notificationToken);
+
+        db.collection("profiles")
+                .document(deviceId)
+                .set(tokenData, SetOptions.merge())
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("Notification Token", "Notification token for user uploaded firestore");
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Notification Token", "Error uploading notification token for user in firestore", e);
+                });
     }
 
     /**

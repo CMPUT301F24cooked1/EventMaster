@@ -111,7 +111,14 @@ public class FacilityScreen extends AppCompatActivity {
             intent.putExtra("User", user);
             startActivity(intent);
         });
-
+        ImageButton backButton = findViewById(R.id.back);
+        // Set click listener for the back button
+        backButton.setOnClickListener(v -> {
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("User", user);
+            setResult(RESULT_OK, resultIntent);
+            finish();
+        });
         // Connecting the facility screen to the Edit Facility Screen
         editFacilityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
             @Override

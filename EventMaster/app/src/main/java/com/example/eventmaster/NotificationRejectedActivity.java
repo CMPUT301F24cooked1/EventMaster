@@ -25,7 +25,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class NotificationRejectedActivity extends AppCompatActivity {
     private Profile user;
     private String event_name;
-    private String event_detail;
     private String facility_id;
 
     /**
@@ -37,7 +36,7 @@ public class NotificationRejectedActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ModeActivity.applyTheme(NotificationRejectedActivity.this);
-        setContentView(R.layout.notification_invited_screen);
+        setContentView(R.layout.notification_rejected_screen);
 
         user = (Profile) getIntent().getSerializableExtra("User");
         event_name = getIntent().getStringExtra("event_name");
@@ -47,7 +46,6 @@ public class NotificationRejectedActivity extends AppCompatActivity {
 
         event_name_text.setText(event_name);
         fetchEventDescription(facility_id, event_name);
-
 
         ImageButton backButton = findViewById(R.id.back);
 
