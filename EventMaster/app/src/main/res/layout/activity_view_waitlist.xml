@@ -41,17 +41,30 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/choose_sample_button"
-        android:layout_width="271dp"
-        android:layout_height="70dp"
-        android:background="@drawable/rounded_button"
+        android:layout_width="220dp"
+        android:layout_height="60dp"
+        android:background="@drawable/white_rounded_button"
         android:text="Choose"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.78" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/send_notification_button"
+        android:layout_width="220dp"
+        android:layout_height="60dp"
+        android:background="@drawable/rounded_button"
+        android:text="Notify"
         android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintVertical_bias="0.8" />
+        app:layout_constraintVertical_bias="0.88" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
@@ -70,7 +83,27 @@
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/bottom_nav_menu" />
 
+    <ImageButton
+        android:id="@+id/back"
+        android:layout_width="12dp"
+        android:layout_height="18dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/vector"
+        android:scaleType="centerInside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageButton
+        android:id="@+id/map_icon"
+        android:layout_width="53dp"
+        android:layout_height="33dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/map_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/light_mode_color" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

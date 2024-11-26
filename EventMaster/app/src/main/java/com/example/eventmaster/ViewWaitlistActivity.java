@@ -50,13 +50,16 @@ public class ViewWaitlistActivity extends AppCompatActivity {
     private RecyclerView waitlistRecyclerView;
     private WaitlistUsersAdapter waitlistAdapter;
     private List<WaitlistUsersAdapter.User> waitlistUsers;
+    private List<String> waitlistIds;
     private FirebaseFirestore firestore;
     private String deviceId; // Replace with actual device ID
     private String eventName; // Define event name or ID
     private Profile user;
+    private String privateKey;
 
     private ActivityResultLauncher<Intent> chooseSampleResultLauncher;
     private AppCompatButton chooseSampleButton;
+    private AppCompatButton notifyButton;
 
 
     /**
@@ -89,6 +92,18 @@ public class ViewWaitlistActivity extends AppCompatActivity {
 
         // Fetch the waitlist from Firebase
         fetchWaitlist();
+
+        //Grab private key from firestore for notifications.
+        firestore.collection("private_key")
+                .document("key")
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        privateKey = documentSnapshot.getString("pkey");
+                    }
+                })
+                .addOnFailureListener(e -> Log.e("KEY", "Error fetching private key", e));
+
         ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
         ActivityResultLauncher<Intent> notificationActivityResultLauncher;
         ActivityResultLauncher<Intent> settingsResultLauncher;
@@ -104,6 +119,27 @@ public class ViewWaitlistActivity extends AppCompatActivity {
             }
         });
 
+        notifyButton = findViewById(R.id.send_notification_button);
+        notifyButton.setOnClickListener(v -> {
+            if (waitlistIds != null) {
+                String notifyDate = String.valueOf(System.currentTimeMillis());
+                setNotifiedInFirestore(eventName, notifyDate);
+            } else {
+                Toast.makeText(this, "Cannot notify. Empty list of entrants.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        ImageButton backButton = findViewById(R.id.back);
+        // Set click listener for the back button
+        backButton.setOnClickListener(v -> {
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("User", user);
+            setResult(RESULT_OK, resultIntent);
+            finish();
+        });
+        ImageButton mapIconButton = findViewById(R.id.map_icon);
+        mapIconButton.setOnClickListener(v -> checkGeolocationStatus());
+
         //Start sampling selected entrants in order to move to ViewInvitedListActivity
         chooseSampleButton = findViewById(R.id.choose_sample_button);
         chooseSampleButton.setOnClickListener(new View.OnClickListener() {
@@ -114,6 +150,11 @@ public class ViewWaitlistActivity extends AppCompatActivity {
                 if (waitlistSize == 0) {
                     Toast.makeText(ViewWaitlistActivity.this, "Waitlist does not have any entrants and thus cannot be sampled.", Toast.LENGTH_SHORT).show();
                     Log.d("WaitlistSize", "Waitlist size is 0, cannot sample.");
+                    Intent intent = new Intent(ViewWaitlistActivity.this, ViewInvitedListActivity.class);
+                    intent.putExtra("myEventName", eventName);
+                    intent.putExtra("userProfile", user);
+                    intent.putExtra("Sampled?", 0);
+                    chooseSampleResultLauncher.launch(intent);
                 } else {
                     Log.d("WaitlistSize", "Waitlist size is " + waitlistSize + ": Sampling beginning now.");
                     DocumentReference docRef = firestore.collection("facilities")
@@ -138,25 +179,6 @@ public class ViewWaitlistActivity extends AppCompatActivity {
                                     } else {
                                         findSampleSize(eventName, waitlistSize);
                                     }
-
-
-/*
-                                    if (data.get("Sampled") != null) {
-                                        //Checks if the waitlist has already been sampled, skips to ViewInvitedListActivity if it has
-                                        if ((boolean) data.get("Sampled")) {
-                                            Intent intent = new Intent(ViewWaitlistActivity.this, ViewInvitedListActivity.class);
-                                            intent.putExtra("myEventName", eventName);
-                                            intent.putExtra("userProfile", user);
-                                            chooseSampleResultLauncher.launch(intent);
-                                        } else {
-                                            //First must find how large the sample should be.
-                                            findSampleSize(eventName, waitlistSize);
-                                        }
-                                    } else {
-                                        findSampleSize(eventName, waitlistSize);
-                                    }
-
- */
                                 }
                             }
                         }
@@ -261,6 +283,37 @@ public class ViewWaitlistActivity extends AppCompatActivity {
 
 
     }
+    private void checkGeolocationStatus() {
+        DocumentReference eventRef = firestore.collection("facilities")
+                .document(deviceId)
+                .collection("My Events")
+                .document(eventName);
+
+        eventRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    Boolean geolocationEnabled = document.getBoolean("geolocationEnabled");
+                    if (geolocationEnabled != null && geolocationEnabled) {
+                        openMapScreen();
+                    } else {
+                        Toast.makeText(this, "Event's geolocation is disabled.", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(this, "Event data not found.", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Log.e("GeolocationCheck", "Failed to fetch event data", task.getException());
+            }
+        });
+    }
+    private void openMapScreen() {
+        Intent intent = new Intent(ViewWaitlistActivity.this, MapActivity.class);
+        intent.putExtra("deviceId", deviceId);
+        intent.putExtra("eventName", eventName);
+        startActivity(intent);
+    }
+
     private void openQRScanFragment() {
         // Open QRScanFragment without simulating button click
         Intent intent = new Intent(this, QRScanFragment.class);
@@ -285,6 +338,7 @@ public class ViewWaitlistActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             String userDeviceId = document.getId();
+                            waitlistIds.add(userDeviceId);
                             fetchUserName(userDeviceId); // Fetch the name for each userDeviceId
                         }
                     } else {
@@ -344,8 +398,8 @@ public class ViewWaitlistActivity extends AppCompatActivity {
                         }
 
                         //Check if the waitlist is smaller than the sample size, and assign waitlistSize accordingly
-                        if (sampleSize > waitlistSize) {
-                            sampleSize = waitlistSize;
+                        if ((sampleSize - selectedCount) > waitlistSize) {
+                            sampleSize = waitlistSize + selectedCount;
                         }
 
                         //Set the new selectedCount value to full in Firestore
@@ -556,38 +610,61 @@ public class ViewWaitlistActivity extends AppCompatActivity {
                 });
     }
 
-    /**
-     * Marks an event as sampled in Firestore at the end of the sampling process.
-     * @param deviceId The Device ID of the user who created the event.
-     * @param eventName The name of the event selected.
-     */
-    private void markEventAsSampled(String deviceId, String eventName) {
+    private void setNotifiedInFirestore(String eventName, String notifyDate) {
+        for (int i = 0; i < waitlistIds.size(); i++) {
+            Map<String, Object> notificationData = new HashMap<>();
+            notificationData.put("notifyDate", notifyDate);
 
-        //Mark "Sampled" as true in Firestore for given Event
-        firestore.collection("facilities")
-                .document(deviceId)
-                .collection("My Events")
-                .document(eventName)
+            String entrantId = waitlistIds.get(i);
+            firestore.collection("entrants")
+                    .document(entrantId)
+                    .collection("Unsampled Events")
+                    .document(eventName)
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            String firestoreNotifyDate = documentSnapshot.getString("notifyDate");
+                            if (firestoreNotifyDate == null) {
+                                firestore.collection("entrants")
+                                        .document(entrantId)
+                                        .collection("Unsampled Events")
+                                        .document(eventName)
+                                        .set(notificationData, SetOptions.merge())
+                                        .addOnSuccessListener(aVoid -> {
+                                            Log.d("Notify Users", "User set as notified in firestore");
+
+                                            //Send push notification to specific user.
+                                            notifyUnsampledUser(entrantId, eventName);
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            Log.e("Notify Users", "Error setting user as notified in firestore", e);
+                                        });
+                            } else {
+                                Log.d("Notify Users", "User has already been notified");
+                            }
+                        }
+                    });
+        }
+        Toast.makeText(ViewWaitlistActivity.this, "Previously un-notified users have been notified.", Toast.LENGTH_SHORT).show();
+    }
+
+    private void notifyUnsampledUser(String invitedId, String eventName) {
+        String invitedTitle = "Waitlisted Event";
+        String invitedBody = "You have not yet been sampled for the " + eventName + " event, and still may be selected. Open the app to see details.";
+
+        firestore.collection("profiles")
+                .document(invitedId)
                 .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        Map<String, Object> sampleData = new HashMap<>();
-                        sampleData.put("Sampled", true);
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String invitedToken = documentSnapshot.getString("notificationToken");
 
-                        firestore.collection("facilities")
-                                .document(deviceId)
-                                .collection("My Events")
-                                .document(eventName)
-                                .set(sampleData, SetOptions.merge()) // Merge with existing data
-                                .addOnSuccessListener(aVoid -> {
-                                    Log.d("Event", "Event successfully marked as sampled.");
-                                })
-                                .addOnFailureListener(e -> {
-                                    Log.e("Event", "Error marking event as sampled", e);
-                                });
-                    } else {
-                        Log.e("Event", "Failed to find event to mark as sampled", task.getException());
+                        if (invitedToken != null) {
+                            FCMNotificationSender attendNotification = new FCMNotificationSender(invitedToken, invitedTitle, invitedBody, getApplicationContext());
+                            attendNotification.SendNotifications(privateKey);
+                        }
                     }
-                });
+                })
+                .addOnFailureListener(e -> Log.e("Notification", "Failed to send user push notification. ", e));
     }
 }

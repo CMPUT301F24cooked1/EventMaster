@@ -84,7 +84,14 @@ public class ViewCreatedEventsActivity extends AppCompatActivity {
 
         // Retrieve events from Firestore
         retrieveEvents();
-
+        ImageButton backButton = findViewById(R.id.back);
+        // Set click listener for the back button
+        backButton.setOnClickListener(v -> {
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("User", user);
+            setResult(RESULT_OK, resultIntent);
+            finish();
+        });
 
         // Set result launchers to set up navigation buttons on the bottom of the screen
         settingsResultLauncher = registerForActivityResult(

@@ -44,7 +44,8 @@ public class ViewInvitedListActivity extends AppCompatActivity {
     private List<WaitlistUsersAdapter.User> invitedUsers;
     private List<String> invitedIds;
     private Profile user;
-    private int selected;
+    private int sampled;
+    private String privateKey;
 
     private AppCompatButton notifyButton;
     private AppCompatButton rejectedListButton;
@@ -63,7 +64,7 @@ public class ViewInvitedListActivity extends AppCompatActivity {
         Intent intentMain = getIntent();
         eventName = intentMain.getStringExtra("myEventName");
         user = (Profile) intentMain.getSerializableExtra("User");
-        selected = intentMain.getIntExtra("Sampled?", 0);
+        sampled = intentMain.getIntExtra("Sampled?", 0);
 
         invitedUsers = new ArrayList<>();
         invitedIds = new ArrayList<>();
@@ -84,20 +85,45 @@ public class ViewInvitedListActivity extends AppCompatActivity {
         // Fetch the waitlist from Firebase
         fetchInvitedList();
 
-        if (selected == 1) {
+        //Check if new sampling has happened. Copy new rejected list if so.
+        if (sampled == 1) {
             Toast.makeText(ViewInvitedListActivity.this, "Copying unsampled list", Toast.LENGTH_SHORT).show();
             copyUnsampledList();
+            sampled = 0;
         }
+
+        //Grab private key from firestore for notifications.
+        firestore.collection("private_key")
+                .document("key")
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        privateKey = documentSnapshot.getString("pkey");
+                    }
+                })
+                .addOnFailureListener(e -> Log.e("KEY", "Error fetching private key", e));
 
         notifyButton = findViewById(R.id.send_notification_button);
         rejectedListButton = findViewById(R.id.rejected_list_button);
         deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         notifyButton.setOnClickListener(v -> {
-            String notifyDate = String.valueOf(System.currentTimeMillis());
-            setNotifiedInFirestore(eventName, notifyDate);
+            if (invitedIds != null) {
+                String notifyDate = String.valueOf(System.currentTimeMillis());
+                setNotifiedInFirestore(eventName, notifyDate);
+            } else {
+                Toast.makeText(this, "Cannot notify. Empty list of entrants.", Toast.LENGTH_SHORT).show();
+            }
         });
 
+        ImageButton backButton = findViewById(R.id.back);
+        // Set click listener for the back button
+        backButton.setOnClickListener(v -> {
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("User", user);
+            setResult(RESULT_OK, resultIntent);
+            finish();
+        });
         rejectedListButton.setOnClickListener(v -> {
             Intent intent = new Intent(ViewInvitedListActivity.this, ViewRejectedListActivity.class);
             intent.putExtra("myEventName", eventName); // Pass the event name or ID as an extra
@@ -279,6 +305,9 @@ public class ViewInvitedListActivity extends AppCompatActivity {
                                         .set(notificationData, SetOptions.merge())
                                         .addOnSuccessListener(aVoid -> {
                                             Log.d("Notify Users", "User set as notified in firestore");
+
+                                            //Send push notification to specific user.
+                                            notifyInvitedUser(entrantId, eventName);
                                         })
                                         .addOnFailureListener(e -> {
                                             Log.e("Notify Users", "Error setting user as notified in firestore", e);
@@ -290,6 +319,26 @@ public class ViewInvitedListActivity extends AppCompatActivity {
                     });
         }
         Toast.makeText(ViewInvitedListActivity.this, "Previously un-notified users have been notified.", Toast.LENGTH_SHORT).show();
+    }
+
+    private void notifyInvitedUser(String invitedId, String eventName) {
+        String invitedTitle = "Invited to Event";
+        String invitedBody = "You have been invited to join the " + eventName + " event. Open the app to see details.";
+
+        firestore.collection("profiles")
+                .document(invitedId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String invitedToken = documentSnapshot.getString("notificationToken");
+
+                        if (invitedToken != null) {
+                            FCMNotificationSender invitedNotification = new FCMNotificationSender(invitedToken, invitedTitle, invitedBody, getApplicationContext());
+                            invitedNotification.SendNotifications(privateKey);
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> Log.e("Notification", "Failed to send user push notification. ", e));
     }
 
     private void copyUnsampledList() {
