@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -66,10 +67,13 @@ public class SettingsScreen extends AppCompatActivity {
 
         user = (Profile) getIntent().getSerializableExtra("User"); // user from MainActivity
 
+
+        String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
         notificationSwitch = findViewById(R.id.notification_button);
 
         Intent intent = getIntent();
-        String deviceId = intent.getStringExtra("DeviceID");
+
 
         notificationSetting(deviceId, "entrants");  // make sure toggle button doesn't reset
 
