@@ -2,6 +2,7 @@ package com.example.eventmaster;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +13,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -34,15 +41,15 @@ public class ViewQRAdapter extends RecyclerView.Adapter<ViewQRAdapter.QRViewHold
      * Creates an adapter to display all Events on the view events screen
      */
     private ArrayList<AbstractMap.SimpleEntry<String, String>> qrList = new ArrayList<>();
-    private ArrayList<AbstractMap.SimpleEntry<String, String>> qrProfiles = new ArrayList<>();
+    private ArrayList<AbstractMap.SimpleEntry<String, String>> selectedQRList = new ArrayList<>();
+    private ArrayList<AbstractMap.SimpleEntry<String, String>> selectedQRListStorage = new ArrayList<>();
+
     private Context context;
     private Profile user;
     private Boolean isAdmin = false;
     private Boolean showCheckBox = false;
     private Boolean isClickable = true;
     private FirebaseFirestore firestore;
-
-
 
     public ViewQRAdapter(ArrayList<AbstractMap.SimpleEntry<String, String>> qrList, Context context, Profile user, Boolean isAdmin) {
         this.qrList = qrList;
@@ -68,20 +75,22 @@ public class ViewQRAdapter extends RecyclerView.Adapter<ViewQRAdapter.QRViewHold
 
         // Checkbox stuff ------------------------------------
         // set the checkbox state
-        if (qrProfiles != null) {
+        if (selectedQRList != null) {
             // Set the CheckBox state
-            holder.checkBox.setChecked(qrProfiles.contains(qrList.get(position)));
+            holder.checkBox.setChecked(selectedQRList.contains(qrList.get(position)));
         } else {
             holder.checkBox.setChecked(false);
         }
         // adds an event to the selectedEvents list when it's respective checkbox is checked
         holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
-                if (!qrProfiles.contains(qrList.get(position))) {
-                    qrProfiles.add(qrList.get(position));
+                if (!selectedQRList.contains(qrList.get(position))) {
+                    selectedQRList.add(qrList.get(position));
+                    selectedQRListStorage.add(qrList.get(position));
+
                 }
             } else {
-                qrProfiles.remove(qrList.get(position));
+                selectedQRList.remove(qrList.get(position));
             }
         });
 
@@ -111,6 +120,74 @@ public class ViewQRAdapter extends RecyclerView.Adapter<ViewQRAdapter.QRViewHold
      * Deletes all events that were marked by the checkbox
      */
     public void deleteSelectedQRs() {
+        firestore = FirebaseFirestore.getInstance();
+        if (!selectedQRListStorage.isEmpty()) {
+            CollectionReference facilitiesRef = firestore.collection("facilities");
+            Log.d("Firestore Debug", "Attempting to fetch facilities");
+
+            facilitiesRef.get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Log.d("Firestore Debug", "Facilities fetched successfully");
+                    Log.d("Firestore Debug", "Selected events: " + selectedQRListStorage);
+
+                    List<Task<Void>> deleteTasks = new ArrayList<>();
+
+                    for (QueryDocumentSnapshot facilityDoc : task.getResult()) {
+                        // Retrieve events for each facility
+                        CollectionReference eventsRef = facilityDoc.getReference().collection("My Events");
+                        eventsRef.get().addOnCompleteListener(eventTask -> {
+                            if (eventTask.isSuccessful()) {
+                                Log.d("Firestore success", "Fetched events successfully");
+                                for (QueryDocumentSnapshot eventDoc : eventTask.getResult()) {
+                                    String eventName = eventDoc.getString("eventName");
+                                    String hash = eventDoc.getString("hash");
+                                    Log.d("Current Event", "current hash: " + hash);
+                                    AbstractMap.SimpleEntry<String, String> tuple = new AbstractMap.SimpleEntry<>(eventName, hash);
+                                    String documentId = eventDoc.getId();
+
+                                    if (selectedQRListStorage.contains(tuple)) {
+                                        // Use the document ID to delete the event
+                                        DocumentReference eventRef = eventsRef.document(documentId);
+                                        Task<Void> deleteTask = eventRef.update("hash", FieldValue.delete()).addOnSuccessListener(aVoid -> {
+                                            qrList.remove(tuple);
+                                            notifyDataSetChanged();
+
+                                        }).addOnFailureListener(e ->{
+                                            Log.d("QRADAPTER", "failed to delete" + e.getMessage());
+                                        });
+
+                                        // Add this task to the list
+                                        deleteTasks.add(deleteTask);
+                                    }
+                                }
+                            } else {
+                                Log.e("Firestore Error", "Error fetching events for facility: ", eventTask.getException());
+                            }
+                        }).addOnFailureListener(e -> {
+                            Log.e("Firestore Failure", "Failed to fetch events", e);
+                        });
+                    }
+
+                    // Wait for all delete tasks to complete
+                    Tasks.whenAll(deleteTasks).addOnCompleteListener(allTasks -> {
+                        if (allTasks.isSuccessful()) {
+                            Log.d("Firestore Debug", "All selected events deleted successfully");
+                        } else {
+                            Log.e("Firestore Debug", "Error deleting some events", allTasks.getException());
+                        }
+                        // Notify the adapter once all deletions are done
+                        notifyDataSetChanged();
+                    });
+
+                } else {
+                    Log.e("Firestore Error", "Error fetching facilities: ", task.getException());
+                }
+            }).addOnFailureListener(e -> {
+                Log.e("Firestore Failure", "Failed to fetch facilities", e);
+            });
+        } else {
+            Log.d("Firestore Debug", "No selected events to delete");
+        }
     }
 
     @Override

@@ -106,4 +106,12 @@ public class Facility implements Serializable {
     public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Facility facility = (Facility) o;
+        return deviceId != null && deviceId.equals(facility.deviceId);
+    }
 }

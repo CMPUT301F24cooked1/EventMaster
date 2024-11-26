@@ -88,8 +88,6 @@ public class ViewEventsAdapter extends RecyclerView.Adapter<ViewEventsAdapter.Ev
                 if (!selectedEvents.contains(eventList.get(position))) {
                     selectedEvents.add(eventList.get(position));
                     selectedEventsStorage.add(eventList.get(position));
-                    Log.d("EVENTS", "selectedEvents size: "+ selectedEvents.size());
-                    Log.d("EVENTS", "selected event: "+ selectedEvents);
                 }
             } else {
                 selectedEvents.remove(eventList.get(position));

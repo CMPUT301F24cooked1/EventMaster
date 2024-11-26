@@ -19,10 +19,16 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *  Adapter class for displaying the list of images in a RecyclerView
@@ -41,12 +47,14 @@ public class ViewImagesAdapter extends RecyclerView.Adapter<ViewImagesAdapter.Im
      */
     private List<String> imageList;
     private ArrayList<String> selectedImages = new ArrayList<>();
+    private ArrayList<String> selectedImagesStorage = new ArrayList<>();
     private Context context;
     private Profile user;
     private Boolean isAdmin = false;
     private Boolean showCheckBox = false;
     private Boolean isClickable = true;
     private FirebaseFirestore firestore;
+
 
 
     public ViewImagesAdapter(List<String> imageList, Context context, Profile user, Boolean isAdmin) {
@@ -88,6 +96,7 @@ public class ViewImagesAdapter extends RecyclerView.Adapter<ViewImagesAdapter.Im
             if (isChecked) {
                 if (!selectedImages.contains(imageList.get(position))) {
                     selectedImages.add(imageList.get(position));
+                    selectedImagesStorage.add(imageList.get(position));
                 }
             } else {
                 selectedImages.remove(imageList.get(position));
@@ -108,8 +117,24 @@ public class ViewImagesAdapter extends RecyclerView.Adapter<ViewImagesAdapter.Im
     /**
      * Deletes all events that were marked by the checkbox
      */
-    public void deleteSelectedImages() {
+    public void deleteSelectedImages(Map<String, StorageReference> urlToStorageRefMap) {
+        for (String imageUrl : selectedImagesStorage) {
+            StorageReference fileRef = urlToStorageRefMap.get(imageUrl);
+            if (fileRef != null) {
+                fileRef.delete().addOnSuccessListener(aVoid -> {
+                    // Remove image locally
+                    imageList.remove(imageUrl);
+                    notifyDataSetChanged(); // Update UI
+                    Log.d("ViewImagesAdapter", "Image deleted: " + imageUrl);
+                }).addOnFailureListener(e -> {
+                    Log.e("ViewImagesAdapter", "Error deleting image: " + imageUrl, e);
+                });
+            } else {
+                Log.e("ViewImagesAdapter", "No StorageReference found for URL: " + imageUrl);
+            }
+        }
     }
+
 
     @Override
     public int getItemCount() {

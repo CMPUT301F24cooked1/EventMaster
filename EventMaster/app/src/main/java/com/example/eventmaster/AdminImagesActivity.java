@@ -29,7 +29,10 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import io.grpc.Context;
 
 /**
@@ -45,6 +48,8 @@ public class AdminImagesActivity extends AppCompatActivity {
     private Button deleteButton;
     private boolean isDeleteMode = false;
     private Profile user;
+    Map<String, StorageReference> urlToStorageRefMap = new HashMap<>(); // Mapping of URL to StorageReference
+
 
     private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
     private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
@@ -81,7 +86,7 @@ public class AdminImagesActivity extends AppCompatActivity {
                 deleteButton.setText("Delete Items");
             } else {
                 //delete checked items
-                viewImagesAdapter.deleteSelectedImages();
+                viewImagesAdapter.deleteSelectedImages(urlToStorageRefMap);
                 viewImagesAdapter.toggleCheckBoxVisibility();
                 viewImagesAdapter.notifyDataSetChanged();
                 deleteButton.setText("Select to Delete");
@@ -205,7 +210,9 @@ public class AdminImagesActivity extends AppCompatActivity {
 
             // get all image urls
             for (StorageReference fileRef : listResult.getItems()) {
-                tasks.add(fileRef.getDownloadUrl());
+                tasks.add(fileRef.getDownloadUrl().addOnSuccessListener(uri->{
+                    urlToStorageRefMap.put(uri.toString(), fileRef); // Map URL to StorageReference
+                }));
             }
 
             // firebase storage retrieval is async so need a listener when everything is done

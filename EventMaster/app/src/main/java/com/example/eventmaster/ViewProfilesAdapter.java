@@ -13,11 +13,17 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +44,7 @@ public class ViewProfilesAdapter extends RecyclerView.Adapter<ViewProfilesAdapte
      */
     private List<Profile> profileList;
     private ArrayList<Profile> selectedProfiles = new ArrayList<>();
+    private ArrayList<Profile> selectedProfilesStorage = new ArrayList<>();
     private Context context;
     private Profile user;
     private Boolean isAdmin = false;
@@ -81,6 +88,8 @@ public class ViewProfilesAdapter extends RecyclerView.Adapter<ViewProfilesAdapte
             if (isChecked) {
                 if (!selectedProfiles.contains(profileList.get(position))) {
                     selectedProfiles.add(profileList.get(position));
+                    selectedProfilesStorage.add(profileList.get(position));
+
                 }
             } else {
                 selectedProfiles.remove(profileList.get(position));
@@ -113,7 +122,52 @@ public class ViewProfilesAdapter extends RecyclerView.Adapter<ViewProfilesAdapte
      * Deletes all events that were marked by the checkbox
      */
     public void deleteSelectedProfiles() {
+        firestore = FirebaseFirestore.getInstance();
+        if (!selectedProfilesStorage.isEmpty()) {
+            CollectionReference profilesRef = firestore.collection("profiles");
+            Log.d("Firestore Debug", "Attempting to fetch facilities");
+
+            profilesRef.get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Log.d("Firestore Debug", "profiles fetched successfully");
+                    Log.d("Firestore Debug", "Selected profiles: " + selectedProfilesStorage);
+                    List<Task<Void>> deleteTasks = new ArrayList<>();
+
+                    for (QueryDocumentSnapshot profileDoc : task.getResult()) {
+                        Profile profile = profileDoc.toObject(Profile.class);
+                        Log.d("Firestore Debug", "extracted profile: " + profile.getDeviceId());
+                        String documentId = profileDoc.getId();
+                        // Retrieve events for each facility
+                        if (selectedProfilesStorage.contains(profile)) {
+                            // Use the document ID to delete the event
+                            Task<Void> deleteTask = profilesRef.document(documentId).delete().addOnSuccessListener(aVoid -> {
+                                Log.d("Profile Deletion", "Profile deleted successfully with ID: " + documentId);
+                                profileList.remove(profile); // Ensure dataset consistency
+                                notifyDataSetChanged();
+                            }).addOnFailureListener(e -> {
+                                Log.e("Event Deletion", "Error deleting event: " + e.getMessage());
+                            });
+
+                            // Add this task to the list
+                            deleteTasks.add(deleteTask);
+                        }
+                    }
+                    // Wait for all delete tasks to complete
+                    Tasks.whenAll(deleteTasks).addOnCompleteListener(allTasks -> {
+                        if (allTasks.isSuccessful()) {
+                            Log.d("Firestore Debug", "All selected events deleted successfully");
+                        } else {
+                            Log.e("Firestore Debug", "Error deleting some events", allTasks.getException());
+                        }
+                        // Notify the adapter once all deletions are done
+                        notifyDataSetChanged();
+                    });
+                }
+            });
+
+        }
     }
+
 
     @Override
     public int getItemCount() {

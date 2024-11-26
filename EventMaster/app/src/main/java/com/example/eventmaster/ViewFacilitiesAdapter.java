@@ -16,7 +16,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +43,8 @@ public class ViewFacilitiesAdapter extends RecyclerView.Adapter<ViewFacilitiesAd
      */
     private List<Facility> facilityList;
     private ArrayList<Facility> selectedFacilities = new ArrayList<>();
+    private ArrayList<Facility> selectedFacilitiesStorage = new ArrayList<>();
+
     private Context context;
     private Profile user;
     private Boolean isAdmin = false;
@@ -85,6 +91,7 @@ public class ViewFacilitiesAdapter extends RecyclerView.Adapter<ViewFacilitiesAd
             if (isChecked) {
                 if (!selectedFacilities.contains(facilityList.get(position))) {
                     selectedFacilities.add(facilityList.get(position));
+                    selectedFacilitiesStorage.add(facilityList.get(position));
                 }
             } else {
                 selectedFacilities.remove(facilityList.get(position));
@@ -111,7 +118,50 @@ public class ViewFacilitiesAdapter extends RecyclerView.Adapter<ViewFacilitiesAd
      * Deletes all events that were marked by the checkbox
      */
     public void deleteSelectedFacilities() {
+        firestore = FirebaseFirestore.getInstance();
+        if (!selectedFacilitiesStorage.isEmpty()) {
+            CollectionReference facilitiesRef = firestore.collection("facilities");
+            Log.d("Firestore Debug", "Attempting to fetch facilities");
 
+            facilitiesRef.get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Log.d("Firestore Debug", "Facilities fetched successfully");
+                    Log.d("Firestore Debug", "Selected facilities: " + selectedFacilitiesStorage);
+                    List<Task<Void>> deleteTasks = new ArrayList<>();
+
+                    for (QueryDocumentSnapshot facilityDoc : task.getResult()) {
+                        Facility facility = facilityDoc.toObject(Facility.class);
+                        Log.d("Firestore Debug", "extracted facility: " + facility.getDeviceId());
+                        String documentId = facilityDoc.getId();
+                        // Retrieve events for each facility
+                        if (selectedFacilitiesStorage.contains(facility)) {
+                            // Use the document ID to delete the event
+                            Task<Void> deleteTask = facilitiesRef.document(documentId).delete().addOnSuccessListener(aVoid -> {
+                                Log.d("Facility Deletion", "Facility deleted successfully with ID: " + documentId);
+                                facilityList.remove(facility); // Ensure dataset consistency
+                                notifyDataSetChanged();
+                            }).addOnFailureListener(e -> {
+                                Log.e("Event Deletion", "Error deleting facility: " + e.getMessage());
+                            });
+
+                            // Add this task to the list
+                            deleteTasks.add(deleteTask);
+                        }
+                    }
+                    // Wait for all delete tasks to complete
+                    Tasks.whenAll(deleteTasks).addOnCompleteListener(allTasks -> {
+                        if (allTasks.isSuccessful()) {
+                            Log.d("Firestore Debug", "All selected facilities deleted successfully");
+                        } else {
+                            Log.e("Firestore Debug", "Error deleting some events", allTasks.getException());
+                        }
+                        // Notify the adapter once all deletions are done
+                        notifyDataSetChanged();
+                    });
+                }
+            });
+
+        }
     }
 
     @Override
