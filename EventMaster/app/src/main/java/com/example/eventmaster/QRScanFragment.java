@@ -193,6 +193,7 @@ public class QRScanFragment extends AppCompatActivity{
         options.setOrientationLocked(false);
         options.setCaptureActivity(QrCaptureActivity.class);  // access the QrCaptureActivity class to ensure the orientation is vertical
         barLauncher.launch(options);
+
     }
 
     ActivityResultLauncher<ScanOptions> barLauncher = registerForActivityResult(new ScanContract(), result->{
@@ -213,6 +214,7 @@ public class QRScanFragment extends AppCompatActivity{
             startActivity(intent2);
         }
     });
+
 
 
     // WILL DELETE LATER its for a button to go straight to the next screen without scanning
