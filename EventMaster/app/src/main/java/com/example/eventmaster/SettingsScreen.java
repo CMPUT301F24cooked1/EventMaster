@@ -19,6 +19,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.AppCompatButton;
 
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
+
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Displays the settings screen
  * Links the setting screen to the Admin Login screen and the App Info screen
@@ -39,6 +48,7 @@ public class SettingsScreen extends AppCompatActivity {
     private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
     private ActivityResultLauncher<Intent> settingsResultLauncher;
     private ActivityResultLauncher<Intent> listResultLauncher;
+    private FirebaseFirestore db;
 
     /**
      * Initializes the Setting Screen
@@ -52,23 +62,32 @@ public class SettingsScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         ModeActivity.applyTheme(SettingsScreen.this);
         setContentView(R.layout.setting_screen);
+        db = FirebaseFirestore.getInstance();
 
         user = (Profile) getIntent().getSerializableExtra("User"); // user from MainActivity
 
         notificationSwitch = findViewById(R.id.notification_button);
 
+        Intent intent = getIntent();
+        String deviceId = intent.getStringExtra("DeviceID");
+
+        notificationSetting(deviceId, "entrants");  // make sure toggle button doesn't reset
+
         // Toggle on and off the notification button
-        notificationSwitch.setChecked(true); // enabled notifications
+        notificationSwitch.setChecked(true); // enabled notifications as default
+
         notificationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean toggleNotifications) {
+                String notificationStatus = toggleNotifications ? "on" : "off";
+                storeNotificationSetting(deviceId, "entrants", notificationStatus);
                 if (toggleNotifications){
-                    user.setNotifications(true);  // set notifications to on
-                    Toast.makeText(SettingsScreen.this, "Notifications ON", Toast.LENGTH_SHORT).show();
+                    user.setNotifications(false);  // set notifications to on
+                    Toast.makeText(SettingsScreen.this, "Notifications On", Toast.LENGTH_SHORT).show();
                 }
-                else{
-                    user.setNotifications(false);
-                    Toast.makeText(SettingsScreen.this, "Notifications OFF", Toast.LENGTH_SHORT).show();
+                else{  // set notifications to off
+                    user.setNotifications(true);
+                    Toast.makeText(SettingsScreen.this, "Notifications Off", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -250,6 +269,61 @@ public class SettingsScreen extends AppCompatActivity {
             Log.d("SettingsScreen", "Day mode activated.");
         }
     }
+
+    /**
+     * Defaults notifications to on and saves the toggle position when re running the project
+     * @param deviceId the deviceID of the user's device
+     * @param path the collection under which to store the deviceId
+     */
+    private void notificationSetting(String deviceId, String path) {
+        db.collection(path).document(deviceId).get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            String notifications = document.getString("notifications");
+                            if (notifications != null) {
+                                notificationSwitch.setChecked("on".equals(notifications));  // set where the button is toggeled on or off
+                            }
+                        } else {
+                            notificationSwitch.setChecked(true);  // default to notificataions on
+                        }
+                    }
+                });
+    }
+
+    /**
+     * Adds notifications status to firestore DB in a given collection, checks if notifications status has already been added.
+     * If already in DB, does not add notifications status
+     * If NOT in DB, adds notifications status to DB
+     * @param deviceId the deviceID of the user's device
+     * @param path the collection under which to store the deviceId
+     * @param notification the collection under which to store the notifications status
+     */
+    private void storeNotificationSetting(String deviceId, String path, String notification) {
+        db.collection(path).document(deviceId).get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            db.collection(path).document(deviceId)
+                                    .update("notifications", notification);  // update notifications in firebase
+                        } else {
+                            // create notifications if it does not exist
+                            Map<String, Object> notificationData = new HashMap<>();
+                            notificationData.put("notifications", notification);
+                            notificationData.put("deviceId", deviceId);
+
+                            db.collection(path).document(deviceId)
+                                    .set(notificationData, SetOptions.merge());
+                        }
+                    }
+                });
+    }
+
+
+
+
 
 
 

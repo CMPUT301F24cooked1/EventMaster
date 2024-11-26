@@ -333,6 +333,7 @@ public class MainActivity extends AppCompatActivity {
             } else if (item.getItemId() == R.id.nav_Settings) {
                 newIntent = new Intent(MainActivity.this, SettingsScreen.class);
                 newIntent.putExtra("User", user);
+                newIntent.putExtra("DeviceID", deviceId);
                 settingsResultLauncher.launch(newIntent);
                 return true;
             } else if (item.getItemId() == R.id.nav_Notifications) {
