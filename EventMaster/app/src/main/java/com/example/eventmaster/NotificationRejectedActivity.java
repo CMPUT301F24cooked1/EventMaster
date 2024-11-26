@@ -25,7 +25,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class NotificationRejectedActivity extends AppCompatActivity {
     private Profile user;
     private String event_name;
-    private String event_detail;
     private String facility_id;
 
     /**
