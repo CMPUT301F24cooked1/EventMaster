@@ -139,6 +139,14 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
                  eventDescriptionTextView.setText("Oh no! Sorry you have not been selected... ");
             }
 
+            if (event.getNotificationType().equals("Waitlists")) {
+                eventDescriptionTextView.setText("You are in the waitlist...");
+            }
+
+            if (event.getNotificationType().equals("Attendees")) {
+                eventDescriptionTextView.setText("You are attending...");
+            }
+
         }
     }
     /**
