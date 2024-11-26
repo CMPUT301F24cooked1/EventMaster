@@ -14,7 +14,10 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +40,10 @@ public class JoinedEventsActivity extends AppCompatActivity {
     private List<Event> eventList;
     private FirebaseFirestore firestore;
     private String deviceId; // Replace with actual device ID
+    private String facilityId;
+    private String eventName;
+    private String eventDescription;
+
     private FirebaseFirestore db; // Firestore instance
     private ActivityResultLauncher<Intent> waitlistedEventsActivityResultLauncher;
     private Profile user;
@@ -69,7 +76,7 @@ public class JoinedEventsActivity extends AppCompatActivity {
         ViewEventsAdapter = new ViewEventsAdapter(eventList, this, user, false);
         recyclerView.setAdapter(ViewEventsAdapter);
         // Retrieve events from Firestore
-        retrieveEvents();
+        retrieveJoinedEvents(deviceId);
 
         // Connecting joined events screen to waitlisted events screen
         waitlistedEventsActivityResultLauncher = registerForActivityResult(
@@ -151,7 +158,53 @@ public class JoinedEventsActivity extends AppCompatActivity {
         });
     }
 
-    private void retrieveEvents() {
+    private void fetchEventDetails(String deviceId) {
+        firestore.collection("facilities")
+                .document(deviceId)
+                .collection("My Events")
+                .document(eventName)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot doc = task.getResult();
+                        if (doc != null && doc.exists()) {
+                            eventDescription = doc.getString("Event Description");
+                        } else {
+                            Log.d("FetchEventDetails", "Document does not exist");
+                        }
+                    } else {
+                        Log.d("FetchEventDetails", "Task failed: ", task.getException());
+                    }
+                });
+
+    }
+
+    private void retrieveJoinedEvents(String deviceId) {
         //TODO: Retrieve the events that the user has joined from firestore
+
+        DocumentReference entrantDocRef = firestore.collection("entrants").document(deviceId);
+
+        entrantDocRef.collection("Invited Events")
+                .whereEqualTo("choiceStatus", "accepted")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document: task.getResult()) {
+                            eventName = document.getString("Event Name");
+                            fetchEventDetails(document.getString("facilityId"));
+                            Event event = new Event();
+                            event.setDeviceID(deviceId);
+                            event.setEventName(eventName);
+                            event.setEventDescription(eventDescription);
+                            eventList.add(event);
+                        }
+                        ViewEventsAdapter.notifyDataSetChanged();
+                        Log.d("JoinedEventsScreen", "Number of waitlisted events: " + eventList.size());
+                        Log.d("JoinedEventsScreen", "Device ID: " + deviceId);
+
+                    } else {
+                        Log.d("JoinedEventsScreen", "QuerySnapshot is null");
+                    }
+                }).addOnFailureListener(e -> Log.e("JoinedEventsActivity", "Error retrieving joined events", e));
     }
 }
