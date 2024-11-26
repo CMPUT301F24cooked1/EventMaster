@@ -223,7 +223,7 @@ public class Notifications extends AppCompatActivity {
                 .get()
                 .addOnCompleteListener(rejectedTask -> {
                     if (rejectedTask.isSuccessful()) {
-                        rejectedList = new ArrayList<>();
+                        attendeesList = new ArrayList<>();
                         for (QueryDocumentSnapshot eventDoc : rejectedTask.getResult()) {
                             Event event = new Event();
 
@@ -262,7 +262,7 @@ public class Notifications extends AppCompatActivity {
                 .get()
                 .addOnCompleteListener(rejectedTask -> {
                     if (rejectedTask.isSuccessful()) {
-                        rejectedList = new ArrayList<>();
+                        waitlistList = new ArrayList<>();
                         for (QueryDocumentSnapshot eventDoc : rejectedTask.getResult()) {
                             Event event = new Event();
 
