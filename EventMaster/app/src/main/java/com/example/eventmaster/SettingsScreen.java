@@ -72,8 +72,6 @@ public class SettingsScreen extends AppCompatActivity {
 
         notificationSwitch = findViewById(R.id.notification_button);
 
-        Intent intent = getIntent();
-
 
         notificationSetting(deviceId, "entrants");  // make sure toggle button doesn't reset
 
