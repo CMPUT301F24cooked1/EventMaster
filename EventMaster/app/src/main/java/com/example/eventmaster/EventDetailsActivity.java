@@ -171,7 +171,8 @@ public class EventDetailsActivity extends AppCompatActivity {
                 ProfileActivityResultLauncher.launch(newIntent);
                 return true;
             }else if (item.getItemId() == R.id.nav_scan_qr) {
-                openQRScanFragment();
+                Intent intent = new Intent(EventDetailsActivity.this, QRScannerActivity.class);
+                startActivity(intent);
                 return true;
             }
             return false;

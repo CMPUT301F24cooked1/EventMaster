@@ -303,7 +303,8 @@ public class MainActivity extends AppCompatActivity {
                 ProfileActivityResultLauncher.launch(newIntent);
                 return true;
             }else if (item.getItemId() == R.id.nav_scan_qr) {
-                openQRScanFragment();
+                Intent intent = new Intent(MainActivity.this, QRScannerActivity.class);
+                startActivity(intent);
                 return true;
             }
             return false;
@@ -312,6 +313,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
     private void openQRScanFragment() {
         // Open QRScanFragment without simulating button click
         Intent intent = new Intent(this, QRScanFragment.class);

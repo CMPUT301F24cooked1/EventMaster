@@ -184,7 +184,8 @@ public class ViewAttendeesListActivity extends AppCompatActivity {
                 ProfileActivityResultLauncher.launch(newIntent);
                 return true;
             }else if (item.getItemId() == R.id.nav_scan_qr) {
-                openQRScanFragment();
+                Intent intent = new Intent(ViewAttendeesListActivity.this, QRScannerActivity.class);
+                startActivity(intent);
                 return true;
             }
             return false;

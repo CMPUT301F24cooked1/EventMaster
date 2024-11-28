@@ -250,7 +250,8 @@ public class FacilityScreen extends AppCompatActivity {
                 ProfileActivityResultLauncher.launch(newIntent);
                 return true;
             }else if (item.getItemId() == R.id.nav_scan_qr) {
-                openQRScanFragment();
+                Intent intent = new Intent(FacilityScreen.this, QRScannerActivity.class);
+                startActivity(intent);
                 return true;
             }
             return false;
