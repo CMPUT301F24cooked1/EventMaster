@@ -182,13 +182,9 @@ public class Event implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Event event = (Event) o;
-        return deviceID != null && deviceID.equals(event.deviceID);
+        return eventName != null && eventName.equals(event.eventName);
     }
 
-    @Override
-    public int hashCode() {
-        return deviceID!= null ? deviceID.hashCode() : 0;
-    }
     @Override
     public String toString() {
         return "Event{id='" + deviceID + "', name='" + eventName + "'}";

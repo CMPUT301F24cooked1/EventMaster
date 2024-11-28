@@ -1,19 +1,18 @@
 package com.example.eventmaster;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageButton;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,19 +20,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import io.grpc.Context;
+//import io.grpc.Context;
 
 /**
  * Displays all of the images that have been created
@@ -47,6 +47,9 @@ public class AdminImagesActivity extends AppCompatActivity {
     private String deviceId; // Replace with actual device ID
     private Button deleteButton;
     private boolean isDeleteMode = false;
+    private Profile user;
+    Map<String, StorageReference> urlToStorageRefMap = new HashMap<>(); // Mapping of URL to StorageReference
+
 
     private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
     private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
@@ -59,8 +62,8 @@ public class AdminImagesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         ModeActivity.applyTheme(this);
         setContentView(R.layout.admin_images_screen);
-        Profile user = (Profile) getIntent().getSerializableExtra("User"); // user from MainActivity
-        deviceId = user.getDeviceId();
+        Intent intentMain = getIntent();
+        user =  (Profile) intentMain.getSerializableExtra("User");
 
         // Initialize Firebase Firestore
         storage = FirebaseStorage.getInstance();
@@ -83,7 +86,7 @@ public class AdminImagesActivity extends AppCompatActivity {
                 deleteButton.setText("Delete Items");
             } else {
                 //delete checked items
-                viewImagesAdapter.deleteSelectedImages();
+                viewImagesAdapter.deleteSelectedImages(urlToStorageRefMap);
                 viewImagesAdapter.toggleCheckBoxVisibility();
                 viewImagesAdapter.notifyDataSetChanged();
                 deleteButton.setText("Select to Delete");
@@ -94,69 +97,106 @@ public class AdminImagesActivity extends AppCompatActivity {
 
         // Retrieve events from Firestore
         retrieveImages();
-
-
-        // Initialize navigation buttons
-        ImageButton notificationButton = findViewById(R.id.notifications);
-        ImageButton settingsButton = findViewById(R.id.settings);
-        ImageButton profileButton = findViewById(R.id.profile);
-        ImageButton homeButton = findViewById(R.id.home_icon);
-        ImageButton backButton = findViewById(R.id.back_button); // Initialize back button
-
         // Set result launchers to set up navigation buttons on the bottom of the screen
         settingsResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+
                 });
 
         MainActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+
                 });
 
         notificationActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+
                 });
 
         ProfileActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+
                 });
 
-        // Set click listeners for navigation buttons on the bottom of the screen
-        // sends you to profile screen
-        profileButton.setOnClickListener(v -> {
-            Intent newIntent = new Intent(AdminImagesActivity.this, ProfileActivity.class);
-            newIntent.putExtra("User", user);
-            ProfileActivityResultLauncher.launch(newIntent);
-        });
 
-        // sends you to settings screen
-        settingsButton.setOnClickListener(v -> {
-            Intent newIntent = new Intent(AdminImagesActivity.this, SettingsScreen.class);
-            newIntent.putExtra("User", user);
-            settingsResultLauncher.launch(newIntent);
-        });
+        // Initialize BottomNavigationView
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        // Disable tint for specific menu item
+        Menu menu = bottomNavigationView.getMenu();
+        MenuItem qrCodeItem = menu.findItem(R.id.nav_scan_qr);
+        Drawable qrIcon = qrCodeItem.getIcon();
+        qrIcon.setTintList(null);  // Disable tinting for this specific item
+        // Set up navigation item selection listener
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            Intent newIntent;
 
-        // sends you to a list of invited events that you accepted
-        homeButton.setOnClickListener(v -> {
-            Intent newIntent = new Intent(AdminImagesActivity.this, MainActivity.class);
-            newIntent.putExtra("User", user);
-            MainActivityResultLauncher.launch(newIntent);
-        });
-        notificationButton.setOnClickListener(v -> {
-            Intent newIntent = new Intent(AdminImagesActivity.this, Notifications.class);
-            newIntent.putExtra("User", user);
-            notificationActivityResultLauncher.launch(newIntent);
-        });
-
-        // Set click listener for the back button
-        backButton.setOnClickListener(v -> {
-            finish(); // Close the current activity and return to the previous one
+            if (item.getItemId() == R.id.nav_Home) {
+                newIntent = new Intent(AdminImagesActivity.this, MainActivity.class);
+                newIntent.putExtra("User", user);
+                MainActivityResultLauncher.launch(newIntent);
+                return true;
+            } else if (item.getItemId() == R.id.nav_Settings) {
+                newIntent = new Intent(AdminImagesActivity.this, SettingsScreen.class);
+                newIntent.putExtra("User", user);
+                settingsResultLauncher.launch(newIntent);
+                return true;
+            } else if (item.getItemId() == R.id.nav_Notifications) {
+                newIntent = new Intent(AdminImagesActivity.this, Notifications.class);
+                newIntent.putExtra("User", user);
+                notificationActivityResultLauncher.launch(newIntent);
+                return true;
+            } else if (item.getItemId() == R.id.nav_Profile) {
+                newIntent = new Intent(AdminImagesActivity.this, ProfileActivity.class);
+                newIntent.putExtra("User", user);
+                ProfileActivityResultLauncher.launch(newIntent);
+                return true;
+            }else if (item.getItemId() == R.id.nav_scan_qr) {
+                openQRScanFragment();
+                return true;
+            }
+            return false;
         });
     }
 
+    private void openQRScanFragment() {
+        // Open QRScanFragment without simulating button click
+        Intent intent = new Intent(this, QRScanFragment.class);
+        intent.putExtra("User", user);  // Pass the user information if needed
+        startActivity(intent);
+
+    }
 
     /**
      * Gets the string url of the images, and saves them into imageList, to transfer to ViewImagesAdapter
@@ -170,7 +210,9 @@ public class AdminImagesActivity extends AppCompatActivity {
 
             // get all image urls
             for (StorageReference fileRef : listResult.getItems()) {
-                tasks.add(fileRef.getDownloadUrl());
+                tasks.add(fileRef.getDownloadUrl().addOnSuccessListener(uri->{
+                    urlToStorageRefMap.put(uri.toString(), fileRef); // Map URL to StorageReference
+                }));
             }
 
             // firebase storage retrieval is async so need a listener when everything is done

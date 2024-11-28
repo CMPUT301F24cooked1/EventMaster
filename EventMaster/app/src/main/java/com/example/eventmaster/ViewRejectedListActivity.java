@@ -44,6 +44,7 @@ public class ViewRejectedListActivity extends AppCompatActivity {
     private List<WaitlistUsersAdapter.User> rejectedUsers;
     private List<String> rejectedIds;
     private Profile user;
+    private String privateKey;
 
     private AppCompatButton notifyButton;
 
@@ -75,11 +76,26 @@ public class ViewRejectedListActivity extends AppCompatActivity {
         firestore = FirebaseFirestore.getInstance();
         deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
+        //Grab private key from firestore for notifications.
+        firestore.collection("private_key")
+                .document("key")
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        privateKey = documentSnapshot.getString("pkey");
+                    }
+                })
+                .addOnFailureListener(e -> Log.e("KEY", "Error fetching private key", e));
+
         notifyButton = findViewById(R.id.send_notification_button);
 
         notifyButton.setOnClickListener(v -> {
-            String notifyDate = String.valueOf(System.currentTimeMillis());
-            setNotifiedInFirestore(eventName, notifyDate);
+            if (rejectedIds != null) {
+                String notifyDate = String.valueOf(System.currentTimeMillis());
+                setNotifiedInFirestore(eventName, notifyDate);
+            } else {
+                Toast.makeText(this, "Cannot notify. Empty list of entrants.", Toast.LENGTH_SHORT).show();
+            }
         });
 
         // Fetch the waitlist from Firebase
@@ -269,6 +285,9 @@ public class ViewRejectedListActivity extends AppCompatActivity {
                                         .set(notificationData, SetOptions.merge())
                                         .addOnSuccessListener(aVoid -> {
                                             Log.d("Notify Users", "User set as notified in firestore");
+
+                                            //Send push notification to specific user.
+                                            notifyRejectedUser(entrantId, eventName);
                                         })
                                         .addOnFailureListener(e -> {
                                             Log.e("Notify Users", "Error setting user as notified in firestore", e);
@@ -280,5 +299,25 @@ public class ViewRejectedListActivity extends AppCompatActivity {
                     });
         }
         Toast.makeText(ViewRejectedListActivity.this, "Previously un-notified users have been notified.", Toast.LENGTH_SHORT).show();
+    }
+
+    private void notifyRejectedUser(String rejectedId, String eventName) {
+        String invitedTitle = "Rejected from Event";
+        String invitedBody = "You have not been selected for the " + eventName + " event. Open the app to see details.";
+
+        firestore.collection("profiles")
+                .document(rejectedId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String invitedToken = documentSnapshot.getString("notificationToken");
+
+                        if (invitedToken != null) {
+                            FCMNotificationSender invitedNotification = new FCMNotificationSender(invitedToken, invitedTitle, invitedBody, getApplicationContext());
+                            invitedNotification.SendNotifications(privateKey);
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> Log.e("Notification", "Failed to send user push notification. ", e));
     }
 }

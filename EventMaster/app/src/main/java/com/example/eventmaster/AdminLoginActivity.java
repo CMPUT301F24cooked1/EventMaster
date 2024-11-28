@@ -1,11 +1,12 @@
 package com.example.eventmaster;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -15,7 +16,9 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.firestore.auth.User;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  *  Displays the Admin Login screen
@@ -26,11 +29,14 @@ public class AdminLoginActivity extends AppCompatActivity {
     final String adminPassword = "123456";
     private EditText adminCodeInput;
     private ActivityResultLauncher<Intent> adminMainResultLauncher;
-    private Profile user;
     private ImageButton backButton;
     private ImageButton settingsButton;
-    private ActivityResultLauncher<Intent> settingResultLauncher;
-    private ActivityResultLauncher<Intent> profileResultLauncher;
+    private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
+    private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
+    private ActivityResultLauncher<Intent> settingsResultLauncher;
+    private ActivityResultLauncher<Intent> MainActivityResultLauncher;
+    private ActivityResultLauncher<Intent> QRScanScreenResultLauncher;
+    private Profile user;
 
 
     @Override
@@ -38,35 +44,23 @@ public class AdminLoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         ModeActivity.applyTheme(this);
         setContentView(R.layout.admin_login_screen);
-        Intent intent = getIntent();
-        if (intent != null && intent.hasExtra("User")) {
-            user = (Profile) intent.getSerializableExtra("User");
-        } else {
-            Log.d("AdminLoginActivity", "No User data found in Intent");
-        }
+        Intent intentMain = getIntent();
+        user =  (Profile) intentMain.getSerializableExtra("User");
         adminCodeInput = findViewById(R.id.edit_admin_code);
 
-        // Links AdminLoginActivity to AdminActivity (main admin screen)
         adminMainResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(), result -> {
-                    if (result.getResultCode() == RESULT_OK) {
-
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
                     }
                 }
         );
 
-        Button doneButton = findViewById(R.id.done_button);
-        doneButton.setOnClickListener(v -> checkAdminCode());
-
-        settingResultLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-
-
-                }
-        );
-
-        profileResultLauncher = registerForActivityResult(
+        settingsResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
@@ -77,37 +71,100 @@ public class AdminLoginActivity extends AppCompatActivity {
                         }
                     }
 
-                }
-        );
+                });
+
+        MainActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+
+                });
+
+        notificationActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+
+                });
+
+        ProfileActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+
+                });
 
 
-        backButton = findViewById(R.id.back_button);
-        backButton.setOnClickListener(v -> {
-            Intent resultIntent = new Intent();
-            resultIntent.putExtra("User", user);
-            setResult(RESULT_OK, resultIntent);
-            finish();
-        });
+        // Initialize BottomNavigationView
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        // Disable tint for specific menu item
+        Menu menu = bottomNavigationView.getMenu();
+        MenuItem qrCodeItem = menu.findItem(R.id.nav_scan_qr);
+        Drawable qrIcon = qrCodeItem.getIcon();
+        qrIcon.setTintList(null);  // Disable tinting for this specific item
+        // Set up navigation item selection listener
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            Intent newIntent;
 
-        ImageButton profileButton = findViewById(R.id.profile);
-        profileButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(AdminLoginActivity.this, ProfileActivity.class);
-                intent.putExtra("User", user);
-                profileResultLauncher.launch(intent);
+            if (item.getItemId() == R.id.nav_Home) {
+                newIntent = new Intent(AdminLoginActivity.this, MainActivity.class);
+                newIntent.putExtra("User", user);
+                MainActivityResultLauncher.launch(newIntent);
+                return true;
+            } else if (item.getItemId() == R.id.nav_Settings) {
+                newIntent = new Intent(AdminLoginActivity. this, SettingsScreen.class);
+                newIntent.putExtra("User", user);
+                settingsResultLauncher.launch(newIntent);
+                return true;
+            } else if (item.getItemId() == R.id.nav_Notifications) {
+                newIntent = new Intent(AdminLoginActivity.this, Notifications.class);
+                newIntent.putExtra("User", user);
+                notificationActivityResultLauncher.launch(newIntent);
+                return true;
+            } else if (item.getItemId() == R.id.nav_Profile) {
+                newIntent = new Intent(AdminLoginActivity.this, ProfileActivity.class);
+                newIntent.putExtra("User", user);
+                ProfileActivityResultLauncher.launch(newIntent);
+                return true;
+            } else if (item.getItemId() == R.id.nav_scan_qr) {
+                // Open QRScanFragment without simulating button click
+                openQRScanFragment();
+                return true;
             }
+            return false;
         });
 
-        settingsButton = findViewById(R.id.settings);
-        settingsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(AdminLoginActivity.this, SettingsScreen.class);
-                intent.putExtra("User", user);
-                settingResultLauncher.launch(intent);
-            }
+
+        // Links AdminLoginActivity to AdminActivity (main admin screen)
+        Button doneButton = findViewById(R.id.done_button);
+        doneButton.setOnClickListener(v -> {
+            checkAdminCode();
         });
+    }
+
+    private void openQRScanFragment() {
+        // Open QRScanFragment without simulating button click
+        Intent intent = new Intent(this, QRScanFragment.class);
+        intent.putExtra("User", user);  // Pass the user information if needed
+        startActivity(intent);
 
     }
 
@@ -118,9 +175,9 @@ public class AdminLoginActivity extends AppCompatActivity {
         if (!TextUtils.isEmpty(codeInput) && codeInput.matches("\\d{6}")) {
             if (checkIfAdmin(codeInput)) {
                 Toast.makeText(this, "Access granted", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(AdminLoginActivity.this, AdminActivity.class);
+                Intent intent = new Intent(this, AdminActivity.class);
                 intent.putExtra("User", user);
-                adminMainResultLauncher.launch(intent);
+                startActivity(intent);
 
             } else {
                 Toast.makeText(this, "Incorrect admin code", Toast.LENGTH_SHORT).show();

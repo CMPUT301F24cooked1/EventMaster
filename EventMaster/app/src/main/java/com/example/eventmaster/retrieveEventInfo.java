@@ -1,5 +1,8 @@
 package com.example.eventmaster;
 
+
+import android.app.AlertDialog;
+
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
@@ -163,6 +166,7 @@ public class retrieveEventInfo extends AppCompatActivity {
         // Ensure the received data is not null
         if (hashedData != null && deviceID != null) {
             retrieveEventInfo(hashedData, deviceID, event);
+
         } else {
             Toast.makeText(this, "Failed to retrieve event data.", Toast.LENGTH_SHORT).show();
         }
@@ -339,7 +343,7 @@ public class retrieveEventInfo extends AppCompatActivity {
      * @param deviceID the device ID of the entrant that is needed to access data in the firebase
      * @param event the event name that is needed to access data in the firebase
      */
-    // check if the hash data matches any of the hash data in the firebase when the qr code is scanned
+   //  check if the hash data matches any of the hash data in the firebase when the qr code is scanned
     private void retrieveEventInfo(String hashedData, String deviceID, String event) {
         db.collection("facilities")
                 .document(deviceID)
@@ -353,7 +357,7 @@ public class retrieveEventInfo extends AppCompatActivity {
                         if (!task.getResult().isEmpty()){  // check something is in result
                             for (DocumentSnapshot document : task.getResult()) {
                                 // Retrieve data directly from the document
-                                Toast.makeText(retrieveEventInfo.this, "Data is passed!!!", Toast.LENGTH_SHORT).show();
+                               // Toast.makeText(retrieveEventInfo.this, "Data is passed!!!", Toast.LENGTH_SHORT).show();
                                 String eventName = document.getString("eventName");
                                 String eventDescription = document.getString("eventDescription");
                                 String eventPosterUrl = document.getString("posterUrl");
@@ -372,6 +376,10 @@ public class retrieveEventInfo extends AppCompatActivity {
                     Toast.makeText(retrieveEventInfo.this, "Error retrieving event: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
+
+
+
+
 
     /**
      * Displays the event name, description and poster

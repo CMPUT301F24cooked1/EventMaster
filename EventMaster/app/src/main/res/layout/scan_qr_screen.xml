@@ -24,10 +24,10 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/scan_qr_code_button"
-        android:layout_width="79dp"
-        android:layout_height="63dp"
+        android:layout_width="190dp"
+        android:layout_height="67dp"
         android:background="@drawable/rounded_button"
-
+        android:text="      SCAN HERE"
         android:drawablePadding="8dp"
         app:layout_constraintBottom_toTopOf="@+id/next_button"
         app:layout_constraintEnd_toEndOf="parent"
@@ -36,27 +36,27 @@
 
     <ImageView
         android:id="@+id/camera_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="44dp"
+        android:layout_height="38dp"
         android:translationZ="5dp"
         app:layout_constraintBottom_toBottomOf="@+id/scan_qr_code_button"
         app:layout_constraintEnd_toEndOf="@+id/scan_qr_code_button"
-        app:layout_constraintHorizontal_bias="0.512"
+        app:layout_constraintHorizontal_bias="0.108"
         app:layout_constraintStart_toStartOf="@+id/scan_qr_code_button"
         app:layout_constraintTop_toTopOf="@+id/scan_qr_code_button"
-        app:layout_constraintVertical_bias="0.48"
-        app:srcCompat="@drawable/camera" />
+        app:layout_constraintVertical_bias="0.534"
+        app:srcCompat="@drawable/scan_qr_icon" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/next_button"
-        android:layout_width="79dp"
-        android:layout_height="63dp"
+        android:layout_width="195dp"
+        android:layout_height="65dp"
         android:layout_marginStart="70dp"
         android:layout_marginEnd="70dp"
         android:layout_marginBottom="204dp"
         android:background="@drawable/rounded_button"
-        android:text="SKIP QR SCAN"
         android:drawablePadding="8dp"
+        android:text="SKIP SCANNING"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

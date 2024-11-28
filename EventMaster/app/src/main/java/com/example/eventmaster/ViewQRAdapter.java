@@ -17,18 +17,19 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
- *  Adapter class for displaying the list of events in a RecyclerView
- *  Each item in the list corresponds to a specific event with its details
+ *  Adapter class for displaying the list of profiles in a RecyclerView
+ *  Each item in the list corresponds to a profile with its profile details
  */
-public class ViewEventsAdapter extends RecyclerView.Adapter<ViewEventsAdapter.EventViewHolder> {
+public class ViewQRAdapter extends RecyclerView.Adapter<ViewQRAdapter.QRViewHolder>{
     /**
      * Initializes the event adapter
      * @param eventList list of events that will be displayed
@@ -39,9 +40,10 @@ public class ViewEventsAdapter extends RecyclerView.Adapter<ViewEventsAdapter.Ev
      * @param position position of the item
      * Creates an adapter to display all Events on the view events screen
      */
-    private List<Event> eventList;
-    private ArrayList<Event> selectedEvents = new ArrayList<>();
-    private ArrayList<Event> selectedEventsStorage = new ArrayList<>();
+    private ArrayList<AbstractMap.SimpleEntry<String, String>> qrList = new ArrayList<>();
+    private ArrayList<AbstractMap.SimpleEntry<String, String>> selectedQRList = new ArrayList<>();
+    private ArrayList<AbstractMap.SimpleEntry<String, String>> selectedQRListStorage = new ArrayList<>();
+
     private Context context;
     private Profile user;
     private Boolean isAdmin = false;
@@ -49,8 +51,8 @@ public class ViewEventsAdapter extends RecyclerView.Adapter<ViewEventsAdapter.Ev
     private Boolean isClickable = true;
     private FirebaseFirestore firestore;
 
-    public ViewEventsAdapter(List<Event> eventList, Context context, Profile user, Boolean isAdmin) {
-        this.eventList = eventList;
+    public ViewQRAdapter(ArrayList<AbstractMap.SimpleEntry<String, String>> qrList, Context context, Profile user, Boolean isAdmin) {
+        this.qrList = qrList;
         this.context = context;
         this.user = user;
         this.isAdmin = isAdmin;
@@ -58,51 +60,52 @@ public class ViewEventsAdapter extends RecyclerView.Adapter<ViewEventsAdapter.Ev
 
     @NonNull
     @Override
-    public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.event_item, parent, false);
-        return new EventViewHolder(view);
+    public ViewQRAdapter.QRViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.qr_item, parent, false);
+        return new ViewQRAdapter.QRViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
-        Event event = eventList.get(position);
-        holder.bind(event, context, user);
-        if (isAdmin){
-            holder.itemView.setClickable(false);
-        } else{
-            holder.itemView.setClickable(isClickable);
-        }
+    public void onBindViewHolder(@NonNull QRViewHolder holder, int position) {
+        String eventName = qrList.get(position).getKey();
+        String hash = qrList.get(position).getValue();
+        holder.bind(eventName, hash, context, user);
+        holder.itemView.setClickable(isClickable);
 
 
         // Checkbox stuff ------------------------------------
         // set the checkbox state
-        if (selectedEvents != null) {
+        if (selectedQRList != null) {
             // Set the CheckBox state
-            holder.eventCheckBox.setChecked(selectedEvents.contains(eventList.get(position)));
+            holder.checkBox.setChecked(selectedQRList.contains(qrList.get(position)));
         } else {
-            holder.eventCheckBox.setChecked(false);
+            holder.checkBox.setChecked(false);
         }
         // adds an event to the selectedEvents list when it's respective checkbox is checked
-        holder.eventCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+        holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
-                if (!selectedEvents.contains(eventList.get(position))) {
-                    selectedEvents.add(eventList.get(position));
-                    selectedEventsStorage.add(eventList.get(position));
+                if (!selectedQRList.contains(qrList.get(position))) {
+                    selectedQRList.add(qrList.get(position));
+                    selectedQRListStorage.add(qrList.get(position));
+
                 }
             } else {
-                selectedEvents.remove(eventList.get(position));
+                selectedQRList.remove(qrList.get(position));
             }
         });
 
-        // sets a checkbox in event_item.xml to be visible, and changes the visibility of the arrow image in event_item.xml to be "gone"
         if (isAdmin){
-            holder.eventArrow.setVisibility((View.GONE));
+            holder.arrow.setVisibility((View.GONE));
         } else {
-            holder.eventArrow.setVisibility((View.VISIBLE));
+            holder.arrow.setVisibility((View.VISIBLE));
         }
 
-        holder.eventCheckBox.setVisibility(showCheckBox ? View.VISIBLE : View.GONE);
+        holder.checkBox.setVisibility(showCheckBox ? View.VISIBLE : View.GONE);
 
+        // display profile picture
+        //if (profile.getName() != null){
+        //    ProfilePicture.loadProfilePicture(profile, holder.profilePicture, context);
+        //}
     }
 
     /**
@@ -116,16 +119,16 @@ public class ViewEventsAdapter extends RecyclerView.Adapter<ViewEventsAdapter.Ev
     /**
      * Deletes all events that were marked by the checkbox
      */
-    public void deleteSelectedEvents() {
+    public void deleteSelectedQRs() {
         firestore = FirebaseFirestore.getInstance();
-        if (!selectedEventsStorage.isEmpty()) {
+        if (!selectedQRListStorage.isEmpty()) {
             CollectionReference facilitiesRef = firestore.collection("facilities");
             Log.d("Firestore Debug", "Attempting to fetch facilities");
 
             facilitiesRef.get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     Log.d("Firestore Debug", "Facilities fetched successfully");
-                    Log.d("Firestore Debug", "Selected events: " + selectedEventsStorage);
+                    Log.d("Firestore Debug", "Selected events: " + selectedQRListStorage);
 
                     List<Task<Void>> deleteTasks = new ArrayList<>();
 
@@ -136,20 +139,21 @@ public class ViewEventsAdapter extends RecyclerView.Adapter<ViewEventsAdapter.Ev
                             if (eventTask.isSuccessful()) {
                                 Log.d("Firestore success", "Fetched events successfully");
                                 for (QueryDocumentSnapshot eventDoc : eventTask.getResult()) {
-                                    Event event = eventDoc.toObject(Event.class);
+                                    String eventName = eventDoc.getString("eventName");
+                                    String hash = eventDoc.getString("hash");
+                                    Log.d("Current Event", "current hash: " + hash);
+                                    AbstractMap.SimpleEntry<String, String> tuple = new AbstractMap.SimpleEntry<>(eventName, hash);
                                     String documentId = eventDoc.getId();
-                                    Log.d("Selected Events", "Selected Events: " + selectedEventsStorage);
-                                    Log.d("Current Event", "Current Event: " + event);
 
-                                    if (selectedEventsStorage.contains(event)) {
+                                    if (selectedQRListStorage.contains(tuple)) {
                                         // Use the document ID to delete the event
                                         DocumentReference eventRef = eventsRef.document(documentId);
-                                        Task<Void> deleteTask = eventRef.delete().addOnSuccessListener(aVoid -> {
-                                            Log.d("Event Deletion", "Event deleted successfully with ID: " + documentId);
-                                            eventList.remove(event); // Ensure dataset consistency
+                                        Task<Void> deleteTask = eventRef.update("hash", FieldValue.delete()).addOnSuccessListener(aVoid -> {
+                                            qrList.remove(tuple);
                                             notifyDataSetChanged();
-                                        }).addOnFailureListener(e -> {
-                                            Log.e("Event Deletion", "Error deleting event: " + e.getMessage());
+
+                                        }).addOnFailureListener(e ->{
+                                            Log.d("QRADAPTER", "failed to delete" + e.getMessage());
                                         });
 
                                         // Add this task to the list
@@ -188,49 +192,36 @@ public class ViewEventsAdapter extends RecyclerView.Adapter<ViewEventsAdapter.Ev
 
     @Override
     public int getItemCount() {
-        return eventList.size();
+        return qrList.size();
     }
 
-    public static class EventViewHolder extends RecyclerView.ViewHolder {
+    public class QRViewHolder extends RecyclerView.ViewHolder {
         /**
          * Initializes the event adapter
          * @param itemView the view that will be held
          * @param event event data
-         * @param context context to start activities
+         * @param context context tSo start activities
          * Create an adapter to display all Events on the view events screen
          */
         TextView eventNameTextView;
-        TextView eventDescriptionTextView;
-        CheckBox eventCheckBox;
-        ImageView eventArrow;
+        TextView hashTextView;
+        CheckBox checkBox;
+        ImageView arrow;
 
 
-        public EventViewHolder(@NonNull View itemView) {
+        public QRViewHolder(@NonNull View itemView) {
             super(itemView);
-            eventNameTextView = itemView.findViewById(R.id.eventNameTextView);
-            eventDescriptionTextView = itemView.findViewById(R.id.eventDescriptionTextView);
-            eventCheckBox = itemView.findViewById(R.id.removeEventCheckBox);
-            eventArrow = itemView.findViewById(R.id.event_details_arrow);
+            eventNameTextView = itemView.findViewById(R.id.event_name_qr);
+            hashTextView = itemView.findViewById(R.id.qrHashCode);
+            checkBox = itemView.findViewById(R.id.checkbox);
+            arrow = itemView.findViewById(R.id.arrow);
         }
 
-        public void bind(Event event, Context context, Profile user) {
+        public void bind(String eventName, String hash, Context context, Profile user) {
 
             // set the text on the recycler view
-            eventNameTextView.setText(event.getEventName());   // grab facility name/device id
-            eventDescriptionTextView.setText(event.getEventDescription());  // grab description from events
-
-            // Handle the click event
-            itemView.setOnClickListener(v -> {
-                String deviceID = event.getDeviceID();
-                // Send information over to Start QR scanner activity
-                Intent intent = new Intent(context, QRScanFragment.class);
-                intent.putExtra("event", event.getEventName());
-                intent.putExtra("deviceID", event.getDeviceID());
-                intent.putExtra("User", user);
-                context.startActivity(intent);
-            });
+            eventNameTextView.setText(eventName);
+            hashTextView.setText(hash);
         }
     }
 }
-
-

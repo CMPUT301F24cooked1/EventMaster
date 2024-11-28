@@ -42,6 +42,8 @@ public class Notifications extends AppCompatActivity {
     private List<Event> inviteList;
     private List<Event> eventList;
     private List<Event> rejectedList;
+    private List<Event> attendeesList;
+    private List<Event> waitlistList;
     private FirebaseFirestore firestore;
     private String deviceId;
     private FirebaseFirestore db;
@@ -57,9 +59,9 @@ public class Notifications extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         ModeActivity.applyTheme(this);
 
-        setContentView(R.layout.notifications_screen); // Make sure the layout file is named correctly
+        setContentView(R.layout.notifications_screen);
 
-        Profile user = (Profile) getIntent().getSerializableExtra("User"); // todo: user from MainActivity
+        Profile user = (Profile) getIntent().getSerializableExtra("User");
 
         firestore = FirebaseFirestore.getInstance();
         deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -72,7 +74,9 @@ public class Notifications extends AppCompatActivity {
 
         // Retrieve events from Firestore
         retrieveNotifiedEvents(deviceId);
-        retrieveRejectedEvents(deviceId, inviteList);
+        retrieveRejectedEvents(deviceId);
+        retrieveAttendeesEvents(deviceId);
+        retrieveWaitlistEvents(deviceId);
 
         notificationsAdapter = new NotificationsAdapter(eventList, this, user, (eventName, facilityID) -> {
             Intent intent = null;
@@ -81,6 +85,12 @@ public class Notifications extends AppCompatActivity {
                 intent = new Intent(this, NotificationInvitedActivity.class);
             } else if (isEventInList(eventName, rejectedList)) {
                 intent = new Intent(this, NotificationRejectedActivity.class);
+            }
+            else if (isEventInList(eventName, attendeesList)) {
+                intent = new Intent(this, NotificationAttendeesActivity.class);
+            }
+            else if (isEventInList(eventName, waitlistList)) {
+                intent = new Intent(this, NotificationWaitlistActivity.class);
             }
 
             if (intent != null) {
@@ -122,7 +132,7 @@ public class Notifications extends AppCompatActivity {
     }
 
     /**
-     * Retrieves the list of invited events from Firestore.
+     * Retrieves the list of invited events notifications from Firestore.
      *
      * @param entrantId The unique identifier for the entrant (device ID)
      */
@@ -161,12 +171,11 @@ public class Notifications extends AppCompatActivity {
     }
 
     /**
-     * Retrieves the list of rejected events from Firestore.
+     * Retrieves the list of rejected events notifications from Firestore.
      *
      * @param entrantId  The unique identifier for the entrant (device ID)
-     * @param inviteList List to add rejected events to
      */
-    private void retrieveRejectedEvents(String entrantId, List<Event> inviteList) {
+    private void retrieveRejectedEvents(String entrantId) {
     firestore.collection("entrants")
             .document(entrantId)
             .collection("Rejected Events")
@@ -198,6 +207,84 @@ public class Notifications extends AppCompatActivity {
                     Log.d("Notifications", "No rejected events found.");
                 }
             }).addOnFailureListener(e -> Log.e("Notifications", "Error retrieving rejected events", e));
+    }
+
+    /**
+     * Retrieves the list of attendees events notification from Firestore.
+     *
+     * @param entrantId  The unique identifier for the entrant (device ID)
+     */
+    private void retrieveAttendeesEvents(String entrantId) {
+        firestore.collection("entrants")
+                .document(entrantId)
+                .collection("Joined Events")
+                .whereNotEqualTo("notifyDate", null)
+                .orderBy("notifyDate", Query.Direction.DESCENDING)
+                .get()
+                .addOnCompleteListener(rejectedTask -> {
+                    if (rejectedTask.isSuccessful()) {
+                        attendeesList = new ArrayList<>();
+                        for (QueryDocumentSnapshot eventDoc : rejectedTask.getResult()) {
+                            Event event = new Event();
+
+                            String eventName = eventDoc.getId();
+                            String facilityID = eventDoc.getString("facilityId");
+
+                            event.setEventName(eventName);
+                            event.setDeviceID(facilityID);
+                            event.setNotificationType("Attendees");
+
+                            attendeesList.add(event);
+                        }
+
+                        eventList.addAll(attendeesList);
+                        notificationsAdapter.notifyDataSetChanged();
+
+                        Log.d("JoinEventScreen", "Number of rejected events: " + attendeesList.size());
+                        Log.d("JoinEventScreen", "Device ID: " + entrantId);
+                    } else {
+                        Log.d("Notifications", "No attendees events found.");
+                    }
+                }).addOnFailureListener(e -> Log.e("Notifications", "Error retrieving attendees events", e));
+    }
+
+    /**
+     * Retrieves the list of waitlist events notifications from Firestore.
+     *
+     * @param entrantId  The unique identifier for the entrant (device ID)
+     */
+    private void retrieveWaitlistEvents(String entrantId) {
+        firestore.collection("entrants")
+                .document(entrantId)
+                .collection("Unsampled Events")
+                .whereNotEqualTo("notifyDate", null)
+                .orderBy("notifyDate", Query.Direction.DESCENDING)
+                .get()
+                .addOnCompleteListener(rejectedTask -> {
+                    if (rejectedTask.isSuccessful()) {
+                        waitlistList = new ArrayList<>();
+                        for (QueryDocumentSnapshot eventDoc : rejectedTask.getResult()) {
+                            Event event = new Event();
+
+                            String eventName = eventDoc.getId();
+                            String facilityID = eventDoc.getString("facilityId");
+
+                            event.setEventName(eventName);
+                            event.setDeviceID(facilityID);
+                            event.setNotificationType("Waitlists");
+
+                            waitlistList.add(event);
+                        }
+
+                        eventList.addAll(waitlistList);
+                        notificationsAdapter.notifyDataSetChanged();
+
+                        Log.d("JoinEventScreen", "Number of rejected events: " + waitlistList.size());
+                        Log.d("JoinEventScreen", "Device ID: " + entrantId);
+                    } else {
+                        Log.d("Notifications", "No waitlist events found.");
+                    }
+                }).addOnFailureListener(e -> Log.e("Notifications", "Error retrieving waitlist events", e));
     }
 
 }
