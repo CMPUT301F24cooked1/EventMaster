@@ -43,12 +43,10 @@ public class UnjoinWaitlistScreen extends AppCompatActivity {
     private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
     private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
     private ActivityResultLauncher<Intent> settingsResultLauncher;
-    private ActivityResultLauncher<Intent> ListActivityResultLauncher;
     private ActivityResultLauncher<Intent> MainActivityResultLauncher;
 
 
 
-    //TODO: Update event name and description with corresponding details, update firestore when entrant unjoins waitlist
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,13 +90,6 @@ public class UnjoinWaitlistScreen extends AppCompatActivity {
             }
         });
 
-        // Initialize navigation buttons
-        ImageButton notificationButton = findViewById(R.id.notification_icon);
-        ImageButton settingsButton = findViewById(R.id.settings);
-        ImageButton profileButton = findViewById(R.id.profile);
-        ImageButton listButton = findViewById(R.id.list_icon);
-        ImageButton backButton = findViewById(R.id.back); // Initialize back button
-
         settingsResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -125,18 +116,6 @@ public class UnjoinWaitlistScreen extends AppCompatActivity {
 
                 });
 
-        ListActivityResultLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
-                        if (updatedUser != null) {
-                            user = updatedUser; // Apply the updated Profile to MainActivity's user
-                            Log.d("MainActivity", "User profile updated: " + user.getName());
-                        }
-                    }
-
-                });
 
         notificationActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
