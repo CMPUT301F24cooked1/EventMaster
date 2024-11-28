@@ -1,16 +1,22 @@
 package com.example.eventmaster;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -49,6 +55,13 @@ public class Notifications extends AppCompatActivity {
     private FirebaseFirestore db;
     private TextView displayName;
 
+    private Profile user;
+
+    private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
+    private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
+    private ActivityResultLauncher<Intent> settingsResultLauncher;
+    private ActivityResultLauncher<Intent> MainActivityResultLauncher;
+
     /**
      * Initializes the Notifications activity, sets up views, and retrieves event data from Firestore.
      *
@@ -61,7 +74,7 @@ public class Notifications extends AppCompatActivity {
 
         setContentView(R.layout.notifications_screen);
 
-        Profile user = (Profile) getIntent().getSerializableExtra("User");
+        user = (Profile) getIntent().getSerializableExtra("User");
 
         firestore = FirebaseFirestore.getInstance();
         deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -112,6 +125,108 @@ public class Notifications extends AppCompatActivity {
         recyclerView.setAdapter(notificationsAdapter);
 
         Toast.makeText(this, "Device ID: " + deviceId, Toast.LENGTH_LONG).show();
+
+        // Initialize navigation buttons
+        // Set result launchers to set up navigation buttons on the bottom of the screen
+        settingsResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+
+                });
+
+        MainActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user = updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+
+                });
+
+        notificationActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user=updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+
+                });
+
+        ProfileActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Profile updatedUser = (Profile) result.getData().getSerializableExtra("User");
+                        if (updatedUser != null) {
+                            user=updatedUser; // Apply the updated Profile to MainActivity's user
+                            Log.d("MainActivity", "User profile updated: " + user.getName());
+                        }
+                    }
+
+                });
+
+
+        // Initialize BottomNavigationView
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        // Disable tint for specific menu item
+        Menu menu = bottomNavigationView.getMenu();
+        MenuItem qrCodeItem = menu.findItem(R.id.nav_scan_qr);
+        Drawable qrIcon = qrCodeItem.getIcon();
+        qrIcon.setTintList(null);  // Disable tinting for this specific item
+        // Set up navigation item selection listener
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            Intent newIntent;
+
+            if (item.getItemId() == R.id.nav_Home) {
+                newIntent = new Intent(Notifications.this, MainActivity.class);
+                newIntent.putExtra("User", user);
+                MainActivityResultLauncher.launch(newIntent);
+                return true;
+            } else if (item.getItemId() == R.id.nav_Settings) {
+                newIntent = new Intent(Notifications. this, SettingsScreen.class);
+                newIntent.putExtra("User", user);
+                settingsResultLauncher.launch(newIntent);
+                return true;
+            } else if (item.getItemId() == R.id.nav_Notifications) {
+                newIntent = new Intent(Notifications.this, Notifications.class);
+                newIntent.putExtra("User", user);
+                notificationActivityResultLauncher.launch(newIntent);
+                return true;
+            } else if (item.getItemId() == R.id.nav_Profile) {
+                newIntent = new Intent(Notifications.this, ProfileActivity.class);
+                newIntent.putExtra("User", user);
+                ProfileActivityResultLauncher.launch(newIntent);
+                return true;
+            } else if (item.getItemId() == R.id.nav_scan_qr) {
+                // Open QRScanFragment without simulating button click
+                openQRScanFragment();
+                return true;
+            }
+            return false;
+        });
+
+    }
+
+    private void openQRScanFragment() {
+        // Open QRScanFragment without simulating button click
+        Intent intent = new Intent(this, QRScanFragment.class);
+        intent.putExtra("User", user);  // Pass the user information if needed
+        startActivity(intent);
 
     }
 

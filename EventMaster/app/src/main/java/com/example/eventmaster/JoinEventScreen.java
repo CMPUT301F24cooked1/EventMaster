@@ -1,9 +1,12 @@
 package com.example.eventmaster;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -18,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -77,12 +81,6 @@ public class JoinEventScreen extends AppCompatActivity {
         // Retrieve events from Firestore
         retrieveEvents();
 
-        // Initialize navigation buttons
-        ImageButton notificationButton = findViewById(R.id.notifications);
-        ImageButton settingsButton = findViewById(R.id.settings);
-        ImageButton profileButton = findViewById(R.id.profile);
-        ImageButton homeButton = findViewById(R.id.home_icon);
-        ImageButton backButton = findViewById(R.id.back_button); // Initialize back button
 
         // Set result launchers to set up navigation buttons on the bottom of the screen
         settingsResultLauncher = registerForActivityResult(
@@ -137,40 +135,53 @@ public class JoinEventScreen extends AppCompatActivity {
 
                 });
 
-        // Set click listeners for navigation buttons on the bottom of the screen
-        // sends you to profile screen
-        profileButton.setOnClickListener(v -> {
-            Intent newIntent = new Intent(JoinEventScreen.this, ProfileActivity.class);
-            newIntent.putExtra("User", user);
-            ProfileActivityResultLauncher.launch(newIntent);
+        // Initialize BottomNavigationView
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        // Disable tint for specific menu item
+        Menu menu = bottomNavigationView.getMenu();
+        MenuItem qrCodeItem = menu.findItem(R.id.nav_scan_qr);
+        Drawable qrIcon = qrCodeItem.getIcon();
+        qrIcon.setTintList(null);  // Disable tinting for this specific item
+        // Set up navigation item selection listener
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            Intent newIntent;
+
+            if (item.getItemId() == R.id.nav_Home) {
+                newIntent = new Intent(JoinEventScreen.this, MainActivity.class);
+                newIntent.putExtra("User", user);
+                MainActivityResultLauncher.launch(newIntent);
+                return true;
+            } else if (item.getItemId() == R.id.nav_Settings) {
+                newIntent = new Intent(JoinEventScreen. this, SettingsScreen.class);
+                newIntent.putExtra("User", user);
+                settingsResultLauncher.launch(newIntent);
+                return true;
+            } else if (item.getItemId() == R.id.nav_Notifications) {
+                newIntent = new Intent(JoinEventScreen.this, Notifications.class);
+                newIntent.putExtra("User", user);
+                notificationActivityResultLauncher.launch(newIntent);
+                return true;
+            } else if (item.getItemId() == R.id.nav_Profile) {
+                newIntent = new Intent(JoinEventScreen.this, ProfileActivity.class);
+                newIntent.putExtra("User", user);
+                ProfileActivityResultLauncher.launch(newIntent);
+                return true;
+            } else if (item.getItemId() == R.id.nav_scan_qr) {
+                // Open QRScanFragment without simulating button click
+                openQRScanFragment();
+                return true;
+            }
+            return false;
         });
 
-        // sends you to settings screen
-        settingsButton.setOnClickListener(v -> {
-            Intent newIntent = new Intent(JoinEventScreen.this, SettingsScreen.class);
-            newIntent.putExtra("User", user);
-            settingsResultLauncher.launch(newIntent);
-        });
+    }
 
-        // sends you to a list of invited events that you accepted
-        homeButton.setOnClickListener(v -> {
-            Intent newIntent = new Intent(JoinEventScreen.this, MainActivity.class);
-            newIntent.putExtra("User", user);
-            MainActivityResultLauncher.launch(newIntent);
-        });
-        notificationButton.setOnClickListener(v -> {
-            Intent newIntent = new Intent(JoinEventScreen.this, Notifications.class);
-            newIntent.putExtra("User", user);
-            notificationActivityResultLauncher.launch(newIntent);
-        });
+    private void openQRScanFragment() {
+        // Open QRScanFragment without simulating button click
+        Intent intent = new Intent(this, QRScanFragment.class);
+        intent.putExtra("User", user);  // Pass the user information if needed
+        startActivity(intent);
 
-        // Set click listener for the back button
-        backButton.setOnClickListener(v -> {
-            Intent resultIntent = new Intent();
-            resultIntent.putExtra("User", user);
-            setResult(RESULT_OK, resultIntent);
-            finish();
-        });
     }
 
     // for the recycler view
