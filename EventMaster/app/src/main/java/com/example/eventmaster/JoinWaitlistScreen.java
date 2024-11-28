@@ -1,9 +1,12 @@
 package com.example.eventmaster;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -19,6 +22,7 @@ import androidx.appcompat.widget.AppCompatButton;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -46,7 +50,7 @@ public class JoinWaitlistScreen extends AppCompatActivity {
     private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
     private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
     private ActivityResultLauncher<Intent> settingsResultLauncher;
-    private ActivityResultLauncher<Intent> listActivityResultLauncher;
+    private ActivityResultLauncher<Intent> MainActivityResultLauncher;
 
 
     /**
@@ -90,15 +94,8 @@ public class JoinWaitlistScreen extends AppCompatActivity {
 
 
 
-        // Initialize navigation buttons
-        ImageButton notificationButton = findViewById(R.id.notification_icon);
-        ImageButton settingsButton = findViewById(R.id.settings);
-        ImageButton profileButton = findViewById(R.id.profile);
-        ImageButton listButton = findViewById(R.id.list_icon);
-        ImageButton backButton = findViewById(R.id.back_button);
 
-
-// Set result launchers to set up navigation buttons on the bottom of the screen
+        // Set result launchers to set up navigation buttons on the bottom of the screen
         settingsResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -112,7 +109,7 @@ public class JoinWaitlistScreen extends AppCompatActivity {
 
                 });
 
-        listActivityResultLauncher = registerForActivityResult(
+        MainActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
@@ -150,43 +147,55 @@ public class JoinWaitlistScreen extends AppCompatActivity {
                     }
                 });
 
-        // Set click listeners for navigation buttons on the bottom of the screen
-        // sends you to profile screen
-        profileButton.setOnClickListener(v -> {
-            Intent newIntent = new Intent(JoinWaitlistScreen.this, ProfileActivity.class);
-            newIntent.putExtra("User", user);
-            ProfileActivityResultLauncher.launch(newIntent);
+        // Initialize BottomNavigationView
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        // Disable tint for specific menu item
+        Menu menu = bottomNavigationView.getMenu();
+        MenuItem qrCodeItem = menu.findItem(R.id.nav_scan_qr);
+        Drawable qrIcon = qrCodeItem.getIcon();
+        qrIcon.setTintList(null);  // Disable tinting for this specific item
+        // Set up navigation item selection listener
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            Intent newIntent;
+
+            if (item.getItemId() == R.id.nav_Home) {
+                newIntent = new Intent(JoinWaitlistScreen.this, MainActivity.class);
+                newIntent.putExtra("User", user);
+                MainActivityResultLauncher.launch(newIntent);
+                return true;
+            } else if (item.getItemId() == R.id.nav_Settings) {
+                newIntent = new Intent(JoinWaitlistScreen.this, SettingsScreen.class);
+                newIntent.putExtra("User", user);
+                settingsResultLauncher.launch(newIntent);
+                return true;
+            } else if (item.getItemId() == R.id.nav_Notifications) {
+                newIntent = new Intent(JoinWaitlistScreen.this, Notifications.class);
+                newIntent.putExtra("User", user);
+                notificationActivityResultLauncher.launch(newIntent);
+                return true;
+            } else if (item.getItemId() == R.id.nav_Profile) {
+                newIntent = new Intent(JoinWaitlistScreen.this, ProfileActivity.class);
+                newIntent.putExtra("User", user);
+                ProfileActivityResultLauncher.launch(newIntent);
+                return true;
+            } else if (item.getItemId() == R.id.nav_scan_qr) {
+                // Open QRScanFragment without simulating button click
+                openQRScanFragment();
+                return true;
+            }
+            return false;
         });
 
-        // sends you to settings screen
-        settingsButton.setOnClickListener(v -> {
-            Intent newIntent = new Intent(JoinWaitlistScreen.this, SettingsScreen.class);
-            newIntent.putExtra("User", user);
-            settingsResultLauncher.launch(newIntent);
-        });
-
-        // sends you to a list of invited events that you accepted
-        listButton.setOnClickListener(v -> {
-            Intent newIntent = new Intent(JoinWaitlistScreen.this, JoinedEventsActivity.class);
-            newIntent.putExtra("User", user);
-            listActivityResultLauncher.launch(newIntent);
-        });
-        notificationButton.setOnClickListener(v -> {
-            Intent newIntent = new Intent(JoinWaitlistScreen.this, Notifications.class);
-            newIntent.putExtra("User", user);
-            notificationActivityResultLauncher.launch(newIntent);
-        });
-
-//        // Set click listener for the back button
-        backButton.setOnClickListener(v -> {
-            Intent resultIntent = new Intent();
-            resultIntent.putExtra("User", user);
-            setResult(RESULT_OK, resultIntent);
-            finish();
-        });
 
     }
 
+    private void openQRScanFragment() {
+        // Open QRScanFragment without simulating button click
+        Intent intent = new Intent(this, QRScanFragment.class);
+        intent.putExtra("User", user);  // Pass the user information if needed
+        startActivity(intent);
+
+    }
 
 
     /**
