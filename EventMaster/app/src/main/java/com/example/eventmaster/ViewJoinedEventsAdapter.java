@@ -93,7 +93,7 @@ public class ViewJoinedEventsAdapter extends RecyclerView.Adapter<ViewJoinedEven
                     @Override
                     public void onCallback(String data) {
                         // Send information over to unjoin waitlist screen
-                        Intent intent = new Intent(context, UnjoinWaitlistScreen.class);
+                        Intent intent = new Intent(context, JoinedEventDetailsActivity.class);
                         intent.putExtra("event", event.getEventName());
                         intent.putExtra("deviceID", event.getDeviceID());
                         intent.putExtra("hashed_data", getHashData());

@@ -88,6 +88,7 @@
         <activity android:name=".NotificationRejectedActivity" />
         <activity android:name=".NotificationAttendeesActivity" />
         <activity android:name=".NotificationWaitlistActivity" />
+        <activity android:name=".JoinedEventDetailsActivity" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
