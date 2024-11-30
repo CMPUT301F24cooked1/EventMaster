@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Activity for viewing a sampled list of entrants who have been accepted to an event.
@@ -272,8 +273,18 @@ public class ViewAttendeesListActivity extends AppCompatActivity {
         for (int i = 0; i < attendeesIds.size(); i++) {
             Map<String, Object> notificationData = new HashMap<>();
             notificationData.put("notifyDate", notifyDate);
-
             String entrantId = attendeesIds.get(i);
+
+            final String[] toggleNotif = {"none"};
+            firestore.collection("entrants")
+                    .document(entrantId)
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                                if (documentSnapshot.exists()) {
+                                    toggleNotif[0] = documentSnapshot.getString("notifications");
+                                }
+                            });
+
             firestore.collection("entrants")
                     .document(entrantId)
                     .collection("Joined Events")
@@ -292,7 +303,7 @@ public class ViewAttendeesListActivity extends AppCompatActivity {
                                             Log.d("Notify Users", "User set as notified in firestore");
 
                                             //Send push notification to specific user.
-                                            notifyAttendingUser(entrantId, eventName);
+                                            notifyAttendingUser(entrantId, eventName, toggleNotif[0]);
                                         })
                                         .addOnFailureListener(e -> {
                                             Log.e("Notify Users", "Error setting user as notified in firestore", e);
@@ -306,9 +317,9 @@ public class ViewAttendeesListActivity extends AppCompatActivity {
         Toast.makeText(ViewAttendeesListActivity.this, "Previously un-notified users have been notified.", Toast.LENGTH_SHORT).show();
     }
 
-    private void notifyAttendingUser(String invitedId, String eventName) {
+    private void notifyAttendingUser(String invitedId, String eventName, String notificationToggle) {
         String invitedTitle = "Attending Event";
-        String invitedBody = "Congrats! You have decided to attend the " + eventName + " event. Open the app to see details.";
+        String invitedBody = "Congrats! You have decided to attend the " + eventName + " event.";
 
         firestore.collection("profiles")
                 .document(invitedId)
@@ -318,8 +329,10 @@ public class ViewAttendeesListActivity extends AppCompatActivity {
                         String invitedToken = documentSnapshot.getString("notificationToken");
 
                         if (invitedToken != null) {
-                            FCMNotificationSender attendNotification = new FCMNotificationSender(invitedToken, invitedTitle, invitedBody, getApplicationContext());
-                            attendNotification.SendNotifications(privateKey);
+                            if (!Objects.equals(notificationToggle, "off")) {
+                                FCMNotificationSender attendNotification = new FCMNotificationSender(invitedToken, invitedTitle, invitedBody, getApplicationContext());
+                                attendNotification.SendNotifications(privateKey);
+                            }
                         }
                     }
                 })

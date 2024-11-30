@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Activity for viewing a sampled list of entrants who have been invited to an event.
@@ -288,8 +289,18 @@ public class ViewInvitedListActivity extends AppCompatActivity {
         for (int i = 0; i < invitedIds.size(); i++) {
             Map<String, Object> notificationData = new HashMap<>();
             notificationData.put("notifyDate", notifyDate);
-
             String entrantId = invitedIds.get(i);
+
+            final String[] toggleNotif = {"none"};
+            firestore.collection("entrants")
+                    .document(entrantId)
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            toggleNotif[0] = documentSnapshot.getString("notifications");
+                        }
+                    });
+
             firestore.collection("entrants")
                     .document(entrantId)
                     .collection("Invited Events")
@@ -308,7 +319,7 @@ public class ViewInvitedListActivity extends AppCompatActivity {
                                             Log.d("Notify Users", "User set as notified in firestore");
 
                                             //Send push notification to specific user.
-                                            notifyInvitedUser(entrantId, eventName);
+                                            notifyInvitedUser(entrantId, eventName, toggleNotif[0]);
                                         })
                                         .addOnFailureListener(e -> {
                                             Log.e("Notify Users", "Error setting user as notified in firestore", e);
@@ -322,9 +333,9 @@ public class ViewInvitedListActivity extends AppCompatActivity {
         Toast.makeText(ViewInvitedListActivity.this, "Previously un-notified users have been notified.", Toast.LENGTH_SHORT).show();
     }
 
-    private void notifyInvitedUser(String invitedId, String eventName) {
+    private void notifyInvitedUser(String invitedId, String eventName, String notificationToggle) {
         String invitedTitle = "Invited to Event";
-        String invitedBody = "You have been invited to join the " + eventName + " event. Open the app to see details.";
+        String invitedBody = "You have been invited to join the " + eventName + " event.";
 
         firestore.collection("profiles")
                 .document(invitedId)
@@ -334,8 +345,10 @@ public class ViewInvitedListActivity extends AppCompatActivity {
                         String invitedToken = documentSnapshot.getString("notificationToken");
 
                         if (invitedToken != null) {
-                            FCMNotificationSender invitedNotification = new FCMNotificationSender(invitedToken, invitedTitle, invitedBody, getApplicationContext());
-                            invitedNotification.SendNotifications(privateKey);
+                            if (!Objects.equals(notificationToggle, "off")) {
+                                FCMNotificationSender invitedNotification = new FCMNotificationSender(invitedToken, invitedTitle, invitedBody, getApplicationContext());
+                                invitedNotification.SendNotifications(privateKey);
+                            }
                         }
                     }
                 })
@@ -387,7 +400,7 @@ public class ViewInvitedListActivity extends AppCompatActivity {
         rejectedEntrantData.put("Event Name", eventName);
         rejectedEntrantData.put("facilityId", deviceId);
 
-        //Add Event name to Entrant in Firestore under Invited Events
+        //Add Event name to Entrant in Firestore under Rejected Events
         firestore.collection("entrants")
                 .document(entrantId)
                 .collection("Rejected Events")

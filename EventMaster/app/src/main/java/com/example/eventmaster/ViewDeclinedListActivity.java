@@ -239,6 +239,7 @@ public class ViewDeclinedListActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> Log.e("WaitlistActivity", "Error fetching user data", e));
     }
 
+    /*
     private void setNotifiedInFirestore(String eventName, String notifyDate) {
         for (int i = 0; i < declinedIds.size(); i++) {
             Map<String, Object> notificationData = new HashMap<>();
@@ -273,4 +274,6 @@ public class ViewDeclinedListActivity extends AppCompatActivity {
         }
         Toast.makeText(ViewDeclinedListActivity.this, "Previously un-notified users have been notified.", Toast.LENGTH_SHORT).show();
     }
+
+     */
 }
