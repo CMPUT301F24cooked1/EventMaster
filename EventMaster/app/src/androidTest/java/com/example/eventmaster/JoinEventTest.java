@@ -55,30 +55,29 @@ public class JoinEventTest {
     public void testRecyclerViewDisplaysEvents() {
         onView(withId(R.id.recyclerView)).check(matches(isDisplayed()));
     }
-
-    // test notification button
+    // test setting button
     @Test
     public void testNavigationToNotifications() {
-        onView(withId(R.id.notifications)).perform(click());
+        onView(withId(R.id.nav_Notifications)).perform(click());
         intended(hasComponent(Notifications.class.getName()));
     }
 
     // test setting button
     @Test
     public void testNavigationToSettings() {
-        onView(withId(R.id.settings)).perform(click());
+        onView(withId(R.id.nav_Settings)).perform(click());
         intended(hasComponent(SettingsScreen.class.getName()));
     }
     // test profile button
     @Test
     public void testNavigationToProfile() {
-        onView(withId(R.id.profile)).perform(click());
+        onView(withId(R.id.nav_Profile)).perform(click());
         intended(hasComponent(ProfileActivity.class.getName()));
     }
     // test home button
     @Test
     public void testNavigationToHome() {
-        onView(withId(R.id.home_icon)).perform(click());
+        onView(withId(R.id.nav_Home)).perform(click());
         intended(hasComponent(MainActivity.class.getName()));
     }
 

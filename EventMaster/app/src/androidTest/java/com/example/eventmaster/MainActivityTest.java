@@ -32,7 +32,7 @@ public class MainActivityTest {
      */
     @Test
     public void testSettings() {
-        onView(withId(R.id.settings)).perform(click());
+        onView(withId(R.id.nav_Settings)).perform(click());
         onView(withId(R.id.app_info_text)).check(matches(isDisplayed()));
     }
 
