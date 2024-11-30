@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResult;
@@ -107,9 +108,13 @@ public class FacilityScreen extends AppCompatActivity {
         viewEventsButton = findViewById(R.id.view_events_button);
 
         viewEventsButton.setOnClickListener(v -> {
-            Intent intent = new Intent(FacilityScreen.this, ViewCreatedEventsActivity.class);
-            intent.putExtra("User", user);
-            startActivity(intent);
+            if (!(userFacility.getFacilityName()).isEmpty() && !(userFacility.getFacilityAddress()).isEmpty() && !(userFacility.getFacilityDesc()).isEmpty()) {
+                Intent intent = new Intent(FacilityScreen.this, ViewCreatedEventsActivity.class);
+                intent.putExtra("User", user);
+                startActivity(intent);
+            } else {
+                Toast.makeText(FacilityScreen.this, "You must create a facility before creating events. All fields must be filled in.", Toast.LENGTH_SHORT).show();
+            }
         });
         ImageButton backButton = findViewById(R.id.back);
         // Set click listener for the back button
@@ -158,9 +163,13 @@ public class FacilityScreen extends AppCompatActivity {
         createEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(FacilityScreen.this, CreateEventActivity.class);
-                intent.putExtra("User", user);
-                startActivity(intent);
+                if (!(userFacility.getFacilityName()).isEmpty() && !(userFacility.getFacilityAddress()).isEmpty() && !(userFacility.getFacilityDesc()).isEmpty()) {
+                    Intent intent = new Intent(FacilityScreen.this, CreateEventActivity.class);
+                    intent.putExtra("User", user);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(FacilityScreen.this, "You must create a facility before creating events. All fields must be filled in.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 

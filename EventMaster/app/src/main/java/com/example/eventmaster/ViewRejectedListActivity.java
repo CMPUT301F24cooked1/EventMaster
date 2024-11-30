@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Activity for viewing a sampled list of entrants who have been rejected to an event.
@@ -267,8 +268,18 @@ public class ViewRejectedListActivity extends AppCompatActivity {
         for (int i = 0; i < rejectedIds.size(); i++) {
             Map<String, Object> notificationData = new HashMap<>();
             notificationData.put("notifyDate", notifyDate);
-
             String entrantId = rejectedIds.get(i);
+
+            final String[] toggleNotif = {"none"};
+            firestore.collection("entrants")
+                    .document(entrantId)
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            toggleNotif[0] = documentSnapshot.getString("notifications");
+                        }
+                    });
+
             firestore.collection("entrants")
                     .document(entrantId)
                     .collection("Rejected Events")
@@ -287,7 +298,7 @@ public class ViewRejectedListActivity extends AppCompatActivity {
                                             Log.d("Notify Users", "User set as notified in firestore");
 
                                             //Send push notification to specific user.
-                                            notifyRejectedUser(entrantId, eventName);
+                                            notifyRejectedUser(entrantId, eventName, toggleNotif[0]);
                                         })
                                         .addOnFailureListener(e -> {
                                             Log.e("Notify Users", "Error setting user as notified in firestore", e);
@@ -301,9 +312,9 @@ public class ViewRejectedListActivity extends AppCompatActivity {
         Toast.makeText(ViewRejectedListActivity.this, "Previously un-notified users have been notified.", Toast.LENGTH_SHORT).show();
     }
 
-    private void notifyRejectedUser(String rejectedId, String eventName) {
+    private void notifyRejectedUser(String rejectedId, String eventName, String notificationToggle) {
         String invitedTitle = "Rejected from Event";
-        String invitedBody = "You have not been selected for the " + eventName + " event. Open the app to see details.";
+        String invitedBody = "You have not been selected for the " + eventName + " event.";
 
         firestore.collection("profiles")
                 .document(rejectedId)
@@ -313,8 +324,10 @@ public class ViewRejectedListActivity extends AppCompatActivity {
                         String invitedToken = documentSnapshot.getString("notificationToken");
 
                         if (invitedToken != null) {
-                            FCMNotificationSender invitedNotification = new FCMNotificationSender(invitedToken, invitedTitle, invitedBody, getApplicationContext());
-                            invitedNotification.SendNotifications(privateKey);
+                            if (!Objects.equals(notificationToggle, "off")) {
+                                FCMNotificationSender invitedNotification = new FCMNotificationSender(invitedToken, invitedTitle, invitedBody, getApplicationContext());
+                                invitedNotification.SendNotifications(privateKey);
+                            }
                         }
                     }
                 })

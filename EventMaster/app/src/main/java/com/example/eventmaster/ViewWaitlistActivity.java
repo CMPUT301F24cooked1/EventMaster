@@ -37,6 +37,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * ViewWaitlistActivity is responsible for displaying the waitlist for a specific event in a Firebase-backed application.
@@ -615,8 +616,18 @@ public class ViewWaitlistActivity extends AppCompatActivity {
         for (int i = 0; i < waitlistIds.size(); i++) {
             Map<String, Object> notificationData = new HashMap<>();
             notificationData.put("notifyDate", notifyDate);
-
             String entrantId = waitlistIds.get(i);
+
+            final String[] toggleNotif = {"none"};
+            firestore.collection("entrants")
+                    .document(entrantId)
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            toggleNotif[0] = documentSnapshot.getString("notifications");
+                        }
+                    });
+
             firestore.collection("entrants")
                     .document(entrantId)
                     .collection("Unsampled Events")
@@ -635,7 +646,7 @@ public class ViewWaitlistActivity extends AppCompatActivity {
                                             Log.d("Notify Users", "User set as notified in firestore");
 
                                             //Send push notification to specific user.
-                                            notifyUnsampledUser(entrantId, eventName);
+                                            notifyUnsampledUser(entrantId, eventName, toggleNotif[0]);
                                         })
                                         .addOnFailureListener(e -> {
                                             Log.e("Notify Users", "Error setting user as notified in firestore", e);
@@ -649,9 +660,9 @@ public class ViewWaitlistActivity extends AppCompatActivity {
         Toast.makeText(ViewWaitlistActivity.this, "Previously un-notified users have been notified.", Toast.LENGTH_SHORT).show();
     }
 
-    private void notifyUnsampledUser(String invitedId, String eventName) {
+    private void notifyUnsampledUser(String invitedId, String eventName, String notificationToggle) {
         String invitedTitle = "Waitlisted Event";
-        String invitedBody = "You have not yet been sampled for the " + eventName + " event, and still may be selected. Open the app to see details.";
+        String invitedBody = "You have not yet been sampled for the " + eventName + " event, and still may be selected.";
 
         firestore.collection("profiles")
                 .document(invitedId)
@@ -661,8 +672,10 @@ public class ViewWaitlistActivity extends AppCompatActivity {
                         String invitedToken = documentSnapshot.getString("notificationToken");
 
                         if (invitedToken != null) {
-                            FCMNotificationSender attendNotification = new FCMNotificationSender(invitedToken, invitedTitle, invitedBody, getApplicationContext());
-                            attendNotification.SendNotifications(privateKey);
+                            if (!Objects.equals(notificationToggle, "off")) {
+                                FCMNotificationSender attendNotification = new FCMNotificationSender(invitedToken, invitedTitle, invitedBody, getApplicationContext());
+                                attendNotification.SendNotifications(privateKey);
+                            }
                         }
                     }
                 })
