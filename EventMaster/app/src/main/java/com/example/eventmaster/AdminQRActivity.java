@@ -10,6 +10,7 @@ import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -57,6 +58,7 @@ public class AdminQRActivity extends AppCompatActivity {
     private Button deleteButton;
     private boolean isDeleteMode = false;
     private Profile user;
+    private ImageView backButton;
 
     private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
     private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
@@ -159,6 +161,15 @@ public class AdminQRActivity extends AppCompatActivity {
                     }
 
                 });
+
+        backButton = findViewById(R.id.back);
+        backButton.setOnClickListener(v -> {
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("User", user);
+            setResult(RESULT_OK, resultIntent);
+            finish();
+        });
+
 
 
         // Initialize BottomNavigationView

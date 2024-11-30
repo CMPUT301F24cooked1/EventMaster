@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -40,6 +41,7 @@ public class AdminEventActivity extends AppCompatActivity {
     private Button deleteButton;
     private boolean isDeleteMode = false;
     private Profile user;
+    private ImageView backButton;
 
     private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
     private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
@@ -139,6 +141,14 @@ public class AdminEventActivity extends AppCompatActivity {
                     }
 
                 });
+
+        backButton = findViewById(R.id.back);
+        backButton.setOnClickListener(v -> {
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("User", user);
+            setResult(RESULT_OK, resultIntent);
+            finish();
+        });
 
 
         // Initialize BottomNavigationView

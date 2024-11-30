@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -35,6 +36,7 @@ public class AdminActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> MainActivityResultLauncher;
 
     private Profile user;
+    private ImageView backButton;
 
 
     // Buttons corresponding to their next screen
@@ -111,6 +113,13 @@ public class AdminActivity extends AppCompatActivity {
                     }
 
                 });
+        backButton = findViewById(R.id.back);
+        backButton.setOnClickListener(v -> {
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("User", user);
+            setResult(RESULT_OK, resultIntent);
+            finish();
+        });
 
 
         // Initialize BottomNavigationView

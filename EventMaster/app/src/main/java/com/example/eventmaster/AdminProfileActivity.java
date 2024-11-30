@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -32,13 +33,15 @@ import java.util.List;
  */
 public class AdminProfileActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
-    private ViewProfilesAdapter viewProfilesAdapter;
-    private List<Profile> profileList;
+    private WaitlistUsersAdapter viewProfilesAdapter;
+    private List<WaitlistUsersAdapter.User> profileList;
     private FirebaseFirestore firestore;
     private String deviceId; // Replace with actual device ID
     private Button deleteButton;
     private boolean isDeleteMode = false;
     private Profile user;
+    private ImageView backButton;
+
 
     private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
     private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
@@ -62,7 +65,8 @@ public class AdminProfileActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         profileList = new ArrayList<>();
-        viewProfilesAdapter = new ViewProfilesAdapter(profileList, this, user, true);
+        // Pass the context and eventName to the adapter
+        viewProfilesAdapter = new WaitlistUsersAdapter(profileList, this);
         recyclerView.setAdapter(viewProfilesAdapter);
 
         deleteButton = findViewById(R.id.delete_button);
@@ -135,6 +139,14 @@ public class AdminProfileActivity extends AppCompatActivity {
                     }
                 });
 
+        backButton = findViewById(R.id.back);
+        backButton.setOnClickListener(v -> {
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("User", user);
+            setResult(RESULT_OK, resultIntent);
+            finish();
+        });
+
 
         // Initialize BottomNavigationView
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -189,8 +201,14 @@ public class AdminProfileActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot profileDoc : task.getResult()) {
-                        Profile profile = profileDoc.toObject(Profile.class);
-                        profileList.add(profile);
+                        String userName = profileDoc.getString("name"); // Assuming 'name' is the field for the user's name
+                        String profilePictureUrl = profileDoc.getString("profilePictureUrl");
+                        if (userName != null) {
+                            // Create a User object and add it to the waitlist
+                            WaitlistUsersAdapter.User user = new WaitlistUsersAdapter.User(userName, profilePictureUrl);
+                            profileList.add(user);
+                            viewProfilesAdapter.notifyDataSetChanged();
+                        }
                     }
                     viewProfilesAdapter.notifyDataSetChanged(); // notify the adapter of data changes
                     Log.d("JoinEventScreen", "Number of events: " + profileList.size());

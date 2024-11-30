@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -48,6 +49,7 @@ public class AdminImagesActivity extends AppCompatActivity {
     private Button deleteButton;
     private boolean isDeleteMode = false;
     private Profile user;
+    private ImageView backButton;
     Map<String, StorageReference> urlToStorageRefMap = new HashMap<>(); // Mapping of URL to StorageReference
 
 
@@ -149,7 +151,13 @@ public class AdminImagesActivity extends AppCompatActivity {
                     }
 
                 });
-
+        backButton = findViewById(R.id.back);
+        backButton.setOnClickListener(v -> {
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("User", user);
+            setResult(RESULT_OK, resultIntent);
+            finish();
+        });
 
         // Initialize BottomNavigationView
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
