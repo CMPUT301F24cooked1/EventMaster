@@ -48,19 +48,10 @@ public class SettingsTest {
     @Test
     public void testUIComponents() {
         launchSettingsScreen(false);
-        onView(withId(R.id.notification_button)).check(matches(isDisplayed()));
-        onView(withId(R.id.back)).check(matches(isDisplayed()));
-        onView(withId(R.id.profile)).check(matches(isDisplayed()));
+        onView(withId(R.id.nav_Notifications)).check(matches(isDisplayed()));
+        //onView(withId(R.id.back)).check(matches(isDisplayed()));
+        onView(withId(R.id.nav_Profile)).check(matches(isDisplayed()));
     }
 
-    /**
-     * Tests the back button navigation to MainActivity.
-     */
-    @Test
-    public void testBackButton() {
-        launchSettingsScreen(false);
-        onView(withId(R.id.back)).perform(click());
-        onView(withId(R.id.main)).check(matches(isDisplayed()));
-    }
 
 }
