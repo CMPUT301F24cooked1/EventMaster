@@ -62,7 +62,6 @@ public class WaitlistUsersAdapter extends RecyclerView.Adapter<WaitlistUsersAdap
     private FirebaseFirestore db;
     private String eventId;
     private String deviceId;
-    private boolean isAdmin = false;
     private Boolean showCheckBox = false;
     private Boolean isClickable = true;
 
@@ -87,12 +86,10 @@ public class WaitlistUsersAdapter extends RecyclerView.Adapter<WaitlistUsersAdap
      *
      * @param userList A list of users to display.
      * @param context The context in which the adapter operates.
-     * @param isAdmin Checks if the caller is an admin
      */
     public WaitlistUsersAdapter(List<User> userList, Context context) {
         this.userList = userList;
         this.context = context;
-        this.isAdmin = isAdmin;
         db = FirebaseFirestore.getInstance();
 
         this.deviceId = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
