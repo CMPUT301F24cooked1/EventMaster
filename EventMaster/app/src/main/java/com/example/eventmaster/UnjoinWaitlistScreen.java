@@ -229,9 +229,10 @@ public class UnjoinWaitlistScreen extends AppCompatActivity {
                                 String eventName = document.getString("eventName");
                                 String eventDescription = document.getString("eventDescription");
                                 String eventPosterUrl = document.getString("posterUrl");
+                                Boolean geolocation = document.getBoolean("geolocationEnabled");
 
                                 // Call the display method with the retrieved data
-                                displayEventInfo(eventName, eventDescription, eventPosterUrl);//eventPosterUrl);
+                                displayEventInfo(eventName, eventDescription, eventPosterUrl, geolocation);//eventPosterUrl);
                             }
                         } else {
                             Toast.makeText(UnjoinWaitlistScreen.this, "Event does not exist", Toast.LENGTH_SHORT).show();
@@ -250,13 +251,19 @@ public class UnjoinWaitlistScreen extends AppCompatActivity {
      * @param eventPosterUrl
      */
 
-    private void displayEventInfo(String eventName, String eventDescription, String eventPosterUrl ) {
+    private void displayEventInfo(String eventName, String eventDescription, String eventPosterUrl, Boolean geolocation ) {
         TextView eventNameTextView = findViewById(R.id.event_name);
         TextView eventDescriptionTextView = findViewById(R.id.event_decription);
+        TextView geolocationTextView = findViewById(R.id.geolocation);
 
         // Set the text for the TextViews
         eventNameTextView.setText(eventName);
         eventDescriptionTextView.setText(eventDescription);
+        if (geolocation) {
+            geolocationTextView.setText("Event requires geolocation");
+        } else {
+            geolocationTextView.setText("Event does not require geolocation");
+        }
 
         // upload the image from the firebase
         try {
