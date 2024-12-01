@@ -44,10 +44,10 @@ public class Notifications extends AppCompatActivity {
      * @param savedInstanceState If the activity is being re-initialized after being shut down, this Bundle contains the data it most recently saved.
      */
     private RecyclerView recyclerView;
-    private NotificationsAdapter notificationsAdapter;
-    private List<Event> inviteList;
-    private List<Event> eventList;
-    private List<Event> rejectedList;
+    NotificationsAdapter notificationsAdapter;
+    List<Event> inviteList;
+    List<Event> eventList;
+    List<Event> rejectedList;
     private List<Event> attendeesList;
     private List<Event> waitlistList;
     private FirebaseFirestore firestore;
@@ -237,7 +237,7 @@ public class Notifications extends AppCompatActivity {
      * @param list List of events to search in
      * @return True if the event is found, false otherwise
      */
-    private boolean isEventInList(String eventName, List<Event> list) {
+    boolean isEventInList(String eventName, List<Event> list) {
         for (Event event : list) {
             if (event.getEventName().equals(eventName)) {
                 return true;
@@ -251,7 +251,7 @@ public class Notifications extends AppCompatActivity {
      *
      * @param entrantId The unique identifier for the entrant (device ID)
      */
-    private void retrieveNotifiedEvents(String entrantId) {
+    void retrieveNotifiedEvents(String entrantId) {
         DocumentReference entrantDocRef = firestore.collection("entrants").document(entrantId);
 
         entrantDocRef.collection("Invited Events")
@@ -290,7 +290,7 @@ public class Notifications extends AppCompatActivity {
      *
      * @param entrantId  The unique identifier for the entrant (device ID)
      */
-    private void retrieveRejectedEvents(String entrantId) {
+    void retrieveRejectedEvents(String entrantId) {
     firestore.collection("entrants")
             .document(entrantId)
             .collection("Rejected Events")
