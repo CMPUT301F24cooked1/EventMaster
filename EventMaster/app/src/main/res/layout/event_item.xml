@@ -48,7 +48,7 @@
         />
 
     <CheckBox
-        android:id="@+id/removeEventCheckBox"
+        android:id="@+id/eventCheckbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:buttonTint="#000000"

@@ -12,6 +12,8 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
+import android.app.Activity;
+
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
@@ -25,11 +27,11 @@ import org.junit.Test;
 /**
  * Runs test on AdminProfileActivity
  */
-public class AdminProfileActivityTest {
+public class AdminImagesActivityTest {
 
     @Rule
-    public ActivityScenarioRule<AdminProfileActivity> activityRule =
-            new ActivityScenarioRule<>(AdminProfileActivity.class);
+    public ActivityScenarioRule<AdminImagesActivity> activityRule =
+            new ActivityScenarioRule<>(AdminImagesActivity.class);
 
     @Before
     public void setUp() {
@@ -45,8 +47,8 @@ public class AdminProfileActivityTest {
      * Tests if the recycler view properly displays the events
      */
     @Test
-    public void testProfileListDisplayed() {
-        ActivityScenario.launch(AdminProfileActivity.class); // launch the activity
+    public void testImagesListDisplayed() {
+        ActivityScenario.launch(AdminImagesActivity.class); // launch the activity
 
         // Verify RecyclerView is displayed
         onView(withId(R.id.recyclerView)).check(matches(isDisplayed()));
@@ -57,7 +59,7 @@ public class AdminProfileActivityTest {
      */
     @Test
     public void testDeleteButton(){
-        ActivityScenario.launch(AdminEventActivity.class); // launch the activity
+        ActivityScenario.launch(AdminImagesActivity.class); // launch the activity
         onView(withId(R.id.recyclerView)).check(matches(isDisplayed())); //proper recycler view is being displayed
 
         onView(withId(R.id.delete_button)).perform(click()); // checks that the delete button can be clicked

@@ -25,11 +25,11 @@ import org.junit.Test;
 /**
  * Runs test on AdminProfileActivity
  */
-public class AdminProfileActivityTest {
+public class AdminQRActivityTest {
 
     @Rule
-    public ActivityScenarioRule<AdminProfileActivity> activityRule =
-            new ActivityScenarioRule<>(AdminProfileActivity.class);
+    public ActivityScenarioRule<AdminQRActivity> activityRule =
+            new ActivityScenarioRule<>(AdminQRActivity.class);
 
     @Before
     public void setUp() {
@@ -45,8 +45,8 @@ public class AdminProfileActivityTest {
      * Tests if the recycler view properly displays the events
      */
     @Test
-    public void testProfileListDisplayed() {
-        ActivityScenario.launch(AdminProfileActivity.class); // launch the activity
+    public void testQRListDisplayed() {
+        ActivityScenario.launch(AdminQRActivity.class); // launch the activity
 
         // Verify RecyclerView is displayed
         onView(withId(R.id.recyclerView)).check(matches(isDisplayed()));
@@ -57,7 +57,7 @@ public class AdminProfileActivityTest {
      */
     @Test
     public void testDeleteButton(){
-        ActivityScenario.launch(AdminEventActivity.class); // launch the activity
+        ActivityScenario.launch(AdminQRActivity.class); // launch the activity
         onView(withId(R.id.recyclerView)).check(matches(isDisplayed())); //proper recycler view is being displayed
 
         onView(withId(R.id.delete_button)).perform(click()); // checks that the delete button can be clicked

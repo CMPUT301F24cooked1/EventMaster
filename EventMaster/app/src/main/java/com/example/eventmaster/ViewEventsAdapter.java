@@ -209,7 +209,7 @@ public class ViewEventsAdapter extends RecyclerView.Adapter<ViewEventsAdapter.Ev
             super(itemView);
             eventNameTextView = itemView.findViewById(R.id.eventNameTextView);
             eventDescriptionTextView = itemView.findViewById(R.id.eventDescriptionTextView);
-            eventCheckBox = itemView.findViewById(R.id.removeEventCheckBox);
+            eventCheckBox = itemView.findViewById(R.id.eventCheckbox);
             eventArrow = itemView.findViewById(R.id.event_details_arrow);
         }
 
