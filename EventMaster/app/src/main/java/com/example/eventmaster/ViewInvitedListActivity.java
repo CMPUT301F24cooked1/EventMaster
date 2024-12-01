@@ -285,6 +285,12 @@ public class ViewInvitedListActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> Log.e("WaitlistActivity", "Error fetching user data", e));
     }
 
+    /**
+     * Runs through user Ids of the invited list and sets their notifyDates in firestore for later retrieval
+     * Calls notifyInvitedUser for each ID as well
+     * @param eventName The name of the event selected.
+     * @param notifyDate The date and time the notify button was pressed
+     */
     private void setNotifiedInFirestore(String eventName, String notifyDate) {
         for (int i = 0; i < invitedIds.size(); i++) {
             Map<String, Object> notificationData = new HashMap<>();
@@ -333,6 +339,12 @@ public class ViewInvitedListActivity extends AppCompatActivity {
         Toast.makeText(ViewInvitedListActivity.this, "Previously un-notified users have been notified.", Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Sends notification to an invited user with the set notification title and body
+     * @param invitedId The Id of the user to be notified
+     * @param eventName The name of the event selected.
+     * @param notificationToggle Whether the selected user has toggled notifications off
+     */
     private void notifyInvitedUser(String invitedId, String eventName, String notificationToggle) {
         String invitedTitle = "Invited to Event";
         String invitedBody = "You have been invited to join the " + eventName + " event.";
@@ -355,6 +367,9 @@ public class ViewInvitedListActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> Log.e("Notification", "Failed to send user push notification. ", e));
     }
 
+    /**
+     * Copies each entrant in the unsampled list at the time of sampling. Calls copyUnsampledUser to save each user to rejected list in firestore.
+     */
     private void copyUnsampledList() {
         firestore.collection("facilities")
                 .document(deviceId)
@@ -375,6 +390,10 @@ public class ViewInvitedListActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Saves users left in unsampled list at time of sampling.
+     * @param userDeviceId The Id of the user to be copied
+     */
     private void copyUnsampledUser(String userDeviceId) {
 
         Map<String, Object> rejectedData = new HashMap<>();
@@ -395,6 +414,11 @@ public class ViewInvitedListActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Puts a selected event under a given entrant's Rejected Events list in Firestore.
+     * @param entrantId The given entrant's device ID to mark as invited in Firestore
+     * @param eventName The name of the event selected.
+     */
     private void updateRejectedEvents(String entrantId, String eventName) {
         Map<String, Object> rejectedEntrantData = new HashMap<>();
         rejectedEntrantData.put("Event Name", eventName);

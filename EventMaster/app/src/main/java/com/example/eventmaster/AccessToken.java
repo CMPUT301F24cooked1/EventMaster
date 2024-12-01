@@ -10,11 +10,18 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 
-//https://www.youtube.com/watch?v=o_PikvavsYY, 2024-11-24
+/**
+ * Class used to retrieve the current access token for sending notifications.
+ */
 public class AccessToken {
+    //https://www.youtube.com/watch?v=o_PikvavsYY, 2024-11-24
 
     private static final String firebaseMessagingScope = "https://www.googleapis.com/auth/firebase.messaging";
 
+    /**
+     * Retrieves the current access token for sending notifications.
+     * @param jsonString the private key from firestore used to get access token.
+     */
     public String getAccessToken(String jsonString) {
 
         try {

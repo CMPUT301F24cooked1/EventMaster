@@ -269,6 +269,12 @@ public class ViewAttendeesListActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> Log.e("WaitlistActivity", "Error fetching user data", e));
     }
 
+    /**
+     * Runs through user Ids of the attendee list and sets their notifyDates in firestore for later retrieval
+     * Calls notifyAttendingUser for each ID as well
+     * @param eventName The name of the event selected.
+     * @param notifyDate The date and time the notify button was pressed
+     */
     private void setNotifiedInFirestore(String eventName, String notifyDate) {
         for (int i = 0; i < attendeesIds.size(); i++) {
             Map<String, Object> notificationData = new HashMap<>();
@@ -317,20 +323,26 @@ public class ViewAttendeesListActivity extends AppCompatActivity {
         Toast.makeText(ViewAttendeesListActivity.this, "Previously un-notified users have been notified.", Toast.LENGTH_SHORT).show();
     }
 
-    private void notifyAttendingUser(String invitedId, String eventName, String notificationToggle) {
-        String invitedTitle = "Attending Event";
-        String invitedBody = "Congrats! You have decided to attend the " + eventName + " event.";
+    /**
+     * Sends notification to an attending user with the set notification title and body
+     * @param attendeeId The Id of the user to be notified
+     * @param eventName The name of the event selected.
+     * @param notificationToggle Whether the selected user has toggled notifications off
+     */
+    private void notifyAttendingUser(String attendeeId, String eventName, String notificationToggle) {
+        String attendeeTitle = "Attending Event";
+        String attendeeBody = "Congrats! You have decided to attend the " + eventName + " event.";
 
         firestore.collection("profiles")
-                .document(invitedId)
+                .document(attendeeId)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        String invitedToken = documentSnapshot.getString("notificationToken");
+                        String attendeeToken = documentSnapshot.getString("notificationToken");
 
-                        if (invitedToken != null) {
+                        if (attendeeToken != null) {
                             if (!Objects.equals(notificationToggle, "off")) {
-                                FCMNotificationSender attendNotification = new FCMNotificationSender(invitedToken, invitedTitle, invitedBody, getApplicationContext());
+                                FCMNotificationSender attendNotification = new FCMNotificationSender(attendeeToken, attendeeTitle, attendeeBody, getApplicationContext());
                                 attendNotification.SendNotifications(privateKey);
                             }
                         }

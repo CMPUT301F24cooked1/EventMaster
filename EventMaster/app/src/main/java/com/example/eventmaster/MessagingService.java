@@ -21,18 +21,28 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-//www.youtube.com/watch?v=spbSMpjONGc, 2024-11-24
+/**
+ * Receives notifications from firebase messaging
+ */
 public class MessagingService extends FirebaseMessagingService {
+    //www.youtube.com/watch?v=spbSMpjONGc, 2024-11-24
 
     private NotificationManager notificationManager;
 
+    /**
+     * Denotes what to do upon receiving a new device token
+     * @param token Device's token used for notifications
+     */
     @Override
     public void onNewToken(@NonNull String token) {
         super.onNewToken(token);
-        //Log.d("good", "good3 " + token);
         //updateNewToken(token);
     }
 
+    /**
+     * Denotes what to do upon receiving a message from firebase
+     * @param message Message data sent from firebase
+     */
     @Override
     public void onMessageReceived(@NonNull RemoteMessage message) {
         super.onMessageReceived(message);

@@ -16,8 +16,11 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-//https://www.youtube.com/watch?v=S69IdS0FZyQ, 2024-11-23
+/**
+ * Class used to create and send a notification to another user.
+ */
 public class FCMNotificationSender {
+    //https://www.youtube.com/watch?v=S69IdS0FZyQ, 2024-11-23
 
     private final String userFcmToken;
     private final String title;
@@ -25,6 +28,13 @@ public class FCMNotificationSender {
     private final Context context;
     private final String postUrl = "https://fcm.googleapis.com/v1/projects/eventmaster-27b75/messages:send";
 
+    /**
+     * Constructs a FCMNotificationSender object, with all the details needed to send a notification
+     * @param userFcmToken Token of the device to send the notification to.
+     * @param title The notification title.
+     * @param body The notification body.
+     * @param context The context of the notification.
+     */
     public FCMNotificationSender(String userFcmToken, String title, String body, Context context) {
         this.userFcmToken = userFcmToken;
         this.title = title;
@@ -32,6 +42,10 @@ public class FCMNotificationSender {
         this.context = context;
     }
 
+    /**
+     * Sends (or Queues) notification to user based on data in object
+     * @param jsonFile the private key from firestore used to get access token.
+     */
     public void SendNotifications(String jsonFile) {
 
         RequestQueue requestQueue = Volley.newRequestQueue(context);
