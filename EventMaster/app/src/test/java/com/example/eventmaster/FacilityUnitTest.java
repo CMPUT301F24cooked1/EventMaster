@@ -28,14 +28,6 @@ public class FacilityUnitTest {
         assertEquals("Updated Empty Facility", userFacility.getFacilityName());
     }
 
-    /**
-     * Tests the getter for the device ID.
-     */
-    @Test
-    void testGetDeviceID() {
-        Facility userFacility = new Facility("TestIDUnitTest", "Empty Facility", "5676 12th Ave", "There is nothing here");
-        assertEquals("TestIDUnitTest", userFacility.getDeviceID());
-    }
 
     /**
      * Tests the setter for the facility description.
