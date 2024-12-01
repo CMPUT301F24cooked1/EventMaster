@@ -238,42 +238,4 @@ public class ViewDeclinedListActivity extends AppCompatActivity {
                 })
                 .addOnFailureListener(e -> Log.e("WaitlistActivity", "Error fetching user data", e));
     }
-
-    /*
-    private void setNotifiedInFirestore(String eventName, String notifyDate) {
-        for (int i = 0; i < declinedIds.size(); i++) {
-            Map<String, Object> notificationData = new HashMap<>();
-            notificationData.put("notifyDate", notifyDate);
-
-            String entrantId = declinedIds.get(i);
-            firestore.collection("entrants")
-                    .document(entrantId)
-                    .collection("Declined Events")
-                    .document(eventName)
-                    .get()
-                    .addOnSuccessListener(documentSnapshot -> {
-                        if (documentSnapshot.exists()) {
-                            String firestoreNotifyDate = documentSnapshot.getString("notifyDate");
-                            if (firestoreNotifyDate == null) {
-                                firestore.collection("entrants")
-                                        .document(entrantId)
-                                        .collection("Declined Events")
-                                        .document(eventName)
-                                        .set(notificationData, SetOptions.merge())
-                                        .addOnSuccessListener(aVoid -> {
-                                            Log.d("Notify Users", "User set as notified in firestore");
-                                        })
-                                        .addOnFailureListener(e -> {
-                                            Log.e("Notify Users", "Error setting user as notified in firestore", e);
-                                        });
-                            } else {
-                                Log.d("Notify Users", "User has already been notified");
-                            }
-                        }
-                    });
-        }
-        Toast.makeText(ViewDeclinedListActivity.this, "Previously un-notified users have been notified.", Toast.LENGTH_SHORT).show();
-    }
-
-     */
 }

@@ -431,7 +431,7 @@ public class ViewWaitlistActivity extends AppCompatActivity {
 
     /**
      * Randomly samples a selected number of entrants for an event
-     * Calls updateInvitedList
+     * Calls updateInvitedList and updateUnsampledList
      * @param eventName the name of the event selected
      * @param sampleSize the size of the waitlist in the selected event
      * @param selectedCount the number of people who have already been selected for the event (and have not cancelled)
@@ -473,7 +473,6 @@ public class ViewWaitlistActivity extends AppCompatActivity {
     /**
      * updates the invited list under the specified event in firestore.
      * Calls updateInvitedEvents for each ID as well
-     * Calls markEventAsSampled at the end before moving to ViewInvitedListActivity
      * @param shuffledIds the list of device IDs previously shuffled in the waitlist.
      * @param eventName The name of the event selected.
      */
@@ -522,6 +521,12 @@ public class ViewWaitlistActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * updates the unsampled list under the specified event in firestore by removing invited users.
+     * Calls updateUnsampledEvents for each ID as well
+     * @param shuffledIds the list of device IDs previously shuffled in the waitlist.
+     * @param eventName The name of the event selected.
+     */
     private void updateUnsampledList(ArrayList<String> shuffledIds, String eventName) {
 
         firestore.collection("facilities")
@@ -588,6 +593,11 @@ public class ViewWaitlistActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Puts a selected event under a given entrant's Unsampled Events list in Firestore.
+     * @param entrantId The given entrant's device ID to mark as invited in Firestore
+     * @param eventName The name of the event selected.
+     */
     private void updateUnsampledEvents (String entrantId, String eventName) {
         firestore.collection("entrants")
                 .document(entrantId)
@@ -612,6 +622,12 @@ public class ViewWaitlistActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Runs through user Ids of the unsampled list and sets their notifyDates in firestore for later retrieval
+     * Calls notifyUnsampledUser for each ID as well
+     * @param eventName The name of the event selected.
+     * @param notifyDate The date and time the notify button was pressed
+     */
     private void setNotifiedInFirestore(String eventName, String notifyDate) {
         for (int i = 0; i < waitlistIds.size(); i++) {
             Map<String, Object> notificationData = new HashMap<>();
@@ -660,21 +676,27 @@ public class ViewWaitlistActivity extends AppCompatActivity {
         Toast.makeText(ViewWaitlistActivity.this, "Previously un-notified users have been notified.", Toast.LENGTH_SHORT).show();
     }
 
-    private void notifyUnsampledUser(String invitedId, String eventName, String notificationToggle) {
-        String invitedTitle = "Waitlisted Event";
-        String invitedBody = "You have not yet been sampled for the " + eventName + " event, and still may be selected.";
+    /**
+     * Sends notification to an unsampled user with the set notification title and body
+     * @param unsampledId The Id of the user to be notified
+     * @param eventName The name of the event selected.
+     * @param notificationToggle Whether the selected user has toggled notifications off
+     */
+    private void notifyUnsampledUser(String unsampledId, String eventName, String notificationToggle) {
+        String unsampledTitle = "Waitlisted Event";
+        String unsampledBody = "You have not yet been sampled for the " + eventName + " event, and still may be selected.";
 
         firestore.collection("profiles")
-                .document(invitedId)
+                .document(unsampledId)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        String invitedToken = documentSnapshot.getString("notificationToken");
+                        String unsampledToken = documentSnapshot.getString("notificationToken");
 
-                        if (invitedToken != null) {
+                        if (unsampledToken != null) {
                             if (!Objects.equals(notificationToggle, "off")) {
-                                FCMNotificationSender attendNotification = new FCMNotificationSender(invitedToken, invitedTitle, invitedBody, getApplicationContext());
-                                attendNotification.SendNotifications(privateKey);
+                                FCMNotificationSender unsampledNotification = new FCMNotificationSender(unsampledToken, unsampledTitle, unsampledBody, getApplicationContext());
+                                unsampledNotification.SendNotifications(privateKey);
                             }
                         }
                     }

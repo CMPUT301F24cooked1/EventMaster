@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
     //private ActivityResultLauncher<Intent> scanQRFragmentResultLauncher;
 
-    //Request notification permission
+    //After asking for permission
     private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                 if (isGranted) {
@@ -90,6 +90,9 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
+    /**
+     * Requests the user for notification permission on their device
+     */
     private void askNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) ==
@@ -450,6 +453,10 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Uploads a user's device notification token to firestore to send them notifications later.
+     * @param notificationToken The token used to send notifications accessed from the user's device.
+     */
     private void uploadToken(String notificationToken) {
         Map<String, Object> tokenData = new HashMap<>();
         tokenData.put("notificationToken", notificationToken);

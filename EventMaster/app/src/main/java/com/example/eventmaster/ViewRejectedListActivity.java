@@ -264,6 +264,12 @@ public class ViewRejectedListActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> Log.e("WaitlistActivity", "Error fetching user data", e));
     }
 
+    /**
+     * Runs through user Ids of the rejected list and sets their notifyDates in firestore for later retrieval
+     * Calls notifyRejectedUser for each ID as well
+     * @param eventName The name of the event selected.
+     * @param notifyDate The date and time the notify button was pressed
+     */
     private void setNotifiedInFirestore(String eventName, String notifyDate) {
         for (int i = 0; i < rejectedIds.size(); i++) {
             Map<String, Object> notificationData = new HashMap<>();
@@ -312,20 +318,26 @@ public class ViewRejectedListActivity extends AppCompatActivity {
         Toast.makeText(ViewRejectedListActivity.this, "Previously un-notified users have been notified.", Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Sends notification to a rejected user with the set notification title and body
+     * @param rejectedId The Id of the user to be notified
+     * @param eventName The name of the event selected.
+     * @param notificationToggle Whether the selected user has toggled notifications off
+     */
     private void notifyRejectedUser(String rejectedId, String eventName, String notificationToggle) {
-        String invitedTitle = "Rejected from Event";
-        String invitedBody = "You have not been selected for the " + eventName + " event.";
+        String rejectedTitle = "Rejected from Event";
+        String rejectedBody = "You have not been selected for the " + eventName + " event.";
 
         firestore.collection("profiles")
                 .document(rejectedId)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        String invitedToken = documentSnapshot.getString("notificationToken");
+                        String rejectedToken = documentSnapshot.getString("notificationToken");
 
-                        if (invitedToken != null) {
+                        if (rejectedToken != null) {
                             if (!Objects.equals(notificationToggle, "off")) {
-                                FCMNotificationSender invitedNotification = new FCMNotificationSender(invitedToken, invitedTitle, invitedBody, getApplicationContext());
+                                FCMNotificationSender invitedNotification = new FCMNotificationSender(rejectedToken, rejectedTitle, rejectedBody, getApplicationContext());
                                 invitedNotification.SendNotifications(privateKey);
                             }
                         }
