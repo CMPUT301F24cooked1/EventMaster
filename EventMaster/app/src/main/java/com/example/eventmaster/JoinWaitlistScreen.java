@@ -42,6 +42,7 @@ public class JoinWaitlistScreen extends AppCompatActivity {
     TextView eventDescription;
     TextView eventFinalDate;
     ImageView eventPoster;
+    ImageButton backButton;
     private Profile user;
     private boolean geolocation;
 
@@ -70,6 +71,7 @@ public class JoinWaitlistScreen extends AppCompatActivity {
         eventDescription = findViewById(R.id.event_decription);
         eventFinalDate = findViewById(R.id.event_decription);
         eventPoster = findViewById(R.id.event_poster);
+        backButton = findViewById(R.id.back);
 
         db = FirebaseFirestore.getInstance();
 
@@ -146,6 +148,13 @@ public class JoinWaitlistScreen extends AppCompatActivity {
                         }
                     }
                 });
+
+        backButton.setOnClickListener(v -> {
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("User", user);
+            setResult(RESULT_OK, resultIntent);
+            finish();
+        });
 
         // Initialize BottomNavigationView
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);

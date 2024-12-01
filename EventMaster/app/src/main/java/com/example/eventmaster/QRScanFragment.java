@@ -50,6 +50,7 @@ public class QRScanFragment extends AppCompatActivity{
     private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
     private ActivityResultLauncher<Intent> settingsResultLauncher;
     private ActivityResultLauncher<Intent> MainActivityResultLauncher;
+    private ImageButton backButton;
 
 
     @Override
@@ -81,6 +82,8 @@ public class QRScanFragment extends AppCompatActivity{
                 fetchEventData(deviceID, event);
             }
         });
+
+
 
 
 
@@ -138,6 +141,14 @@ public class QRScanFragment extends AppCompatActivity{
 
 
                 });
+
+        backButton = findViewById(R.id.back);
+        backButton.setOnClickListener(v -> {
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("User", user);
+            setResult(RESULT_OK, resultIntent);
+            finish();
+        });
 
         // Initialize BottomNavigationView
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);

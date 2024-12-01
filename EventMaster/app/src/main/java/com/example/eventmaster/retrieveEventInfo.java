@@ -83,6 +83,7 @@ public class retrieveEventInfo extends AppCompatActivity {
     TextView eventFinalDate;
     ImageView eventPoster;
     AppCompatButton joinWaitlistButton;
+    private ImageButton backButton;
     ActivityResultLauncher<Intent> joinWaitlistResultLauncher;
     private Profile user;
     private String name;
@@ -121,6 +122,7 @@ public class retrieveEventInfo extends AppCompatActivity {
         eventFinalDate = findViewById(R.id.event_decription);
         eventPoster = findViewById(R.id.event_poster);
         joinWaitlistButton = findViewById(R.id.join_waitlist_button);
+        backButton = findViewById(R.id.back);
 
         db = FirebaseFirestore.getInstance();
 
@@ -267,6 +269,13 @@ public class retrieveEventInfo extends AppCompatActivity {
                         }
                     }
                 });
+
+        backButton.setOnClickListener(v -> {
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("User", user);
+            setResult(RESULT_OK, resultIntent);
+            finish();
+        });
 
         // Initialize BottomNavigationView
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);

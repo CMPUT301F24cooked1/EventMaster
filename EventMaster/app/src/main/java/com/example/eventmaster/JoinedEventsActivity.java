@@ -47,6 +47,7 @@ public class JoinedEventsActivity extends AppCompatActivity {
     private String facilityId;
     private String eventName;
     private String eventDescription;
+    private ImageButton backButton;
 
     private FirebaseFirestore db; // Firestore instance
     private ActivityResultLauncher<Intent> waitlistedEventsActivityResultLauncher;
@@ -157,6 +158,14 @@ public class JoinedEventsActivity extends AppCompatActivity {
                     }
 
                 });
+
+        backButton = findViewById(R.id.back);
+        backButton.setOnClickListener(v -> {
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("User", user);
+            setResult(RESULT_OK, resultIntent);
+            finish();
+        });
 
         // Initialize BottomNavigationView
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);

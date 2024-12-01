@@ -7,6 +7,7 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,6 +55,7 @@ public class Notifications extends AppCompatActivity {
     private String deviceId;
     private FirebaseFirestore db;
     private TextView displayName;
+    private ImageButton backButton;
 
     private Profile user;
 
@@ -81,6 +83,7 @@ public class Notifications extends AppCompatActivity {
 
         displayName = findViewById(R.id.textView);
         recyclerView = findViewById(R.id.recyclerView);
+        backButton = findViewById(R.id.back);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         inviteList = new ArrayList<>();
         eventList = new ArrayList<>();
@@ -179,6 +182,13 @@ public class Notifications extends AppCompatActivity {
                     }
 
                 });
+
+        backButton.setOnClickListener(v -> {
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("User", user);
+            setResult(RESULT_OK, resultIntent);
+            finish();
+        });
 
 
         // Initialize BottomNavigationView
