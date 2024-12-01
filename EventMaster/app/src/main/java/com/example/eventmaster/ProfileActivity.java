@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -34,6 +35,7 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView displayEmail;
     private TextView displayPhoneNumber;
     private AppCompatButton editProfileButton;
+    private ImageButton backButton;
     private ImageView profilePicture;
     private Profile user;
     private ActivityResultLauncher<Intent> editProfileResultLauncher;
@@ -62,6 +64,7 @@ public class ProfileActivity extends AppCompatActivity {
         displayEmail = findViewById(R.id.profile_email);
         displayPhoneNumber = findViewById(R.id.profile_phone_number);
         editProfileButton = findViewById(R.id.edit_profile_button);
+        backButton = findViewById(R.id.back);
 
         loadUserInfo();
 
@@ -143,6 +146,15 @@ public class ProfileActivity extends AppCompatActivity {
                     }
 
                 });
+
+        backButton.setOnClickListener(v -> {
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("User", user);
+            setResult(RESULT_OK, resultIntent);
+            finish();
+        });
+
+
 
 
 

@@ -47,6 +47,7 @@ public class JoinEventScreen extends AppCompatActivity {
    // private EventAdapter eventAdapter;
     private ViewEventsAdapter ViewEventsAdapter;
     private List<Event> eventList;
+    private ImageButton backButton;
     private FirebaseFirestore firestore;
     private String deviceId; // Replace with actual device ID
     private FirebaseFirestore db; // Firestore instance
@@ -134,6 +135,14 @@ public class JoinEventScreen extends AppCompatActivity {
                     }
 
                 });
+
+        backButton = findViewById(R.id.back);
+        backButton.setOnClickListener(v -> {
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("User", user);
+            setResult(RESULT_OK, resultIntent);
+            finish();
+        });
 
         // Initialize BottomNavigationView
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);

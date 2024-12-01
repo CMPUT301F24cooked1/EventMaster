@@ -26,49 +26,12 @@ public class AppInfoActivity extends AppCompatActivity {
 
         Profile user = (Profile) getIntent().getSerializableExtra("User");
 
-
-        settingResultLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-
-                }
-        );
-
-        profileResultLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-
-
-                }
-        );
-
-
         backButton = findViewById(R.id.back);
         backButton.setOnClickListener(v -> {
             Intent resultIntent = new Intent();
             resultIntent.putExtra("User", user);
             setResult(RESULT_OK, resultIntent);
             finish();
-        });
-
-        ImageButton profileButton = findViewById(R.id.profile);
-        profileButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(AppInfoActivity.this, ProfileActivity.class);
-                intent.putExtra("User", user);
-                profileResultLauncher.launch(intent);
-            }
-        });
-
-        settingsButton = findViewById(R.id.settings);
-        settingsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(AppInfoActivity.this, SettingsScreen.class);
-                intent.putExtra("User", user);
-                settingResultLauncher.launch(intent);
-            }
         });
     }
 

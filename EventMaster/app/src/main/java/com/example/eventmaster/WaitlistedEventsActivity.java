@@ -51,6 +51,7 @@ public class WaitlistedEventsActivity extends AppCompatActivity {
     private String entrantId; // Replace with actual device ID
     private FirebaseFirestore db; // Firestore instance
     private Profile user;
+    private ImageButton backButton;
 
     private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
     private ActivityResultLauncher<Intent> notificationActivityResultLauncher;
@@ -65,7 +66,7 @@ public class WaitlistedEventsActivity extends AppCompatActivity {
         ModeActivity.applyTheme(this);
         setContentView(R.layout.waitlisted_events_screen);
         user = (Profile) getIntent().getSerializableExtra("User"); // user from MainActivity
-
+        backButton = findViewById(R.id.back);
 
 
         // Initialize Firebase Firestore
@@ -137,6 +138,13 @@ public class WaitlistedEventsActivity extends AppCompatActivity {
                     }
 
                 });
+
+        backButton.setOnClickListener(v -> {
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("User", user);
+            setResult(RESULT_OK, resultIntent);
+            finish();
+        });
 
 
 
