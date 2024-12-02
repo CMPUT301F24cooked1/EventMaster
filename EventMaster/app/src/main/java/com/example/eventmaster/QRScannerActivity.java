@@ -55,7 +55,7 @@ public class QRScannerActivity extends AppCompatActivity {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 startScanner();
             } else {
-                Toast.makeText(this, "Camera permission is required to scan QR codes.", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Camera permission is required to scan QR codes.", Toast.LENGTH_SHORT).show();
                 finish(); // Exit activity if permission is denied
             }
         }
@@ -117,20 +117,20 @@ public class QRScannerActivity extends AppCompatActivity {
                                             }
                                         })
                                         .addOnFailureListener(e -> {
-                                            Toast.makeText(this, "Error retrieving events for facility " + facilityId, Toast.LENGTH_SHORT).show();
+                                            //Toast.makeText(this, "Error retrieving events for facility " + facilityId, Toast.LENGTH_SHORT).show();
                                         });
                             }
                         } else {
-                            Toast.makeText(this, "No facilities found.", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(this, "No facilities found.", Toast.LENGTH_SHORT).show();
                         }
                     })
                     .addOnFailureListener(e -> {
-                        Toast.makeText(this, "Error retrieving facilities.", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(this, "Error retrieving facilities.", Toast.LENGTH_SHORT).show();
                         e.printStackTrace();  // Log the error for debugging
                     });
         } catch (Exception e) {
             // Handle any exceptions (including URI parsing issues)
-            Toast.makeText(this, "Invalid QR Code format.", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "Invalid QR Code format.", Toast.LENGTH_SHORT).show();
         }
     }
 

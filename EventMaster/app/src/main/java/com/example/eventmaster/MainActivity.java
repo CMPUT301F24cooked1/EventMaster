@@ -142,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<String> task) {
                 if (!task.isSuccessful()) {
-                    Toast.makeText(MainActivity.this, Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(MainActivity.this, Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                 }
 
                 token = task.getResult();
@@ -216,7 +216,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // Send user to JoinEvent class
                 if (user.getName().isEmpty() || user.getEmail().isEmpty()) {
-                    Toast.makeText(MainActivity.this, "Please set up profile before joining event", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(MainActivity.this, "Please set up profile before joining event", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 Intent intent = new Intent(MainActivity.this, JoinEventScreen.class);

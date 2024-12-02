@@ -32,7 +32,6 @@
         android:paddingEnd="28dp"
         android:text= "Unfortunately, you haven not been selected to join the event from the waitlist at this time.\n\nBut don’t worry! You’re still on the waitlist, and we’ll notify you immediately if you get chosen."
         android:textAlignment="center"
-        android:textColor="#757575"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

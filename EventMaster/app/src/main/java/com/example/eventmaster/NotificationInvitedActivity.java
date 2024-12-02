@@ -50,7 +50,7 @@ public class NotificationInvitedActivity extends AppCompatActivity {
         facility_id = getIntent().getStringExtra("facility_id");
 
         if (event_name == null || facility_id == null) {
-            Toast.makeText(this, "Error: Event Name or Facility ID is missing", Toast.LENGTH_LONG).show();
+            //Toast.makeText(this, "Error: Event Name or Facility ID is missing", Toast.LENGTH_LONG).show();
             Log.e("NotificationInvited", "Missing event_name or facility_id");
             finish(); // Exit the activity since required data is missing
             return;
@@ -162,7 +162,7 @@ public class NotificationInvitedActivity extends AppCompatActivity {
      */
     private void fetchEventDescription(String facilityId, String eventName, TextView eventDescriptionText) {
         if (facilityId == null || eventName == null) {
-            Toast.makeText(this, "Error: Facility ID or Event Name is missing", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "Error: Facility ID or Event Name is missing", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -178,14 +178,14 @@ public class NotificationInvitedActivity extends AppCompatActivity {
                             event_detail = eventDescription; // Set the global event_detail
                             eventDescriptionText.setText(event_detail);
                         } else {
-                            Toast.makeText(this, "Event description not found", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(this, "Event description not found", Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        Toast.makeText(this, "Event not found", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(this, "Event not found", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to fetch event description", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(this, "Failed to fetch event description", Toast.LENGTH_SHORT).show();
                     Log.e("Firestore", "Error fetching event description", e);
                 });
     }
@@ -203,11 +203,11 @@ public class NotificationInvitedActivity extends AppCompatActivity {
                 .document(user.getDeviceId())
                 .set(new HashMap<>())
                 .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(this, "Successfully added to attendees list", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(this, "Successfully added to attendees list", Toast.LENGTH_SHORT).show();
                     Log.d("Firestore", "Device ID added to attendees list successfully");
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to add to attendees list", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(this, "Failed to add to attendees list", Toast.LENGTH_SHORT).show();
                     Log.e("Firestore", "Error adding device ID to attendees list", e);
                 });
     }
@@ -228,11 +228,11 @@ public class NotificationInvitedActivity extends AppCompatActivity {
                 .document(user.getDeviceId())
                 .set(new HashMap<>())
                 .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(this, "Successfully added to declined list", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(this, "Successfully added to declined list", Toast.LENGTH_SHORT).show();
                     Log.d("Firestore", "Device ID added to declined list successfully");
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to add to declined list", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(this, "Failed to add to declined list", Toast.LENGTH_SHORT).show();
                     Log.e("Firestore", "Error adding device ID to declined list", e);
                 });
     }
@@ -258,11 +258,11 @@ public class NotificationInvitedActivity extends AppCompatActivity {
                 .document(deviceId)
                 .delete()
                 .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(this, "Successfully removed from invited list", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(this, "Successfully removed from invited list", Toast.LENGTH_SHORT).show();
                     Log.d("Firestore", "Device ID removed from invited list successfully");
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to remove from invited list", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(this, "Failed to remove from invited list", Toast.LENGTH_SHORT).show();
                     Log.e("Firestore", "Error removing device ID from invited list", e);
                 });
     }
@@ -275,7 +275,7 @@ public class NotificationInvitedActivity extends AppCompatActivity {
      */
     private void decreaseSelectedCount(String facilityId, String eventName) {
         if (facilityId == null || eventName == null) {
-            Toast.makeText(this, "Error: Facility ID or Event Name is missing", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "Error: Facility ID or Event Name is missing", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -285,11 +285,11 @@ public class NotificationInvitedActivity extends AppCompatActivity {
                 .document(eventName)
                 .update("selectedCount", FieldValue.increment(-1)) // Decrease the count by 1
                 .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(this, "Successfully decreased selectedCount", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(this, "Successfully decreased selectedCount", Toast.LENGTH_SHORT).show();
                     Log.d("Firestore", "Decreased selectedCount successfully");
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to decrease selectedCount", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(this, "Failed to decrease selectedCount", Toast.LENGTH_SHORT).show();
                     Log.e("Firestore", "Error decreasing selectedCount", e);
                 });
     }

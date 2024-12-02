@@ -77,7 +77,7 @@ public class UnjoinWaitlistScreen extends AppCompatActivity {
             retrieveEventInfo(hashedData, deviceID, event);
 
         } else {
-            Toast.makeText(this, "Failed to retrieve event data.", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "Failed to retrieve event data.", Toast.LENGTH_SHORT).show();
         }
 
         unjoinWaitlistButton.setOnClickListener(new View.OnClickListener() { //handles the unjoining of entrant from event
@@ -235,11 +235,11 @@ public class UnjoinWaitlistScreen extends AppCompatActivity {
                                 displayEventInfo(eventName, eventDescription, eventPosterUrl, geolocation);//eventPosterUrl);
                             }
                         } else {
-                            Toast.makeText(UnjoinWaitlistScreen.this, "Event does not exist", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(UnjoinWaitlistScreen.this, "Event does not exist", Toast.LENGTH_SHORT).show();
                         }
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(UnjoinWaitlistScreen.this, "Error retrieving event: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(UnjoinWaitlistScreen.this, "Error retrieving event: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
 
@@ -307,11 +307,11 @@ public class UnjoinWaitlistScreen extends AppCompatActivity {
                                                 .document(eventDocId)
                                                 .delete()
                                                 .addOnSuccessListener(aVoid -> {
-                                                    Toast.makeText(UnjoinWaitlistScreen.this, "Successfully removed event from waitlist", Toast.LENGTH_SHORT).show();
+                                                    //Toast.makeText(UnjoinWaitlistScreen.this, "Successfully removed event from waitlist", Toast.LENGTH_SHORT).show();
                                                 })
                                                 .addOnFailureListener(e -> {
                                                     Log.e("Firestore", "Error removing event from waitlist: " + e.getMessage());
-                                                    Toast.makeText(UnjoinWaitlistScreen.this, "Error removing from waitlist", Toast.LENGTH_SHORT).show();
+                                                    //Toast.makeText(UnjoinWaitlistScreen.this, "Error removing from waitlist", Toast.LENGTH_SHORT).show();
                                                 });
 
                                         db.collection("entrants")
@@ -327,12 +327,12 @@ public class UnjoinWaitlistScreen extends AppCompatActivity {
                                                 });
 
                                     } else {
-                                        Toast.makeText(UnjoinWaitlistScreen.this, "Event not found in waitlist", Toast.LENGTH_SHORT).show();
+                                        //Toast.makeText(UnjoinWaitlistScreen.this, "Event not found in waitlist", Toast.LENGTH_SHORT).show();
                                     }
                                 })
                                 .addOnFailureListener(e -> Toast.makeText(UnjoinWaitlistScreen.this, "Error querying waitlisted events", Toast.LENGTH_SHORT).show());
                     } else {
-                        Toast.makeText(UnjoinWaitlistScreen.this, "Entrant not found", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(UnjoinWaitlistScreen.this, "Entrant not found", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(e -> Toast.makeText(UnjoinWaitlistScreen.this, "Error querying entrants", Toast.LENGTH_SHORT).show());
@@ -372,11 +372,11 @@ public class UnjoinWaitlistScreen extends AppCompatActivity {
                                 .document(userDeviceId)
                                 .delete()
                                 .addOnSuccessListener(aVoid -> {
-                                    Toast.makeText(UnjoinWaitlistScreen.this, "Entrant removed from unsampled list successfully", Toast.LENGTH_SHORT).show();
+                                    //Toast.makeText(UnjoinWaitlistScreen.this, "Entrant removed from unsampled list successfully", Toast.LENGTH_SHORT).show();
                                 })
                                 .addOnFailureListener(e -> Toast.makeText(UnjoinWaitlistScreen.this, "Error removing entrant from unsampled list", Toast.LENGTH_SHORT).show());
                     } else {
-                        Toast.makeText(UnjoinWaitlistScreen.this, "Facility not found", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(UnjoinWaitlistScreen.this, "Facility not found", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(e -> Toast.makeText(UnjoinWaitlistScreen.this, "Error querying facility", Toast.LENGTH_SHORT).show());

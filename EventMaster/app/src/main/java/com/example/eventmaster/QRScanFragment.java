@@ -259,10 +259,10 @@ public class QRScanFragment extends AppCompatActivity{
 
                             }
                         } else {
-                            Toast.makeText(QRScanFragment.this, "No events found.", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(QRScanFragment.this, "No events found.", Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        Toast.makeText(QRScanFragment.this, "Error getting data: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(QRScanFragment.this, "Error getting data: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }

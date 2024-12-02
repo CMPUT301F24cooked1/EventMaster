@@ -119,7 +119,7 @@ public class Notifications extends AppCompatActivity {
 
                 startActivity(intent);
             } else {
-                Toast.makeText(this, "Error: Unable to determine event type", Toast.LENGTH_SHORT).show();
+                //.makeText(this, "Error: Unable to determine event type", Toast.LENGTH_SHORT).show();
                 Log.e("Notifications", "Event not found in either invite or rejected list.");
             }
         });
@@ -127,7 +127,7 @@ public class Notifications extends AppCompatActivity {
 
         recyclerView.setAdapter(notificationsAdapter);
 
-        Toast.makeText(this, "Device ID: " + deviceId, Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "Device ID: " + deviceId, Toast.LENGTH_LONG).show();
 
         // Initialize navigation buttons
         // Set result launchers to set up navigation buttons on the bottom of the screen
