@@ -210,6 +210,19 @@ public class NotificationInvitedActivity extends AppCompatActivity {
                     //Toast.makeText(this, "Failed to add to attendees list", Toast.LENGTH_SHORT).show();
                     Log.e("Firestore", "Error adding device ID to attendees list", e);
                 });
+        firestore.collection("entrants")
+                .document(user.getDeviceId())
+                .collection("Joined Events")
+                .document(event_name)
+                .set(new HashMap<>())
+                .addOnSuccessListener(aVoid -> {
+                    //Toast.makeText(this, "Successfully added to attendees list", Toast.LENGTH_SHORT).show();
+                    Log.d("Firestore", "Device ID added to attendees list successfully");
+                })
+                .addOnFailureListener(e -> {
+                    //Toast.makeText(this, "Failed to add to attendees list", Toast.LENGTH_SHORT).show();
+                    Log.e("Firestore", "Error adding device ID to attendees list", e);
+                });
     }
 
     /**
