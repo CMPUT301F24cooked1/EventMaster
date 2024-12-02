@@ -342,7 +342,7 @@ public class retrieveEventInfo extends AppCompatActivity {
                     latitude = 0;
                     longitude = 0;
                 }
-                Toast.makeText(retrieveEventInfo.this, "This is the longitude and latitude" + longitude + latitude, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(retrieveEventInfo.this, "This is the longitude and latitude" + longitude + latitude, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -479,7 +479,7 @@ public class retrieveEventInfo extends AppCompatActivity {
                                 .document(event)
                                 .set(WaitlistEvents)
                                 .addOnSuccessListener(aVoid -> {
-                                    Toast.makeText(retrieveEventInfo.this, "Successfully joined waitlist", Toast.LENGTH_SHORT).show();
+                                    //Toast.makeText(retrieveEventInfo.this, "Successfully joined waitlist", Toast.LENGTH_SHORT).show();
                                 })
                                 .addOnFailureListener(e -> {
                                     Log.e("Firestore", "Error adding event to waitlist: " + e.getMessage());
@@ -536,7 +536,7 @@ public class retrieveEventInfo extends AppCompatActivity {
                                 .document(userDeviceId)
                                 .set(entrantData)
                                 .addOnSuccessListener(aVoid1 -> {
-                                    Toast.makeText(retrieveEventInfo.this, "Entrant added to waitlist successfully", Toast.LENGTH_SHORT).show();
+                                    //Toast.makeText(retrieveEventInfo.this, "Entrant added to waitlist successfully", Toast.LENGTH_SHORT).show();
                                 })
                                 .addOnFailureListener(e -> Toast.makeText(retrieveEventInfo.this, "Error adding entrant to waitlist", Toast.LENGTH_SHORT).show());
                         db.collection("facilities")

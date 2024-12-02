@@ -223,7 +223,7 @@ public class JoinWaitlistScreen extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful())
                         if (!task.getResult().isEmpty()){  // check something is in result
-                            Toast.makeText(JoinWaitlistScreen.this, "succesfully read data", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(JoinWaitlistScreen.this, "succesfully read data", Toast.LENGTH_SHORT).show();
 
                             for (DocumentSnapshot document : task.getResult()) {
                                 // Retrieve data directly from the document

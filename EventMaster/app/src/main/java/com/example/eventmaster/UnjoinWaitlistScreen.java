@@ -222,7 +222,7 @@ public class UnjoinWaitlistScreen extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful())
                         if (!task.getResult().isEmpty()){  // check something is in result
-                            Toast.makeText(UnjoinWaitlistScreen.this, "succesfully read data", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(UnjoinWaitlistScreen.this, "succesfully read data", Toast.LENGTH_SHORT).show();
 
                             for (DocumentSnapshot document : task.getResult()) {
                                 // Retrieve data directly from the document
@@ -361,7 +361,7 @@ public class UnjoinWaitlistScreen extends AppCompatActivity {
                                 .document(userDeviceId)
                                 .delete()
                                 .addOnSuccessListener(aVoid -> {
-                                    Toast.makeText(UnjoinWaitlistScreen.this, "Entrant removed from waitlist successfully", Toast.LENGTH_SHORT).show();
+                                    //Toast.makeText(UnjoinWaitlistScreen.this, "Entrant removed from waitlist successfully", Toast.LENGTH_SHORT).show();
                                 })
                                 .addOnFailureListener(e -> Toast.makeText(UnjoinWaitlistScreen.this, "Error removing entrant from waitlist", Toast.LENGTH_SHORT).show());
                         db.collection("facilities")
