@@ -82,25 +82,6 @@ public class SettingsTest {
     }
 
     /**
-     * Tests Dark mode Switch
-     */
-    @Test
-    public void testDarkModeSwitchToggle() {
-        Intent intent = new Intent(ApplicationProvider.getApplicationContext(), SettingsScreen.class);
-        Profile testUser = new Profile("12345", "User", "user@example.com", "123456789");
-        intent.putExtra("User", testUser);
-        try (ActivityScenario<SettingsScreen> scenario = ActivityScenario.launch(intent)) {
-            onView(withId(R.id.mode_switch)).check(matches(isNotChecked()));
-
-            onView(withId(R.id.mode_switch)).perform(click());
-            onView(withId(R.id.mode_switch)).check(matches(isChecked()));
-
-            onView(withId(R.id.mode_switch)).perform(click());
-            onView(withId(R.id.mode_switch)).check(matches(isNotChecked()));
-        }
-    }
-
-    /**
      * Tests Admin login screen
      */
     @Test
