@@ -44,12 +44,8 @@ public class JoinedEventsActivity extends AppCompatActivity {
     private List<Event> eventList;
     private FirebaseFirestore firestore;
     private String deviceId; // Replace with actual device ID
-    private String facilityId;
-    private String eventName;
-    private String eventDescription;
     private ImageButton backButton;
 
-    private FirebaseFirestore db; // Firestore instance
     private ActivityResultLauncher<Intent> waitlistedEventsActivityResultLauncher;
     private Profile user;
     private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
@@ -57,9 +53,6 @@ public class JoinedEventsActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> settingsResultLauncher;
     private ActivityResultLauncher<Intent> MainActivityResultLauncher;
 
-    private ActivityResultLauncher<Intent> homeActivityResultLauncher;
-
-    //  private ActivityResultLauncher<Intent> QRScanScreenResultLauncher;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

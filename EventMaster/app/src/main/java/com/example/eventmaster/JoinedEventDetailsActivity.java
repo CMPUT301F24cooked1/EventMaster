@@ -27,7 +27,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
- * This class displays the event information and title and a button allowing the entrant to leave the waitlist
+ * This class displays the event information and title for the event that the user has been accepted to
  */
 
 public class JoinedEventDetailsActivity extends AppCompatActivity {
