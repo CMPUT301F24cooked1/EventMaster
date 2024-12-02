@@ -15,8 +15,10 @@ import androidx.appcompat.widget.AppCompatButton;
 
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * NotificationInvitedActivity handles user interactions with an event invitation.
@@ -210,11 +212,15 @@ public class NotificationInvitedActivity extends AppCompatActivity {
                     //Toast.makeText(this, "Failed to add to attendees list", Toast.LENGTH_SHORT).show();
                     Log.e("Firestore", "Error adding device ID to attendees list", e);
                 });
+
+        Map<String, Object> invitedEntrantData = new HashMap<>();
+        invitedEntrantData.put("Event Name", event_name);
+        invitedEntrantData.put("facilityId", user.getDeviceId());
         firestore.collection("entrants")
                 .document(user.getDeviceId())
                 .collection("Joined Events")
                 .document(event_name)
-                .set(new HashMap<>())
+                .set(invitedEntrantData, SetOptions.merge())
                 .addOnSuccessListener(aVoid -> {
                     //Toast.makeText(this, "Successfully added to attendees list", Toast.LENGTH_SHORT).show();
                     Log.d("Firestore", "Device ID added to attendees list successfully");
