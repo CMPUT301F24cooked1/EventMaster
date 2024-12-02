@@ -25,6 +25,9 @@ import org.junit.runner.RunWith;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Runs UI tests on the ViewWaitlistActivity
+ */
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class ViewWaitlistTest {
