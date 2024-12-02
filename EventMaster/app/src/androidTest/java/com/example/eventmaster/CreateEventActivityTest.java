@@ -54,6 +54,9 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Runs UI tests for creating an event
+ */
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class CreateEventActivityTest {
