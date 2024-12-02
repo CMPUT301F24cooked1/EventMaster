@@ -60,7 +60,6 @@ public class QRScanFragment extends AppCompatActivity{
         setContentView(R.layout.scan_qr_screen);
         user = (Profile) getIntent().getSerializableExtra("User");  // the user information is passed in
         AppCompatButton scanButton = findViewById(R.id.scan_qr_code_button);
-       //Button button = findViewById(R.id.next_button);
 
 
         // click on the scan button to be sent to a QR Scanner
@@ -70,19 +69,6 @@ public class QRScanFragment extends AppCompatActivity{
                 ScanCode();
             }
         });
-
-//        // Button to skip QR scanning WILL DELETE THIS LATER!!!
-//        button.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = getIntent();
-//                String event = intent.getStringExtra("event");
-//                String deviceID = intent.getStringExtra("deviceID");
-//
-//                fetchEventData(deviceID, event);
-//            }
-//        });
-
 
 
 
@@ -228,45 +214,6 @@ public class QRScanFragment extends AppCompatActivity{
             startActivity(intent2);
         }
     });
-
-
-
-    // WILL DELETE LATER its for a button to go straight to the next screen without scanning
-//    private void fetchEventData(String deviceID, String event) {
-//        db.collection("facilities")
-//                .document(deviceID)
-//                .collection("My Events")
-//                .whereEqualTo("eventName", event) // Adjust the query as necessary
-//                .get()
-//                .addOnCompleteListener(task -> {
-//                    if (task.isSuccessful()) {
-//                        if (!task.getResult().isEmpty()) {
-//                            for (QueryDocumentSnapshot document : task.getResult()) {
-//
-//                                String hashedData = document.getString("hash");
-//                                String eventDescription = document.getString("eventDescription");
-//                                String eventPosterUrl = document.getString("posterUrl");
-//
-//                                Intent intent2 = new Intent(QRScanFragment.this, retrieveEventInfo.class);
-//                                intent2.putExtra("hashed_data", hashedData);
-//                                intent2.putExtra("event", event);
-//                                intent2.putExtra("deviceID", deviceID);
-//                                intent2.putExtra("eventDescription", eventDescription);
-//                                intent2.putExtra("posterUrl", eventPosterUrl);
-//                                intent2.putExtra("User", user);
-//
-//                                startActivity(intent2);
-//
-//                            }
-//                        } else {
-//                            //Toast.makeText(QRScanFragment.this, "No events found.", Toast.LENGTH_SHORT).show();
-//                        }
-//                    } else {
-//                        //Toast.makeText(QRScanFragment.this, "Error getting data: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-//                    }
-//                });
-//    }
-
 
 
 
