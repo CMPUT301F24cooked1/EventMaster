@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -379,6 +380,7 @@ public class retrieveEventInfo extends AppCompatActivity {
 
                                 // Call the display method with the retrieved data
                                 displayEventInfo(eventName, eventDescription, eventPosterUrl, waitlistCountdown);
+                                joinWaitlistButton.setVisibility(View.VISIBLE);
                             }
                     } else {
                         //Toast.makeText(retrieveEventInfo.this, "Event does not exist", Toast.LENGTH_SHORT).show();
@@ -404,6 +406,7 @@ public class retrieveEventInfo extends AppCompatActivity {
         TextView eventDescriptionTextView = findViewById(R.id.event_decription);
         TextView countdownTextView = findViewById(R.id.event_open_time);
         TextView geolocationTextView = findViewById(R.id.geolocation);
+
 
         // Set the text for the TextViews
         eventNameTextView.setText(eventName);
