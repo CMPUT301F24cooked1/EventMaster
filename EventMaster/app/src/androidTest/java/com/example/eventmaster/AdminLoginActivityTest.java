@@ -18,6 +18,8 @@ import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static androidx.test.espresso.intent.Intents.assertNoUnverifiedIntents;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
+import android.content.Intent;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -31,9 +33,7 @@ import org.junit.runner.RunWith;
 public class AdminLoginActivityTest {
 
     @Rule
-    public ActivityScenarioRule<AdminLoginActivity> activityRule =
-            new ActivityScenarioRule<>(AdminLoginActivity.class);
-
+    public ActivityScenarioRule<AdminLoginActivity> activityRule = new ActivityScenarioRule<>(AdminLoginActivity.class);
     private static final String CORRECT_ADMIN_CODE = "123456";
     private static final String INCORRECT_ADMIN_CODE = "000000";
 
@@ -45,7 +45,9 @@ public class AdminLoginActivityTest {
     @After
     public void tearDown() {
         release();
+
     }
+
 
     /**
      * Tests if inputting the correct code will send the user to the admin screen
@@ -63,12 +65,17 @@ public class AdminLoginActivityTest {
      */
     @Test
     public void testAdminIncorrectLogin() {
-        ActivityScenario.launch(AdminLoginActivity.class); // launch activity
-        intended(hasComponent(AdminLoginActivity.class.getName())); // Verify AdminLoginActivity was launched
+        // Launch activity
+        ActivityScenario.launch(AdminLoginActivity.class);
+        intended(hasComponent(AdminLoginActivity.class.getName()));
 
+        // Perform actions on the view
         onView(withId(R.id.edit_admin_code)).perform(replaceText(INCORRECT_ADMIN_CODE));
         onView(withId(R.id.done_button)).perform(click());
+
+        // Assert no unverified intents
         Intents.assertNoUnverifiedIntents();
 
     }
+
 }
