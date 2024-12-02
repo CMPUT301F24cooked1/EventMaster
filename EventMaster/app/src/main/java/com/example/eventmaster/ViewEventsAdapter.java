@@ -204,7 +204,10 @@ public class ViewEventsAdapter extends RecyclerView.Adapter<ViewEventsAdapter.Ev
         CheckBox eventCheckBox;
         ImageView eventArrow;
 
-
+        /**
+         * Holds events for ViewEventsAdapter
+         * @param itemView the view to place the event data on
+         */
         public EventViewHolder(@NonNull View itemView) {
             super(itemView);
             eventNameTextView = itemView.findViewById(R.id.eventNameTextView);

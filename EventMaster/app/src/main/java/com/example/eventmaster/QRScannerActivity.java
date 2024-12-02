@@ -19,10 +19,17 @@ import com.journeyapps.barcodescanner.BarcodeCallback;
 import com.journeyapps.barcodescanner.BarcodeResult;
 import com.journeyapps.barcodescanner.DecoratedBarcodeView;
 
+/**
+ * Opens QR Scanner from navigation bar
+ */
 public class QRScannerActivity extends AppCompatActivity {
     private static final int CAMERA_PERMISSION_CODE = 100;
     private DecoratedBarcodeView barcodeScanner;
     private Profile user;
+
+    /**
+     * @param savedInstanceState If the activity is restarted this Bundle contains the data it most recently supplied.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +46,9 @@ public class QRScannerActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Requests user for camera permissions on device.
+     */
     private void requestCameraPermission() {
         ActivityCompat.requestPermissions(
                 this,
@@ -61,6 +71,9 @@ public class QRScannerActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Opens the QR Scanner.
+     */
     private void startScanner() {
         barcodeScanner.decodeContinuous(new BarcodeCallback() {
             @Override
@@ -73,6 +86,10 @@ public class QRScannerActivity extends AppCompatActivity {
             }
         });
     }
+
+    /**
+     * Handles the scanned data
+     */
     private void handleScannedData(String scannedData) {
         try {
             // The scannedData should contain the hash (not the full event URL)

@@ -37,6 +37,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Opens google map to display entrant locations for an event
+ */
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
@@ -46,6 +49,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private static final String TAG = "MapActivity";
     private static final String GEOCODING_API_KEY = "AIzaSyC9bWvuWrlCcA-cMGNF1tib2l43cQfh5Yk"; // Replace with your actual API key
 
+    /**
+     * @param savedInstanceState If the activity is restarted this Bundle contains the data it most recently supplied.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +77,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
+    /**
+     * Denotes app action once the google map is ready.
+     */
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
@@ -81,6 +90,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         fetchEventAddressAndGeocode();
     }
 
+    /**
+     * Fetches the event address and geocode from firestore in order to display entrant locations.
+     */
     private void fetchEventAddressAndGeocode() {
         firestore.collection("facilities")
                 .document(deviceId)
@@ -111,6 +123,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     }
                 });
     }
+
+    /**
+     * Geocodes an address based on a given string
+     * @param address the address string to be geocoded
+     */
     private void geocodeAddress(String address) {
         Log.d(TAG, "Geocoding Address: " + address);
 
@@ -138,6 +155,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             Toast.makeText(this, "Failed to geocode address.", Toast.LENGTH_SHORT).show();
         }
     }
+
+    /**
+     * Opens the QR Scanner.
+     */
     private void fetchAndDisplayCoordinates() {
         firestore.collection("facilities")
                 .document(deviceId)
@@ -180,6 +201,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 });
     }
 
+    /**
+     * fetches the names of the entrants being displayed.
+     * Shows their markers on the map based on their coordinates.
+     * @param coordinates A list of coordinates of the event entrants
+     * @param deviceIds The list of device Ids in order to fetch names from firestore
+     */
     private void fetchNamesAndShowMarkers(List<LatLng> coordinates, List<String> deviceIds) {
         for (int i = 0; i < deviceIds.size(); i++) {
             String deviceId = deviceIds.get(i);
@@ -219,6 +246,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
+    /**
+     * resizes the marker icon based on a given width and height.
+     * @param drawableId the drawable id of the marker.
+     * @param width The width to be resized to.
+     * @param height The height to be resized to.
+     */
     private Bitmap resizeMarkerIcon(int drawableId, int width, int height) {
         // Get the drawable resource
         Drawable drawable = ContextCompat.getDrawable(this, drawableId);
@@ -237,6 +270,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     }
 
+    /**
+     * Shows the event marker on the google map
+     * @param eventLocation coordinates of the event.
+     * @param address address of the event.
+     */
     private void showEventMarker(LatLng eventLocation, String address) {
         Bitmap resizedIcon = resizeMarkerIcon(R.drawable.star, 180, 190); // Adjust size as needed
 
