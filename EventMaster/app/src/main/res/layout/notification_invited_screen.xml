@@ -81,7 +81,7 @@
         android:layout_marginEnd="70dp"
         android:layout_marginBottom="148dp"
 
-        android:background="@drawable/gray_rounded_button"
+        android:background="@drawable/white_rounded_button"
         android:drawableLeft="@drawable/remove_circle_outline"
         android:padding="22dp"
         android:text="Decline Invite"
