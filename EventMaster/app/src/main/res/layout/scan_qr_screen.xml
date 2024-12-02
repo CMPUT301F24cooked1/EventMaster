@@ -36,11 +36,12 @@
         android:id="@+id/scan_qr_code_button"
         android:layout_width="190dp"
         android:layout_height="67dp"
+        android:layout_marginTop="140dp"
         android:background="@drawable/rounded_button"
-        android:text="      SCAN HERE"
         android:drawablePadding="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/next_button"
+        android:text="      SCAN HERE"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/qr_image" />
 
@@ -57,19 +58,7 @@
         app:layout_constraintVertical_bias="0.534"
         app:srcCompat="@drawable/scan_qr_icon" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/next_button"
-        android:layout_width="195dp"
-        android:layout_height="65dp"
-        android:layout_marginStart="70dp"
-        android:layout_marginEnd="70dp"
-        android:layout_marginBottom="204dp"
-        android:background="@drawable/rounded_button"
-        android:drawablePadding="8dp"
-        android:text="SKIP SCANNING"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"

@@ -44,14 +44,14 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:paddingStart="30dp"
-        android:textSize="20dp"
         android:paddingEnd="30dp"
-        android:text= "Congratulations! You've chosen to attend the event. Check your Joined Events List and click on the event for all the details!"
+        android:text="Congratulations! You've chosen to attend the event. Check your Joined Events List and click on the event for all the details!"
         android:textAlignment="center"
+        android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/title" />
 
 
 
