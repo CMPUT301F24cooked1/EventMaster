@@ -78,7 +78,8 @@ public class ViewInvitedListActivity extends AppCompatActivity {
         invitedRecyclerView.setAdapter(invitedAdapter);
 
         firestore = FirebaseFirestore.getInstance();
-        deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        deviceId = user.getDeviceId();
+        //deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
         ActivityResultLauncher<Intent> notificationActivityResultLauncher;
         ActivityResultLauncher<Intent> settingsResultLauncher;

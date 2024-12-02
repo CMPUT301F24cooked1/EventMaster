@@ -78,25 +78,4 @@ public class MessagingService extends FirebaseMessagingService {
         builder.setChannelId(channelId);
         notificationManager.notify(1, builder.build());
     }
-
-    /*
-    private void updateNewToken(String notificationToken) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);;
-
-        Map<String, Object> tokenData = new HashMap<>();
-        tokenData.put("notificationToken", notificationToken);
-
-        db.collection("profiles")
-                .document(deviceId)
-                .set(tokenData, SetOptions.merge())
-                .addOnSuccessListener(aVoid -> {
-                    Log.d("Notification Token", "Notification token for user uploaded firestore");
-                })
-                .addOnFailureListener(e -> {
-                    Log.e("Notification Token", "Error uploading notification token for user in firestore", e);
-                });
-    }
-
-     */
 }
