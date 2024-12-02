@@ -464,6 +464,7 @@ public class retrieveEventInfo extends AppCompatActivity {
         WaitlistEvents.put("deviceID", deviceID);
         WaitlistEvents.put("posterUrl", posterUrl);
         WaitlistEvents.put("eventDescription", eventDescription.getText().toString());
+        WaitlistEvents.put("geolocationEnabled", geolocation);
 
         // add event to the entrants list of waitlisted events
         db.collection("entrants")

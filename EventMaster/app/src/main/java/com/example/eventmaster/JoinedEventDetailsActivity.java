@@ -30,14 +30,13 @@ import com.google.firebase.firestore.FirebaseFirestore;
  * This class displays the event information and title and a button allowing the entrant to leave the waitlist
  */
 
-public class UnjoinWaitlistScreen extends AppCompatActivity {
+public class JoinedEventDetailsActivity extends AppCompatActivity {
 
     private FirebaseFirestore db;
     TextView eventName;
     TextView eventDescription;
     TextView eventFinalDate;
     ImageView eventPoster;
-    AppCompatButton unjoinWaitlistButton;
     private Profile user;
 
     private ActivityResultLauncher<Intent> ProfileActivityResultLauncher;
@@ -46,18 +45,16 @@ public class UnjoinWaitlistScreen extends AppCompatActivity {
     private ActivityResultLauncher<Intent> MainActivityResultLauncher;
 
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ModeActivity.applyTheme(this);
-        setContentView(R.layout.waitlist_event_details);
+        setContentView(R.layout.joined_events_details);
 
         eventName = findViewById(R.id.event_name);
         eventDescription = findViewById(R.id.event_decription);
         eventFinalDate = findViewById(R.id.event_decription);
         eventPoster = findViewById(R.id.event_poster);
-        unjoinWaitlistButton = findViewById(R.id.unjoin_waitlist_button);
 
         db = FirebaseFirestore.getInstance();
 
@@ -80,15 +77,6 @@ public class UnjoinWaitlistScreen extends AppCompatActivity {
             Toast.makeText(this, "Failed to retrieve event data.", Toast.LENGTH_SHORT).show();
         }
 
-        unjoinWaitlistButton.setOnClickListener(new View.OnClickListener() { //handles the unjoining of entrant from event
-            @Override
-            public void onClick(View v) {
-                unjoinWaitlistEntrant(userDeviceId, hashedData);
-                unjoinWaitlistOrganizer(userDeviceId, deviceID);
-                Intent intent = new Intent(UnjoinWaitlistScreen.this, JoinedEventsActivity.class);
-                startActivity(intent);
-            }
-        });
 
 
         ImageButton backButton = findViewById(R.id.back);
@@ -167,22 +155,22 @@ public class UnjoinWaitlistScreen extends AppCompatActivity {
             Intent newIntent;
 
             if (item.getItemId() == R.id.nav_Home) {
-                newIntent = new Intent(UnjoinWaitlistScreen.this, MainActivity.class);
+                newIntent = new Intent(JoinedEventDetailsActivity.this, MainActivity.class);
                 newIntent.putExtra("User", user);
                 MainActivityResultLauncher.launch(newIntent);
                 return true;
             } else if (item.getItemId() == R.id.nav_Settings) {
-                newIntent = new Intent(UnjoinWaitlistScreen. this, SettingsScreen.class);
+                newIntent = new Intent(JoinedEventDetailsActivity.this, SettingsScreen.class);
                 newIntent.putExtra("User", user);
                 settingsResultLauncher.launch(newIntent);
                 return true;
             } else if (item.getItemId() == R.id.nav_Notifications) {
-                newIntent = new Intent(UnjoinWaitlistScreen.this, Notifications.class);
+                newIntent = new Intent(JoinedEventDetailsActivity.this, Notifications.class);
                 newIntent.putExtra("User", user);
                 notificationActivityResultLauncher.launch(newIntent);
                 return true;
             } else if (item.getItemId() == R.id.nav_Profile) {
-                newIntent = new Intent(UnjoinWaitlistScreen.this, ProfileActivity.class);
+                newIntent = new Intent(JoinedEventDetailsActivity.this, ProfileActivity.class);
                 newIntent.putExtra("User", user);
                 ProfileActivityResultLauncher.launch(newIntent);
                 return true;
@@ -204,10 +192,9 @@ public class UnjoinWaitlistScreen extends AppCompatActivity {
     }
 
 
-
-
     /**
      * Retrieves the event's hash data, name, description and poster
+     *
      * @param hashedData
      * @param deviceID
      * @param event
@@ -221,37 +208,38 @@ public class UnjoinWaitlistScreen extends AppCompatActivity {
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful())
-                        if (!task.getResult().isEmpty()){  // check something is in result
-                            Toast.makeText(UnjoinWaitlistScreen.this, "succesfully read data", Toast.LENGTH_SHORT).show();
+                        if (!task.getResult().isEmpty()) {  // check something is in result
+                            Toast.makeText(JoinedEventDetailsActivity.this, "succesfully read data", Toast.LENGTH_SHORT).show();
 
                             for (DocumentSnapshot document : task.getResult()) {
                                 // Retrieve data directly from the document
                                 String eventName = document.getString("eventName");
                                 String eventDescription = document.getString("eventDescription");
                                 String eventPosterUrl = document.getString("posterUrl");
-                                Boolean geolocation = document.getBoolean("geolocationEnabled");
+                                Boolean geolocation = document.getBoolean("geolocation");
 
                                 // Call the display method with the retrieved data
                                 displayEventInfo(eventName, eventDescription, eventPosterUrl, geolocation);//eventPosterUrl);
                             }
                         } else {
-                            Toast.makeText(UnjoinWaitlistScreen.this, "Event does not exist", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(JoinedEventDetailsActivity.this, "Event does not exist", Toast.LENGTH_SHORT).show();
                         }
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(UnjoinWaitlistScreen.this, "Error retrieving event: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(JoinedEventDetailsActivity.this, "Error retrieving event: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
 
 
     /**
      * Displays the event name, description and poster
+     *
      * @param eventName
      * @param eventDescription
      * @param eventPosterUrl
      */
 
-    private void displayEventInfo(String eventName, String eventDescription, String eventPosterUrl, Boolean geolocation ) {
+    private void displayEventInfo(String eventName, String eventDescription, String eventPosterUrl, Boolean geolocation) {
         TextView eventNameTextView = findViewById(R.id.event_name);
         TextView eventDescriptionTextView = findViewById(R.id.event_decription);
         TextView geolocationTextView = findViewById(R.id.geolocation);
@@ -274,116 +262,5 @@ public class UnjoinWaitlistScreen extends AppCompatActivity {
             Log.e("RetrieveEventInfo", "Error loading image: " + e.getMessage());
         }
     }
-
-    /**
-     * Removes event from entrant's waitlisted events
-     * @param userDeviceId
-     * @param hashedData
-     */
-
-    private void unjoinWaitlistEntrant(String userDeviceId, String hashedData) {
-        db.collection("entrants")
-                .whereEqualTo("deviceId", userDeviceId)
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    if (!queryDocumentSnapshots.isEmpty()) {
-                        String entrantId = queryDocumentSnapshots.getDocuments().get(0).getId();
-
-                        // Access the entrant's "Waitlisted Events" subcollection
-                        db.collection("entrants")
-                                .document(entrantId)
-                                .collection("Waitlisted Events")
-                                .whereEqualTo("hashed_data", hashedData)
-                                .get()
-                                .addOnSuccessListener(snapshot -> {
-                                    if (!snapshot.isEmpty()) {
-                                        // Retrieve the document ID for the event that matches the hashed data
-                                        String eventDocId = snapshot.getDocuments().get(0).getId();
-
-                                        // Delete the document representing the waitlisted event
-                                        db.collection("entrants")
-                                                .document(entrantId)
-                                                .collection("Waitlisted Events")
-                                                .document(eventDocId)
-                                                .delete()
-                                                .addOnSuccessListener(aVoid -> {
-                                                    Toast.makeText(UnjoinWaitlistScreen.this, "Successfully removed event from waitlist", Toast.LENGTH_SHORT).show();
-                                                })
-                                                .addOnFailureListener(e -> {
-                                                    Log.e("Firestore", "Error removing event from waitlist: " + e.getMessage());
-                                                    Toast.makeText(UnjoinWaitlistScreen.this, "Error removing from waitlist", Toast.LENGTH_SHORT).show();
-                                                });
-
-                                        db.collection("entrants")
-                                                .document(entrantId)
-                                                .collection("Unsampled Events")
-                                                .document(eventDocId)
-                                                .delete()
-                                                .addOnSuccessListener(aVoid -> {
-                                                    Log.d("Firestore", "Successfully removed event from unsampled list");
-                                                })
-                                                .addOnFailureListener(e -> {
-                                                    Log.e("Firestore", "Error removing event from unsampled list: " + e.getMessage());
-                                                });
-
-                                    } else {
-                                        Toast.makeText(UnjoinWaitlistScreen.this, "Event not found in waitlist", Toast.LENGTH_SHORT).show();
-                                    }
-                                })
-                                .addOnFailureListener(e -> Toast.makeText(UnjoinWaitlistScreen.this, "Error querying waitlisted events", Toast.LENGTH_SHORT).show());
-                    } else {
-                        Toast.makeText(UnjoinWaitlistScreen.this, "Entrant not found", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .addOnFailureListener(e -> Toast.makeText(UnjoinWaitlistScreen.this, "Error querying entrants", Toast.LENGTH_SHORT).show());
-    }
-
-    /**
-     * Removes entrant from event's list of entrants
-     * @param userDeviceId
-     * @param deviceId
-     */
-
-    private void unjoinWaitlistOrganizer(String userDeviceId, String deviceId) {
-        String event = eventName.getText().toString();
-
-        db.collection("facilities")
-                .whereEqualTo("deviceId", deviceId)
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    if (!queryDocumentSnapshots.isEmpty()) {
-                        String facilityId = queryDocumentSnapshots.getDocuments().get(0).getId();
-                        db.collection("facilities")
-                                .document(facilityId)
-                                .collection("My Events")
-                                .document(event)
-                                .collection("waitlist list")
-                                .document(userDeviceId)
-                                .delete()
-                                .addOnSuccessListener(aVoid -> {
-                                    Toast.makeText(UnjoinWaitlistScreen.this, "Entrant removed from waitlist successfully", Toast.LENGTH_SHORT).show();
-                                })
-                                .addOnFailureListener(e -> Toast.makeText(UnjoinWaitlistScreen.this, "Error removing entrant from waitlist", Toast.LENGTH_SHORT).show());
-                        db.collection("facilities")
-                                .document(facilityId)
-                                .collection("My Events")
-                                .document(event)
-                                .collection("unsampled list")
-                                .document(userDeviceId)
-                                .delete()
-                                .addOnSuccessListener(aVoid -> {
-                                    Toast.makeText(UnjoinWaitlistScreen.this, "Entrant removed from unsampled list successfully", Toast.LENGTH_SHORT).show();
-                                })
-                                .addOnFailureListener(e -> Toast.makeText(UnjoinWaitlistScreen.this, "Error removing entrant from unsampled list", Toast.LENGTH_SHORT).show());
-                    } else {
-                        Toast.makeText(UnjoinWaitlistScreen.this, "Facility not found", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .addOnFailureListener(e -> Toast.makeText(UnjoinWaitlistScreen.this, "Error querying facility", Toast.LENGTH_SHORT).show());
-    }
-
-
-
-
 
 }
