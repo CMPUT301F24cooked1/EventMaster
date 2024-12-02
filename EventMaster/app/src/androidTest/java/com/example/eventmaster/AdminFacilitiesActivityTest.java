@@ -39,13 +39,11 @@ public class AdminFacilitiesActivityTest {
     @Before
     public void setUp() {
         init();
-        TestUtils.disableAnimations();
     }
 
     @After
     public void tearDown() {
         release();
-        TestUtils.enableAnimations();
     }
 
     /**

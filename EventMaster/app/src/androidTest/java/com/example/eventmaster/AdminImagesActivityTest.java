@@ -64,7 +64,6 @@ public class AdminImagesActivityTest {
 
         onView(withId(R.id.delete_button)).perform(click()); // checks that the delete button can be clicked
         onView(withId(R.id.delete_button)).perform(click()); // checks that the delete button can be restored to its original state
-
     }
 
 }

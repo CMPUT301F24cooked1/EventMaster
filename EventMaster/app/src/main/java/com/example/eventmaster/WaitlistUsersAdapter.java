@@ -64,6 +64,7 @@ public class WaitlistUsersAdapter extends RecyclerView.Adapter<WaitlistUsersAdap
     private String deviceId;
     private Boolean showCheckBox = false;
     private Boolean isClickable = true;
+    private Boolean isAdmin = false;
 
     /**
      * Constructs a new WaitlistUsersAdapter with the specified parameters.
@@ -87,7 +88,7 @@ public class WaitlistUsersAdapter extends RecyclerView.Adapter<WaitlistUsersAdap
      * @param userList A list of users to display.
      * @param context The context in which the adapter operates.
      */
-    public WaitlistUsersAdapter(List<User> userList, Context context) {
+    public WaitlistUsersAdapter(List<User> userList, Context context, Boolean isAdmin) {
         this.userList = userList;
         this.context = context;
         db = FirebaseFirestore.getInstance();
@@ -107,31 +108,34 @@ public class WaitlistUsersAdapter extends RecyclerView.Adapter<WaitlistUsersAdap
         User user = userList.get(position); // Now this is a User object with name and profile picture
         holder.bind(user);
 
-        holder.itemView.setClickable(isClickable);
+        if (isAdmin) {
+            holder.itemView.setClickable(isClickable);
 
 
-        // Checkbox stuff ------------------------------------
-        // set the checkbox state
-        if (selectedProfiles != null) {
-            // Set the CheckBox state
-            holder.checkBox.setChecked(selectedProfiles.contains(userList.get(position)));
-        } else {
-            holder.checkBox.setChecked(false);
-        }
-        // adds an event to the selectedEvents list when it's respective checkbox is checked
-        holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                if (!selectedProfiles.contains(userList.get(position))) {
-                    selectedProfiles.add(userList.get(position));
-                    selectedProfilesStorage.add(userList.get(position));
-
-                }
+            // Checkbox stuff ------------------------------------
+            // set the checkbox state
+            if (selectedProfiles != null) {
+                // Set the CheckBox state
+                holder.checkBox.setChecked(selectedProfiles.contains(userList.get(position)));
             } else {
-                selectedProfiles.remove(userList.get(position));
+                holder.checkBox.setChecked(false);
             }
-        });
+            // adds an event to the selectedEvents list when it's respective checkbox is checked
+            holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (isChecked) {
+                    if (!selectedProfiles.contains(userList.get(position))) {
+                        selectedProfiles.add(userList.get(position));
+                        selectedProfilesStorage.add(userList.get(position));
 
-        holder.checkBox.setVisibility(showCheckBox ? View.VISIBLE : View.GONE);
+                    }
+                } else {
+                    selectedProfiles.remove(userList.get(position));
+                }
+            });
+
+            holder.checkBox.setVisibility(showCheckBox ? View.VISIBLE : View.GONE);
+        }
+
     }
 
     @Override

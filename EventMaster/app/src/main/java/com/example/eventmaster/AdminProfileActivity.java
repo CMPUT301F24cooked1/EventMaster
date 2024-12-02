@@ -66,7 +66,7 @@ public class AdminProfileActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         profileList = new ArrayList<>();
         // Pass the context and eventName to the adapter
-        viewProfilesAdapter = new WaitlistUsersAdapter(profileList, this);
+        viewProfilesAdapter = new WaitlistUsersAdapter(profileList, this, true);
         recyclerView.setAdapter(viewProfilesAdapter);
 
         deleteButton = findViewById(R.id.delete_button);
