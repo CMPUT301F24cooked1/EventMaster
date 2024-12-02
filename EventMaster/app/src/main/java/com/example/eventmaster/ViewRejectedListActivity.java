@@ -75,7 +75,8 @@ public class ViewRejectedListActivity extends AppCompatActivity {
         rejectedRecyclerView.setAdapter(rejectedAdapter);
 
         firestore = FirebaseFirestore.getInstance();
-        deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        deviceId = user.getDeviceId();
+        //deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         //Grab private key from firestore for notifications.
         firestore.collection("private_key")

@@ -83,13 +83,15 @@ public class ViewWaitlistActivity extends AppCompatActivity {
         waitlistRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         waitlistUsers = new ArrayList<>();
+        waitlistIds = new ArrayList<>();
 
         // Pass the context and eventName to the adapter
         waitlistAdapter = new WaitlistUsersAdapter(waitlistUsers, this, eventName);
         waitlistRecyclerView.setAdapter(waitlistAdapter);
 
         firestore = FirebaseFirestore.getInstance();
-        deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        deviceId = user.getDeviceId();
+        //deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         // Fetch the waitlist from Firebase
         fetchWaitlist();
@@ -153,7 +155,7 @@ public class ViewWaitlistActivity extends AppCompatActivity {
                     Log.d("WaitlistSize", "Waitlist size is 0, cannot sample.");
                     Intent intent = new Intent(ViewWaitlistActivity.this, ViewInvitedListActivity.class);
                     intent.putExtra("myEventName", eventName);
-                    intent.putExtra("userProfile", user);
+                    intent.putExtra("User", user);
                     intent.putExtra("Sampled?", 0);
                     chooseSampleResultLauncher.launch(intent);
                 } else {
@@ -174,7 +176,7 @@ public class ViewWaitlistActivity extends AppCompatActivity {
                                     if (data.get("selectedCount") == data.get("eventCapacity")) {
                                         Intent intent = new Intent(ViewWaitlistActivity.this, ViewInvitedListActivity.class);
                                         intent.putExtra("myEventName", eventName);
-                                        intent.putExtra("userProfile", user);
+                                        intent.putExtra("User", user);
                                         intent.putExtra("Sampled?", 0);
                                         chooseSampleResultLauncher.launch(intent);
                                     } else {
@@ -512,7 +514,7 @@ public class ViewWaitlistActivity extends AppCompatActivity {
                         //markEventAsSampled(deviceId, eventName);
                         Intent intent = new Intent(ViewWaitlistActivity.this, ViewInvitedListActivity.class);
                         intent.putExtra("myEventName", eventName);
-                        intent.putExtra("userProfile", user);
+                        intent.putExtra("User", user);
                         intent.putExtra("Sampled?", 1);
                         chooseSampleResultLauncher.launch(intent);
                     } else {
