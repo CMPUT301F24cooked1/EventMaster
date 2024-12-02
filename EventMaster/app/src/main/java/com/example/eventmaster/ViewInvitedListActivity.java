@@ -89,7 +89,7 @@ public class ViewInvitedListActivity extends AppCompatActivity {
 
         //Check if new sampling has happened. Copy new rejected list if so.
         if (sampled == 1) {
-            Toast.makeText(ViewInvitedListActivity.this, "Copying unsampled list", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(ViewInvitedListActivity.this, "Copying unsampled list", Toast.LENGTH_SHORT).show();
             copyUnsampledList();
             sampled = 0;
         }
