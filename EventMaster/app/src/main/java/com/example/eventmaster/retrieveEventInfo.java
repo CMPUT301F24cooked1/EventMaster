@@ -174,7 +174,7 @@ public class retrieveEventInfo extends AppCompatActivity {
             retrieveEventInfo(hashedData, deviceID, event);
 
         } else {
-            Toast.makeText(this, "Failed to retrieve event data.", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "Failed to retrieve event data.", Toast.LENGTH_SHORT).show();
         }
 
         ActivityCompat.requestPermissions(this, new String[]{ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION},
@@ -381,11 +381,11 @@ public class retrieveEventInfo extends AppCompatActivity {
                                 displayEventInfo(eventName, eventDescription, eventPosterUrl, waitlistCountdown);
                             }
                     } else {
-                        Toast.makeText(retrieveEventInfo.this, "Event does not exist", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(retrieveEventInfo.this, "Event does not exist", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(retrieveEventInfo.this, "Error retrieving event: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(retrieveEventInfo.this, "Error retrieving event: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
 
@@ -483,7 +483,7 @@ public class retrieveEventInfo extends AppCompatActivity {
                                 })
                                 .addOnFailureListener(e -> {
                                     Log.e("Firestore", "Error adding event to waitlist: " + e.getMessage());
-                                    Toast.makeText(retrieveEventInfo.this, "Error joining waitlist", Toast.LENGTH_SHORT).show();
+                                    //Toast.makeText(retrieveEventInfo.this, "Error joining waitlist", Toast.LENGTH_SHORT).show();
                                 });
                         db.collection("entrants")
                                 .document(entrantId)
@@ -495,7 +495,7 @@ public class retrieveEventInfo extends AppCompatActivity {
                                 })
                                 .addOnFailureListener(e -> {
                                     Log.e("Firestore", "Error adding event to unsampled list: " + e.getMessage());
-                                    Toast.makeText(retrieveEventInfo.this, "Error joining waitlist", Toast.LENGTH_SHORT).show();
+                                    //Toast.makeText(retrieveEventInfo.this, "Error joining waitlist", Toast.LENGTH_SHORT).show();
                                 });
 
                     }else{
@@ -551,7 +551,7 @@ public class retrieveEventInfo extends AppCompatActivity {
                                 })
                                 .addOnFailureListener(e -> Toast.makeText(retrieveEventInfo.this, "Error adding entrant to unsampled list", Toast.LENGTH_SHORT).show());
                     } else {
-                        Toast.makeText(retrieveEventInfo.this, "Entrant not found", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(retrieveEventInfo.this, "Entrant not found", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(e -> Toast.makeText(retrieveEventInfo.this, "Error querying entrant", Toast.LENGTH_SHORT).show());

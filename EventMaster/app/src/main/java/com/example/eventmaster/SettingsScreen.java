@@ -91,11 +91,11 @@ public class SettingsScreen extends AppCompatActivity {
                 storeNotificationSetting(deviceId, "entrants", notificationStatus);
                 if (toggleNotifications){
                     user.setNotifications(false);  // set notifications to on
-                    Toast.makeText(SettingsScreen.this, "Notifications On", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(SettingsScreen.this, "Notifications On", Toast.LENGTH_SHORT).show();
                 }
                 else{  // set notifications to off
                     user.setNotifications(true);
-                    Toast.makeText(SettingsScreen.this, "Notifications Off", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(SettingsScreen.this, "Notifications Off", Toast.LENGTH_SHORT).show();
                 }
 
             }

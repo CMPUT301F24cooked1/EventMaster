@@ -67,7 +67,7 @@ public class NotificationRejectedActivity extends AppCompatActivity {
      */
     private void fetchEventDescription(String facilityId, String eventName) {
         if (facilityId == null || eventName == null) {
-            Toast.makeText(this, "Error: Facility ID or Event Name is missing", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "Error: Facility ID or Event Name is missing", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -86,14 +86,14 @@ public class NotificationRejectedActivity extends AppCompatActivity {
                         if (eventDescription != null) {
                             updateEventDescriptionView(eventDescription);
                         } else {
-                            Toast.makeText(this, "Event description not found", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(this, "Event description not found", Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        Toast.makeText(this, "Event not found", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(this, "Event not found", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to fetch event description", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(this, "Failed to fetch event description", Toast.LENGTH_SHORT).show();
                     Log.e("Firestore", "Error fetching event description", e);
                 });
     }

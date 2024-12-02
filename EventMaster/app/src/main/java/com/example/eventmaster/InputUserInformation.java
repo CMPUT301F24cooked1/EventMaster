@@ -107,7 +107,7 @@ public class InputUserInformation extends AppCompatActivity {
                 validatePhoneNumber(phone_number);
                 user.setPhone_number(phone_number);
             } catch (IllegalArgumentException e) {
-                Toast.makeText(InputUserInformation.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(InputUserInformation.this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
             updateUserInfo(user.getDeviceId(), user.getName(), user.getEmail(), user.getPhone_number(), () -> {
                 ProfilePicture.loadProfilePicture(user, profile_picture, InputUserInformation.this);
@@ -180,7 +180,7 @@ public class InputUserInformation extends AppCompatActivity {
                 })
                 .addOnFailureListener(e -> {
                     Log.e("Firestore", "Error updating user info", e);
-                    Toast.makeText(this, "Failed to save data.", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(this, "Failed to save data.", Toast.LENGTH_SHORT).show();
                 });
     }
 

@@ -48,7 +48,6 @@
         android:paddingEnd="30dp"
         android:text= "Congratulations! You've chosen to attend the event. Check your Joined Events List and click on the event for all the details!"
         android:textAlignment="center"
-        android:textColor="#757575"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
